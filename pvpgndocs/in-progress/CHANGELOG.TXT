@@ -80,3 +80,9 @@ dgwilson65 - 4 October 2004
 - Added Mac gameport edit for starcraft
 - Added MacBnetGatewayEditor doc with Pictures
 - Updated doc on RUnning a PvPGN server - specifically for recent changes to bnetd.conf file
+
+dgwilson65 - 27 October 2004
+- Updated html documents in pvpgndocs.berlios.de CVS (took clean versions from the pvpgn docs web site)
+- Links to images have been updated though this has been unsuccessful. Specifically the documents for 
+  installation and banner ads need updating and/or the images need uploading to the specified location.
+- changed some file types to binary (not necessarily a upload problem, maybe user issue at my end!)
