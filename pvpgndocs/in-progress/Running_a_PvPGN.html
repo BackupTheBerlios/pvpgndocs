@@ -1,3 +1,8 @@
+<style type="text/css">
+<!--
+.style1 {font-family: "Courier New", Courier, mono}
+-->
+</style>
 <center>
     <h2><a name="top">Running a  PvPGN Server </a></h2>
     <p>By dgwilson65 and U-238</p>
@@ -14,6 +19,8 @@
 	<li><a href="#chat"> Default chat channels</a></li>
       <li>        <a href="#tourn">Tournaments</a></li>
       <li>        <a href="#mapladder">Changing the maps used for ladder games</a></li>
+      <li><a href="#ladderresults">Ladder Results for everyone!</a></li>
+      <li><a href="#ladderupdate">Ladder results Updates</a></li>
       <li><a href="#thumbsdown"> Changing the "thumbs down" limit for ladder games</a></li>
       <li><a href="#admin"> Server admins</a></li>
       <li><a href="#attributes"> Editing user attributes</a></li>
@@ -223,8 +230,36 @@ News goes here</pre>
 <p><strong>Changing the maps used for ladder games<a name="mapladder"></a></strong></p>
 <blockquote>
     <p>      bnmaps.conf, will write in detail later</p>
+    <p>&nbsp;</p>
+</blockquote>
+<p><strong>Ladders results for everyone!<a name="ladderresults"></a></strong></p>
+<blockquote>
+  <p>We are pleased to report that the PvPGN developers have &quot;Pulled one out of the Bag!&quot;. Picture this scenario: You have a local group of friends who would like to participate in games and for a bit of friendly competition you would like to run a ladder. You would also like to be able to play games at full speed and any type of game and have the game results reported as Ladder results. We have the answer.</p>
+  <p>The bnetd.conf as of a certain 1.7.x release has some additional parameters, see this extract below:</p>
+  <p><span class="style1"># List additional game types to be counted as ladder games<br>
+  </span><span class="style1"># Curently allowed types: topvbot, melee, ffa, oneonone <br>
+  # Example: ladder_games = &quot;topvbot,oneonone&quot; <br>
+  ladder_games = &quot;none&quot;</span></p>
+  <p>Depending on what type of games you want to play, edit the &quot;ladder_games&quot; parameter. Play your games and let the competition thrive! </p>
   <p>&nbsp;</p>
 </blockquote>
+<p><strong>Ladder Results Updates<a name="ladderupdate"></a></strong></p>
+<blockquote>
+  <p>As games complete the ladder results are NOT automatically updated. Individual user records are updated with win/loss information required but the results are not published. To do this an admin must issue the command &quot;/ladderactivate&quot;. As you might imagine this could be rather difficult on larger servers for an admin to stick around 24/7 issuing this command.</p>
+  <p>Unix admins can create the following shell script to do the work and execute as they see fit (hourly, daily, whatever) from CRON.</p>
+  <DIV class=postcolor>#!/bin/sh <br>
+      echo -e "<SPAN 
+style="COLOR: red">username</SPAN>\n<SPAN 
+style="COLOR: red">password</SPAN>\n/ladderactivate\n/quit\n" | nice -n 19 /usr/local/bnetd/bin/bnchat <SPAN style="COLOR: red">serverIP</SPAN> &gt;&gt; logfile<BR>
+  <BR>
+  The entry above should be all on the same line...<BR>
+  Replace username, password, serverIP with the appropriate values.
+  <!--IBF.ATTACHMENT_11012-->
+  </DIV>
+  <p>Windows admins are not so fortunate. Someone who is skilled at windows batch files and passing commands into programs may be able to assist. If you are able to assist here, please post your working solution to the forums, <a href="http://forums.pvpgn.org">http://forums.pvpgn.org</a></p>
+  <p>A final note. Those running larger systems may need to be aware of system CPU usage when issuing the /ladderactivate command. If CPU usage is excessive or causes degraded performance on other processes you may be forced to reduce the frequency at which you run it. Be nice and advise your users of the frequency that ladder updates are performed. </p>
+</blockquote>
+<p>&nbsp; </p>
 <p><strong>Changing the &quot;thumbs down&quot; limit for ladder games<a name="thumbsdown"></a></strong></p>
 <blockquote>
   <p>      anongame_infos.conf, will write in detail later</p>
@@ -658,10 +693,11 @@ When / if there is ever a Mac &quot;Loader&quot; for WarCraft, the syntax below 
 </pre>
     
     
-    <p>       Any of update files may be retrieved from any of the battle.net servers. 
-csCZ, deDE, enUS, esES, frFR, itIT, jaJA, koKR, plPL, ruRU, zhCN, zhTW.
-You can do this by replacing enUS in the filename string of the bnftp command.</p>
-    <p><br>
+  <p>       Any of update files may be retrieved from any of the battle.net servers.</p>
+    <p>csCZ, deDE, enUS, esES, frFR, itIT, jaJA, koKR, plPL, ruRU, zhCN, zhTW.  </p>
+    <p>You can do this by replacing enUS in the filename string of the bnftp command.</p>
+    <p>A word about bnftp. Make sure you have a current version. Use the command &quot;bnftp -h&quot; to ensure that the --arch parameter is accepted<br>
+      <br>
       The resulting output files &quot;*.mpq&quot; need to be moved to the files/ directory 
       of the PvPGN server and you need to make appropriate updates to conf/autoupdate.conf<br>
       <br>
@@ -726,362 +762,438 @@ You can do this by replacing enUS in the filename string of the bnftp command.</
 </blockquote>
 
 <p>
-<pre>
-##############################################################################
-# bnetd.conf - Configuration file for the Unix Battle.net daemon #
-#----------------------------------------------------------------------------#
-# #
-# This file is an example configuration and may require modification to #
-# suit your needs or your site. Blank lines and lines starting with a &quot;#&quot; #
-# are ignored. Use quotes around values that contain spaces. #
-# #
-##############################################################################
-</p>
-<p>##############################################################################
-# Storage section #
-# storage_path will tell pvpgn how and where from/to to read/write accounts #
-# right now it supports 2 &quot;drivers&quot; : file and sql #
-# #
-# Syntax: #
-# * for plain file driver: #
-# storage_path = file:mode=plain;dir=&lt;path_to_user_files&gt;;clan=&lt;path_to_clan_files&gt;;team=&lt;path_to_team_files&gt;;default=/path/to/default/account #
-# * for cdb file driver: #
-# storage_path = file:mode=cdb;dir=&lt;path_to_cdb_files&gt;;clan=&lt;path_to_clan_files&gt;;team=&lt;path_to_team_files&gt;;default=/path/to/default/account #
-# * for sql driver: #
-# storage_path = sql:variable=value;...;default=0 (0 is the default uid) #
-# Variables can be: #
-# - &quot;mode&quot; : tells PVPGN the sql mode you will use (mysql/pgsql/etc..) #
-# - &quot;host&quot; : the database host #
-# - &quot;port&quot; : the TCP/IP port if needed #
-# - &quot;socket&quot; : the UNIX local socket if needed #
-# - &quot;name&quot; : database name #
-# - &quot;user&quot; : db username #
-# - &quot;pass&quot; : db password #
-# #
-# Examples: #
-# storage_path = file:mode=plain;dir=var\users;clan=var\clans;team=var\teams\;default=conf\bnetd_default_user.plain
-# storage_path = file:mode=cdb;dir=var\userscdb;clan=var\clans;team=var\teams\;default=conf\bnetd_default_user.cdb
-# storage_path = sql:mode=mysql;host=127.0.0.1;name=PVPGN;user=pvpgn;pass=pvpgnrocks;default=0
-#----------------------------------------------------------------------------#</p><p>storage_path = file:mode=plain;dir=var\users;clan=var\clans;team=var\teams;default=conf\bnetd_default_user.plain</p><p># #
-##############################################################################</p><p>##############################################################################
-# File section #
-# The pidfile can be set to &quot;&quot; to turn it off. #
-# Use absolute paths in these lines to avoid problems! #
-#----------------------------------------------------------------------------#</p><p>filedir = files
-  reportdir = var\reports
-  chanlogdir = var\chanlogs
-  motdfile = conf\bnmotd.txt
-  issuefile = conf\bnissue.txt
-  channelfile = conf\channel.conf
-  newsfile = conf\news.txt
-  adfile = conf\ad.conf
-  topicfile = conf\topics.conf
-  ipbanfile = conf\bnban.conf
-  helpfile = conf\bnhelp.conf
-  transfile = conf\address_translation.conf
-  mpqfile = conf\autoupdate.conf
-  logfile = var\bnetd.log
-  realmfile = conf\realm.conf
-  versioncheck_file = conf\versioncheck.conf
-  mapsfile = conf\bnmaps.conf
-  xplevelfile = conf\bnxplevel.conf
-  xpcalcfile = conf\bnxpcalc.conf
-#pidfile = var\bnetd.pid
-  ladderdir = var\ladders
-  command_groups_file = conf\command_groups.conf
-  statusdir = var\status
-  aliasfile = conf\bnalias.conf
-  anongame_infos_file = conf\anongame_infos.conf
-  DBlayoutfile = conf\sql_DB_layout.conf
-  supportfile = conf\supportfile.conf</p><p>fortunecmd = bin\fortune.exe</p><p># #
-##############################################################################
-
-##############################################################################
-# Message logs #
-#----------------------------------------------------------------------------#
-# Multiple log levels can be defined by connecting them with a comma (,)
-# Available loglevels are:
-# none
-# trace
-# debug
-# info
-# warn
-# error
-# fatal
-#loglevels = fatal,error,warn,info,debug,trace
-  loglevels = fatal,error</p><p># #
-##############################################################################
-
-##############################################################################
-# D2CS realm server settings #
-#----------------------------------------------------------------------------#</p><p># Version of D2CS server to connect with (set to zero to disable version check)
-  d2cs_version = 0</p><p># Allow the D2CS server to change realm names?
-  allow_d2cs_setname = true</p><p># #
-##############################################################################
-
-##############################################################################
-# Downloadable files #
-#----------------------------------------------------------------------------#</p><p># These filenames are reported directly to the client and are relative to
-# the &quot;filedir&quot; directory specified above.
-  iconfile = &quot;icons.bni&quot;
-  war3_iconfile = &quot;icons-WAR3.bni&quot;
-  star_iconfile = &quot;icons_STAR.bni&quot;</p><p>tosfile = &quot;tos.txt&quot;</p><p># #
-##############################################################################
-
-##############################################################################
-# Client verification and upgrades #
-#----------------------------------------------------------------------------#
-# This option lists the client types allowed to connect (only valid for 
-# the bnet protocol). The list is a comma separated list of any of the 
-# following elements: 
-# all : all client types allowed (default)
-# chat : client type &quot;CHAT&quot; allowed (used by some bot software)
-# dshr : client type Diablo 1 Shareware
-# drtl : client type Diablo 1 (Retail)
-# sshr : client type Starcraft Shareware
-# star : client type Starcraft
-# sexp : client type Starcraft Broodwar
-# w2bn : client type Warcraft II Battle.Net Edition
-# d2dv : client type Diablo 2
-# d2xp : client type Diablo 2 LOD
-# war3 : client type Warcraft III (Reign Of Chaos)
-# w3xp : client type Warcraft III Frozen Throne
-#
-# Example: allowed_clients = war3,w3xp
-  allowed_clients = all
-
-# If this option is enabled, the verification step is skipped if possible.
-# This only works with clients &lt; 109. It is useful because you no longer
-# need any of the IX86AUTH?.MPQ and PMACAUTH?.MPQ files. Note that it will
-# also skip over all the autoupdate checks effectively disabling it.
-#
-# If you disable this you must have one or more of the MPQ files. Otherwise
-# clients will hang when they first connect because they are attempting to
-# download them. The versioncheck can only be skipped for clients older
-# than 109. Starting with version 109 the clients will always do version
-# checking since they do not function properly if the server does not
-# request it.
-  skip_versioncheck = false</p><p># If you enable the version checks but want to allow clients that don't pass
-# the checksum test then enable this.
-  allow_bad_version = false</p><p># If you enable the version checks but want to allow clients that aren't
-# listed in the versioncheck configuration file then enable this. Unless
-# you have a very complete file or are very paranoid about cheaters this
-# is a good idea.
-  allow_unknown_version = true</p><p># This defines how the exeinfo field in the versioncheck file is being
-# checked. You can choose between no match at all [none] (default), 
-# exact match [exact], exact case-sensitive match [exactcase], dumb wildcard 
-# match [wildcard], and parsed value comparison [parse]. 
-# NOTE: [parse] needs the mktime() function and might therefore not work on 
-# every system. 
-  version_exeinfo_match = none</p><p># If you have choosen [parse] above, this is the tolerance with which
-# the time can differ. The value must be given in seconds. If it's 0 this 
-# check is disabled.
-  version_exeinfo_maxdiff = 0</p><p># #
-##############################################################################
-
-##############################################################################
-# Time values #
-#----------------------------------------------------------------------------#
-# Time in seconds between account file updates, 0 means wait forever.
-  usersync = 300
-# Number of seconds of inactivity before file is unloaded from memory.
-# (only checked during account file updates)
-  userflush = 1200
-# Number of users checked for updates at once. Higher values make sense if you 
-# either have very fast hardware or you don't have many number of accounts.
-# Lower values make sense if you have very high CPU usage on the system you run
-# the server (dont make it too low or your system will save accounts continously).
-# Modify this value ONLY if you know what you are doing!!
-  userstep = 100</p><p># How often to send user latency tests in seconds.
-  latency = 600</p><p># How often to send null or keepalive packets in seconds.
-  nullmsg = 120</p><p># Amount of time to delay shutting down server in seconds.
-  shutdown_delay = 300
-# Amount of time delay period is decremented by either a SIGTERM or SIGINT
-# (control-c) signal in seconds.
-  shutdown_decr = 60</p><p># How often should bans be checked for expiration? (in seconds)
-#ipban_check_int = 30</p><p># #
-##############################################################################
-
-##############################################################################
-# Policy options #
-#----------------------------------------------------------------------------#</p><p># If you don't want people to be able to create new accounts, set this to
-# false.
-  new_accounts = true</p><p># Set this to the maximum number of accounts you want to allow to be
-# created on your server. A value of 0 means infinite and is the default.
-#max_accounts = 0</p><p># If someone attempts to log in more than once, should it kick off the old
-# login, or deny the new one?
-  kick_old_login = true
-#kick_old_login = false
-# With no passwords, this is bad to have enabled --NonReal
-  
-# load_new_account option has been eliminated and the functionality now is 
-# always active in PvPGN</p><p># If a user is creating a new channel, should it be added automatically, or
-# prompt them first?
-  ask_new_channel = true</p><p># Should a game report be written for every game played or just ladder
-# games?
-#report_all_games = false
-  report_all_games = true</p><p># Should Diablo I/II reports be written? There are no winners/losers.
-  report_diablo_games = false</p><p># Should games with passwords be hidden on the game list?
-  hide_pass_games = true</p><p># Should games already started be hidden on the game list? (for heavily
-# loaded servers)
-  hide_started_games = true</p><p># Should non-permanent channels hidden on the channel list?
-  hide_temp_channels = true</p><p># Should the extended /-commands be avaliable? (of course!)
-  extra_commands = true</p><p># Should any and all disconnects to be counted as losses?
-# (Turning this on will override the user's choice in ladder games!)
-  disc_is_loss = false</p><p># List additional game types to be counted as ladder games
-# Curently allowed types: topvbot, melee, ffa, oneonone
-# Example: ladder_games = &quot;tobvbot,oneonone&quot;
-  ladder_games = &quot;none&quot;</p><p># Should all users be able to use the /con and /connections commands?
-  enable_conn_all = true</p><p># Should client IP addresses (from /con, /games, /gameinfo, /netinfo)
-# be hidden from non-admins?
-  hide_addr = false</p><p># Should private channel messages be logged to files in the chanlogdir
-# directory? (see channels.list for public channels)
-  chanlog = false</p><p># Do you want to use the channel quota feature?
-  quota = yes</p><p># The following options deal with flood prevention.
-#
-# How many lines do you accept in quota_time seconds?
-# (The default should allow 5 lines in 5 seconds,
-# longer time periods allow &quot;bursts&quot; of traffic before the quota is full.)
-  quota_lines = 5 # must be between 1 and 100 lines
-  quota_time = 5 # must be between 1 and 60 seconds
-# &quot;virtual wrapping&quot;, so long lines count as multiple lines
-  quota_wrapline = 40 # must be between 1 to 256 chars
-# absolute maximum characters allowed in a line
-  quota_maxline = 200 # must be between 1 to 256 chars
-#
-# How many lines do you accept in quota_time seconds before user is
-# disconnected?
-# (According to Jung-woo, Dobae is a Korean term for flooding the game server...
-# it originally meant &quot;to paint the wallpaper on a new or refurbished house&quot;).
-# If it less than or equal to quota_lines, there is no warning before
-# disconnection so don't set this too low.
-  quota_dobae = 10 # must be between 1 and 100 lines</p><p># Mail support
-  mail_support = true
-  mail_quota = 5</p><p># Channel logging message
-  log_notice = &quot;*** Please note this channel is logged! ***&quot;</p><p># Ban on repeated password fails against bruteforce password thieves
-# Fails required to get ip banned (0 to disable ban on password fail)
-  passfail_count = 0</p><p># Password fail IP ban duration (in seconds)
-  passfail_bantime = 300</p><p># Max users limit in private channels (0 = unlimited)
-  maxusers_per_channel = 0</p><p># #
-##############################################################################
-
-##############################################################################
-# Account configuration #
-#----------------------------------------------------------------------------#</p><p># Should account files be named by the account number or the player name?
-  savebyname = true</p><p># How man rows should the account lookup hash table have? Servers with
-# more accounts should use a larger table for better performance.
-  hashtable_size = 61</p><p># per default, only alphanumerical symbols are allowed in account names
-# with this variable you can add some extra symbols to be allowed
-# but be warned - that some of them might cause trouble - at least with
-# savebyname=true (some symbols are forbidden in filenames or might cause
-# you real trouble - plz neither allow wildcard symbols like '*' or '?' nor 
-# allow path delimiters like '/' or '\'. also note that allowing the '.' might
-# cause u some headache on win32 systems. u have been warned - the rest is up
-# to you.
-# default setting is &quot;-_[]&quot; as it was previous versions
-  account_allowed_symbols = &quot;-_[]&quot;</p><p># maximum number of friends a user can add to there friends list
-# default setting is 20
-  max_friends = 20</p><p># #
-##############################################################################
-
-##############################################################################
-# Tracking server info #
-#----------------------------------------------------------------------------#</p><p># Set track=0 to disable tracking. Any other number will set number
-# of seconds between sending tracking packets. This is OFF by default.
-#track = 0
-  track = 60
-# 10 minutes</p><p># Tracking server(s)
-# Use a comma delimited list of hostnames with optional UDP port numbers
-# after colons. (port 6114 is the default for the newer tracking protocol)
-#trackaddrs = &quot;track.bnetd.org,localhost:9999&quot;
-#trackaddrs = &quot;track.pvpgn.org&quot;</p><p># Change these to match your system, for example:
-  location = &quot;unknown&quot;
-  description = &quot;unknown&quot;
-  url = &quot;unknown&quot;
-  contact_name = &quot;a PvPGN user&quot;
-  contact_email = &quot;unknown&quot;</p><p># #
-##############################################################################
-
-##############################################################################
-# Server network info #
-#----------------------------------------------------------------------------#</p><p># Set this option to true to allow TCP to detect and close stale
-# connections.
-  use_keepalive = false</p><p># Limit maximum number of connections per IP (0 = unlimited)
-# this feature is new, so no recommended value so far
-  max_conns_per_IP = 0</p><p># This is a comma delimited list of hostnames that the server should
-# listen on. It might be useful to make an internal-only server on a
-# gateway machine for example. If the list is not set or if it has a
-# entry with no host component, the server will bind to that port on all
-# interfaces.
-#servaddrs = &quot;:9999&quot;
-#servaddrs = &quot;myinternalname.some.com,localhost&quot;
-#servaddrs = &quot;:&quot; # default interface (all) and default port (6112)</p><p># Don't change these unless you really need to! You will need to run a proxy
-# or modify the clients. Also note that these will not change when simply
-# sending a HUP signal to the server; they are only read on startup.</p><p># This is the port the server send the UDP test packets to by default.
-# Setting it to zero makes the server use the same port as the TCP connection
-# comes from. Newer clients can override this setting on a per connection
-# basis.
-#udptest_port = 6112
-</p><p># W3 Play Game router address. Just put your server address in here
-# or use 0.0.0.0:6200 for server to bind to all interfaces,
-# but make sure you set up w3trans if you do.
-  w3routeaddr = &quot;0.0.0.0:6200&quot;</p><p># w3routeshow has been removed.
-# see the address_translation.conf for translating the w3route ip for local networks</p><p># initkill_timer sets up a periodic timer on init/defer class connections
-# this should detect and clean up stale connections to your server
-  initkill_timer = 120</p><p># #
-##############################################################################
-
-##############################################################################
-# Internet Relay Chat (IRC) configuration #
-#----------------------------------------------------------------------------#</p><p># NOTE: IRC support is still experimental!</p><p># This specifies the addresses where IRC connections should be accepted. See
-# the description of servaddrs for formatting information. Leave this field
-# blank if you do not want to accept IRC connections. If the port is not
-# specifed then 6667 will be used.
-#ircaddrs = &quot;:6667&quot;</p><p># This is the server name used for IRC connections. Set this to your
-# server name, if the automatic detection doesn't correctly.
-#servername = &quot;none&quot;</p><p># Set this to the desired IRC connection timeout in seconds.
-#irc_latency = 180</p><p># #
-##############################################################################
-
-##############################################################################
-# Telnet configuration #
-#----------------------------------------------------------------------------#</p><p># This specifies the addresses where telnet connections should be accepted.
-# See the description of servaddrs for formatting information. Leave this
-# field # blank if you do not want to accept telnet connections. If the port
-# is not specifed then 23 will be used.
-#telnetaddrs = &quot;:23&quot;</p><p># #
-##############################################################################
-
-###############################################################################
-# war3 ladder textual output #
-#-----------------------------------------------------------------------------#
-# this is for all the guys, that want Warcraft 3 ladder, but don't want their
-# server to run with MySQL support.
-# For each ladder (solo, team, ffa, at) a corresponing file is created,
-# so it's easy to build your ladder pages with them</p><p># the following value determines, at which rate, these files are created
-# set to 0 if you don't want or need these files
-  war3_ladder_update_secs = 300</p><p># jfro's latest ladder is based on XML... so we can switch to XML output of ladder
-# on demand. Maybe we should set update interval bigger cause XML output version
-# is much more verbose than the standard output
-  XML_output_ladder = false</p><p>###############################################################################
-# server status textual output #
-#-----------------------------------------------------------------------------#
-# This is for writing status of the server in an attempt to see number of user
-# on line actually, and games/chans.
-# This is store in file var\status\warcraft3.dat as a *.ini format.
-# Shouldn't be so hard in php to create dynamic website using this content.</p><p># the following value determines, at which rate, these files are created
-# set to 0 if you don't want or need these files
-  output_update_secs = 60</p><p># jfro's latest ladder is based on XML... so we can switch to XML output of ladder
-# on demand. Maybe we should set update interval bigger cause XML output version
-# is much more verbose than the standard output
-  XML_status_output = false</p><p>###############################################################################
-# clan settings #
-#-----------------------------------------------------------------------------#</p><p># Time in hours for a new member of clan to be a newer(Peon icon, cannot premote to Grunt)
-# default value 168(7 days). If set to 0, all new members could be promote in no time
-  clan_newer_time = 0</p><p># max members count allowed in a clan, set between 10&amp;255, default 50.
-  clan_max_members = 50</p><p># Default clan channel status when create a clan, 1 for private, 0 for public
-  clan_channel_default_private = 0<br>
-
+<pre class="style1">##############################################################################<br># bnetd.conf  -  Configuration file for the Unix Battle.net daemon           #<br>#----------------------------------------------------------------------------#<br>#                                                                            #<br># This file is an example configuration and may require modification to      #<br># suit your needs or your site.  Blank lines and lines starting with a &quot;#&quot;   #<br># are ignored.  Use quotes around values that contain spaces.                #<br>#                                                                            #<br>##############################################################################<br>
+</pre>
+<pre class="style1">##############################################################################
+   # Storage section #
+   # storage_path will tell pvpgn how and where from/to to read/write accounts #
+   # right now it supports 2 &quot;drivers&quot; : file and sql #
+   # #
+   # Syntax: #
+   # * for plain file driver: #
+   # storage_path = file:mode=plain;dir=&lt;path_to_user_files&gt;;clan=&lt;path_to_clan_files&gt;;team=&lt;path_to_team_files&gt;;default=/path/to/default/account #
+   # * for cdb file driver: #
+   # storage_path = file:mode=cdb;dir=&lt;path_to_cdb_files&gt;;clan=&lt;path_to_clan_files&gt;;team=&lt;path_to_team_files&gt;;default=/path/to/default/account #
+   # * for sql driver: #
+   # storage_path = sql:variable=value;...;default=0 (0 is the default uid) #
+   # Variables can be: #
+   # - &quot;mode&quot; : tells PVPGN the sql mode you will use (mysql/pgsql/etc..) #
+   # - &quot;host&quot; : the database host #
+   # - &quot;port&quot; : the TCP/IP port if needed #
+   # - &quot;socket&quot; : the UNIX local socket if needed #
+   # - &quot;name&quot; : database name #
+   # - &quot;user&quot; : db username #
+   # - &quot;pass&quot; : db password #
+   # #
+   # Examples: #
+   # storage_path = file:mode=plain;dir=var\users;clan=var\clans;team=var\teams\;default=conf\bnetd_default_user.plain
+   # storage_path = file:mode=cdb;dir=var\userscdb;clan=var\clans;team=var\teams\;default=conf\bnetd_default_user.cdb
+   # storage_path = sql:mode=mysql;host=127.0.0.1;name=PVPGN;user=pvpgn;pass=pvpgnrocks;default=0
+   #----------------------------------------------------------------------------#</pre>
+<pre class="style1">storage_path = file:mode=plain;dir=var\users;clan=var\clans;team=var\teams;default=conf\bnetd_default_user.plain</pre>
+<pre class="style1"># #
+   ##############################################################################</pre>
+<pre class="style1">##############################################################################
+   # File section #
+   # The pidfile can be set to &quot;&quot; to turn it off. #
+   # Use absolute paths in these lines to avoid problems! #
+   #----------------------------------------------------------------------------#</pre>
+<pre class="style1">filedir = files
+   reportdir = var\reports
+   chanlogdir = var\chanlogs
+   motdfile = conf\bnmotd.txt
+   issuefile = conf\bnissue.txt
+   channelfile = conf\channel.conf
+   newsfile = conf\news.txt
+   adfile = conf\ad.conf
+   topicfile = conf\topics.conf
+   ipbanfile = conf\bnban.conf
+   helpfile = conf\bnhelp.conf
+   transfile = conf\address_translation.conf
+   mpqfile = conf\autoupdate.conf
+   logfile = var\bnetd.log
+   realmfile = conf\realm.conf
+   versioncheck_file = conf\versioncheck.conf
+   mapsfile = conf\bnmaps.conf
+   xplevelfile = conf\bnxplevel.conf
+   xpcalcfile = conf\bnxpcalc.conf
+   #pidfile = var\bnetd.pid
+   ladderdir = var\ladders
+   command_groups_file = conf\command_groups.conf
+   statusdir = var\status
+   aliasfile = conf\bnalias.conf
+   anongame_infos_file = conf\anongame_infos.conf
+   DBlayoutfile = conf\sql_DB_layout.conf
+   supportfile = conf\supportfile.conf</pre>
+<pre class="style1">fortunecmd = bin\fortune.exe</pre>
+<pre class="style1"># #
+   ##############################################################################
+ </pre>
+<pre class="style1">##############################################################################
+   # Message logs #
+   #----------------------------------------------------------------------------#</pre>
+<pre class="style1"># Multiple log levels can be defined by connecting them with a comma (,)
+   # Available loglevels are:
+   # none
+   # trace
+   # debug
+   # info
+   # warn
+   # error
+   # fatal
+   #loglevels = fatal,error,warn,info,debug,trace
+   loglevels = fatal,error</pre>
+<pre class="style1"># #
+   ##############################################################################
+ </pre>
+<pre class="style1">##############################################################################
+   # D2CS realm server settings #
+   #----------------------------------------------------------------------------#</pre>
+<pre class="style1"># Version of D2CS server to connect with (set to zero to disable version check)
+   d2cs_version = 0</pre>
+<pre class="style1"># Allow the D2CS server to change realm names?
+   allow_d2cs_setname = true</pre>
+<pre class="style1"># #
+   ##############################################################################
+ </pre>
+<pre class="style1">##############################################################################
+   # Downloadable files #
+   #----------------------------------------------------------------------------#</pre>
+<pre class="style1"># These filenames are reported directly to the client and are relative to
+   # the &quot;filedir&quot; directory specified above.
+   iconfile = &quot;icons.bni&quot;
+   war3_iconfile = &quot;icons-WAR3.bni&quot;
+   star_iconfile = &quot;icons_STAR.bni&quot;</pre>
+<pre class="style1">tosfile = &quot;tos.txt&quot;</pre>
+<pre class="style1"># #
+   ##############################################################################
+ </pre>
+<pre class="style1">##############################################################################
+   # Client verification and upgrades #
+   #----------------------------------------------------------------------------#</pre>
+<pre class="style1"># This option lists the client types allowed to connect (only valid for 
+   # the bnet protocol). The list is a comma separated list of any of the 
+   # following elements: 
+   # all : all client types allowed (default)
+   # chat : client type &quot;CHAT&quot; allowed (used by some bot software)
+   # dshr : client type Diablo 1 Shareware
+   # drtl : client type Diablo 1 (Retail)
+   # sshr : client type Starcraft Shareware
+   # star : client type Starcraft
+   # sexp : client type Starcraft Broodwar
+   # w2bn : client type Warcraft II Battle.Net Edition
+   # d2dv : client type Diablo 2
+   # d2xp : client type Diablo 2 LOD
+   # war3 : client type Warcraft III (Reign Of Chaos)
+   # w3xp : client type Warcraft III Frozen Throne
+   #
+   # Example: allowed_clients = war3,w3xp
+   allowed_clients = all</pre>
+<pre class="style1"># If this option is enabled, the verification step is skipped if possible.
+   # This only works with clients &lt; 109. It is useful because you no longer
+   # need any of the IX86AUTH?.MPQ and PMACAUTH?.MPQ files. Note that it will
+   # also skip over all the autoupdate checks effectively disabling it.
+   #
+   # If you disable this you must have one or more of the MPQ files. Otherwise
+   # clients will hang when they first connect because they are attempting to
+   # download them. The versioncheck can only be skipped for clients older
+   # than 109. Starting with version 109 the clients will always do version
+   # checking since they do not function properly if the server does not
+   # request it.
+   skip_versioncheck = false</pre>
+<pre class="style1"># If you enable the version checks but want to allow clients that don't pass
+   # the checksum test then enable this.
+   allow_bad_version = false</pre>
+<pre class="style1"># If you enable the version checks but want to allow clients that aren't
+   # listed in the versioncheck configuration file then enable this. Unless
+   # you have a very complete file or are very paranoid about cheaters this
+   # is a good idea.
+   allow_unknown_version = true</pre>
+<pre class="style1"># This defines how the exeinfo field in the versioncheck file is being
+   # checked. You can choose between no match at all [none] (default), 
+   # exact match [exact], exact case-sensitive match [exactcase], dumb wildcard 
+   # match [wildcard], and parsed value comparison [parse]. 
+   # NOTE: [parse] needs the mktime() function and might therefore not work on 
+   # every system. 
+   version_exeinfo_match = none</pre>
+<pre class="style1"># If you have choosen [parse] above, this is the tolerance with which
+   # the time can differ. The value must be given in seconds. If it's 0 this 
+   # check is disabled.
+   version_exeinfo_maxdiff = 0</pre>
+<pre class="style1"># #
+   ##############################################################################
+ </pre>
+<pre class="style1">##############################################################################
+   # Time values #
+   #----------------------------------------------------------------------------#</pre>
+<pre class="style1"># Time in seconds between account file updates, 0 means wait forever.
+   usersync = 300
+   # Number of seconds of inactivity before file is unloaded from memory.
+   # (only checked during account file updates)
+   userflush = 1200
+   # Number of users checked for updates at once. Higher values make sense if you 
+   # either have very fast hardware or you don't have many number of accounts.
+   # Lower values make sense if you have very high CPU usage on the system you run
+   # the server (dont make it too low or your system will save accounts continously).
+   # Modify this value ONLY if you know what you are doing!!
+   userstep = 100</pre>
+<pre class="style1"># How often to send user latency tests in seconds.
+   latency = 600</pre>
+<pre class="style1"># How often to send null or keepalive packets in seconds.
+   nullmsg = 120</pre>
+<pre class="style1"># Amount of time to delay shutting down server in seconds.
+   shutdown_delay = 300
+   # Amount of time delay period is decremented by either a SIGTERM or SIGINT
+   # (control-c) signal in seconds.
+   shutdown_decr = 60</pre>
+<pre class="style1"># How often should bans be checked for expiration? (in seconds)
+   #ipban_check_int = 30</pre>
+<pre class="style1"># #
+   ##############################################################################
+ </pre>
+<pre class="style1">##############################################################################
+   # Policy options #
+   #----------------------------------------------------------------------------#</pre>
+<pre class="style1"># If you don't want people to be able to create new accounts, set this to
+   # false.
+   new_accounts = true</pre>
+<pre class="style1"># Set this to the maximum number of accounts you want to allow to be
+   # created on your server. A value of 0 means infinite and is the default.
+   #max_accounts = 0</pre>
+<pre class="style1"># If someone attempts to log in more than once, should it kick off the old
+   # login, or deny the new one?
+   kick_old_login = true
+   #kick_old_login = false
+   # With no passwords, this is bad to have enabled --NonReal
+   
+   # load_new_account option has been eliminated and the functionality now is 
+   # always active in PvPGN</pre>
+<pre class="style1"># If a user is creating a new channel, should it be added automatically, or
+   # prompt them first?
+   ask_new_channel = true</pre>
+<pre class="style1"># Should a game report be written for every game played or just ladder
+   # games?
+   #report_all_games = false
+   report_all_games = true</pre>
+<pre class="style1"># Should Diablo I/II reports be written? There are no winners/losers.
+   report_diablo_games = false</pre>
+<pre class="style1"># Should games with passwords be hidden on the game list?
+   hide_pass_games = true</pre>
+<pre class="style1"># Should games already started be hidden on the game list? (for heavily
+   # loaded servers)
+   hide_started_games = true</pre>
+<pre class="style1"># Should non-permanent channels hidden on the channel list?
+   hide_temp_channels = true</pre>
+<pre class="style1"># Should the extended /-commands be avaliable? (of course!)
+   extra_commands = true</pre>
+<pre class="style1"># Should any and all disconnects to be counted as losses?
+   # (Turning this on will override the user's choice in ladder games!)
+   disc_is_loss = false</pre>
+<pre class="style1"># List additional game types to be counted as ladder games
+   # Curently allowed types: topvbot, melee, ffa, oneonone
+   # Example: ladder_games = &quot;topvbot,oneonone&quot;
+   ladder_games = &quot;none&quot;</pre>
+<pre class="style1"># Should all users be able to use the /con and /connections commands?
+   enable_conn_all = true</pre>
+<pre class="style1"># Should client IP addresses (from /con, /games, /gameinfo, /netinfo)
+   # be hidden from non-admins?
+   hide_addr = false</pre>
+<pre class="style1"># Should private channel messages be logged to files in the chanlogdir
+   # directory? (see channels.list for public channels)
+   chanlog = false</pre>
+<pre class="style1"># Do you want to use the channel quota feature?
+   quota = yes</pre>
+<pre class="style1"># The following options deal with flood prevention.
+   #
+   # How many lines do you accept in quota_time seconds?
+   # (The default should allow 5 lines in 5 seconds,
+   # longer time periods allow &quot;bursts&quot; of traffic before the quota is full.)
+   quota_lines = 5 # must be between 1 and 100 lines
+   quota_time = 5 # must be between 1 and 60 seconds
+   # &quot;virtual wrapping&quot;, so long lines count as multiple lines
+   quota_wrapline = 40 # must be between 1 to 256 chars
+   # absolute maximum characters allowed in a line
+   quota_maxline = 200 # must be between 1 to 256 chars
+   #
+   # How many lines do you accept in quota_time seconds before user is
+   # disconnected?
+   # (According to Jung-woo, Dobae is a Korean term for flooding the game server...
+   # it originally meant &quot;to paint the wallpaper on a new or refurbished house&quot;).
+   # If it less than or equal to quota_lines, there is no warning before
+   # disconnection so don't set this too low.
+   quota_dobae = 10 # must be between 1 and 100 lines</pre>
+<pre class="style1"># Mail support
+   mail_support = true
+   mail_quota = 5</pre>
+<pre class="style1"># Channel logging message
+   log_notice = &quot;*** Please note this channel is logged! ***&quot;</pre>
+<pre class="style1"># Ban on repeated password fails against bruteforce password thieves
+   # Fails required to get ip banned (0 to disable ban on password fail)
+   passfail_count = 0</pre>
+<pre class="style1"># Password fail IP ban duration (in seconds)
+   passfail_bantime = 300</pre>
+<pre class="style1"># Max users limit in private channels (0 = unlimited)
+   maxusers_per_channel = 0</pre>
+<pre class="style1"># #
+   ##############################################################################
+ </pre>
+<pre class="style1">##############################################################################
+   # Account configuration #
+   #----------------------------------------------------------------------------#</pre>
+<pre class="style1"># Should account files be named by the account number or the player name?
+   savebyname = true</pre>
+<pre class="style1"># Save the account data on logoff
+   sync_on_logoff = false</pre>
+<pre class="style1"># How man rows should the account lookup hash table have? Servers with
+   # more accounts should use a larger table for better performance.
+   hashtable_size = 61</pre>
+<pre class="style1"># Per default, only alphanumerical symbols are allowed in account names
+   # with this variable you can add some extra symbols to be allowed
+   # but be warned - that some of them might cause trouble - at least with
+   # savebyname=true (some symbols are forbidden in filenames or might cause
+   # you real trouble - plz neither allow wildcard symbols like '*' or '?'.
+   # Path delimiters like '/' or '\' are hardcoded filtered and can't be allowed.
+   # Also note that allowing the '.' might cause u some headache on win32 systems. 
+   # You have been warned - the rest is up to you.
+   # default setting is &quot;-_[]&quot; as it was previous versions
+   account_allowed_symbols = &quot;-_[]&quot;</pre>
+<pre class="style1"># maximum number of friends a user can add to there friends list
+   # default setting is 20
+   max_friends = 20</pre>
+<pre class="style1"># #
+   ##############################################################################
+ </pre>
+<pre class="style1">##############################################################################
+   # Tracking server info #
+   #----------------------------------------------------------------------------#</pre>
+<pre class="style1"># Set track=0 to disable tracking. Any other number will set number
+   # of seconds between sending tracking packets. This is OFF by default.
+   #track = 0
+   track = 60
+   # 10 minutes</pre>
+<pre class="style1"># Tracking server(s)
+   # Use a comma delimited list of hostnames with optional UDP port numbers
+   # after colons. (port 6114 is the default for the newer tracking protocol)
+   #trackaddrs = &quot;track.bnetd.org,localhost:9999&quot;
+   #trackaddrs = &quot;track.pvpgn.org&quot;</pre>
+<pre class="style1"># Change these to match your system, for example:
+   location = &quot;unknown&quot;
+   description = &quot;unknown&quot;
+   url = &quot;unknown&quot;
+   contact_name = &quot;a PvPGN user&quot;
+   contact_email = &quot;unknown&quot;</pre>
+<pre class="style1"># #
+   ##############################################################################
+ </pre>
+<pre class="style1">##############################################################################
+   # Server network info #
+   #----------------------------------------------------------------------------#</pre>
+<pre class="style1"># Set this to the maximum number of concurrent connections allowed on 
+   # this server.
+   max_connections = 1000</pre>
+<pre class="style1"># Set this option to true to allow TCP to detect and close stale
+   # connections.
+   use_keepalive = false</pre>
+<pre class="style1"># Limit maximum number of connections per IP (0 = unlimited)
+   # this feature is new, so no recommended value so far
+   max_conns_per_IP = 0</pre>
+<pre class="style1"># This is a comma delimited list of hostnames that the server should
+   # listen on. It might be useful to make an internal-only server on a
+   # gateway machine for example. If the list is not set or if it has a
+   # entry with no host component, the server will bind to that port on all
+   # interfaces.
+   #servaddrs = &quot;:9999&quot;
+   #servaddrs = &quot;myinternalname.some.com,localhost&quot;
+   #servaddrs = &quot;:&quot; # default interface (all) and default port (6112)</pre>
+<pre class="style1"># Don't change these unless you really need to! You will need to run a proxy
+   # or modify the clients. Also note that these will not change when simply
+   # sending a HUP signal to the server; they are only read on startup.</pre>
+<pre class="style1"># This is the port the server send the UDP test packets to by default.
+   # Setting it to zero makes the server use the same port as the TCP connection
+   # comes from. Newer clients can override this setting on a per connection
+   # basis.
+   #udptest_port = 6112
+ </pre>
+<pre class="style1"># W3 Play Game router address. Just put your server address in here
+   # or use 0.0.0.0:6200 for server to bind to all interfaces,
+   # but make sure you set up w3trans if you do.
+   w3routeaddr = &quot;0.0.0.0:6200&quot;</pre>
+<pre class="style1"># w3routeshow has been removed.
+   # see the address_translation.conf for translating the w3route ip for local networks</pre>
+<pre class="style1"># initkill_timer sets up a periodic timer on init/defer class connections
+   # this should detect and clean up stale connections to your server
+   initkill_timer = 120</pre>
+<pre class="style1"># #
+   ##############################################################################
+ </pre>
+<pre class="style1">##############################################################################
+   # Internet Relay Chat (IRC) configuration #
+   #----------------------------------------------------------------------------#</pre>
+<pre class="style1"># NOTE: IRC support is still experimental!</pre>
+<pre class="style1"># This specifies the addresses where IRC connections should be accepted. See
+   # the description of servaddrs for formatting information. Leave this field
+   # blank if you do not want to accept IRC connections. If the port is not
+   # specifed then 6667 will be used.
+   #ircaddrs = &quot;:6667&quot;</pre>
+<pre class="style1"># This is the server name used for IRC connections. Set this to your
+   # server name, if the automatic detection doesn't correctly.
+   #servername = &quot;none&quot;</pre>
+<pre class="style1"># Set this to the desired IRC connection timeout in seconds.
+   #irc_latency = 180</pre>
+<pre class="style1"># #
+   ##############################################################################
+ </pre>
+<pre class="style1">##############################################################################
+   # Telnet configuration #
+   #----------------------------------------------------------------------------#</pre>
+<pre class="style1"># This specifies the addresses where telnet connections should be accepted.
+   # See the description of servaddrs for formatting information. Leave this
+   # field # blank if you do not want to accept telnet connections. If the port
+   # is not specifed then 23 will be used.
+   #telnetaddrs = &quot;:23&quot;</pre>
+<pre class="style1"># #
+   ##############################################################################</pre>
+<pre class="style1">###############################################################################
+   # war3 ladder textual output #
+   #-----------------------------------------------------------------------------#
+   # this is for all the guys, that want Warcraft 3 ladder, but don't want their
+   # server to run with MySQL support.
+   # For each ladder (solo, team, ffa, at) a corresponing file is created,
+   # so it's easy to build your ladder pages with them</pre>
+<pre class="style1"># the following value determines, at which rate, these files are created
+   # set to 0 if you don't want or need these files
+   war3_ladder_update_secs = 300</pre>
+<pre class="style1"># jfro's latest ladder is based on XML... so we can switch to XML output of ladder
+   # on demand. Maybe we should set update interval bigger cause XML output version
+   # is much more verbose than the standard output
+   XML_output_ladder = false</pre>
+<pre class="style1">###############################################################################
+   # server status textual output #
+   #-----------------------------------------------------------------------------#
+   # This is for writing status of the server in an attempt to see number of user
+   # on line actually, and games/chans.
+   # This is store in file var\status\warcraft3.dat as a *.ini format.
+   # Shouldn't be so hard in php to create dynamic website using this content.</pre>
+<pre class="style1"># the following value determines, at which rate, these files are created
+   # set to 0 if you don't want or need these files
+   output_update_secs = 60</pre>
+<pre class="style1"># jfro's latest ladder is based on XML... so we can switch to XML output of ladder
+   # on demand. Maybe we should set update interval bigger cause XML output version
+   # is much more verbose than the standard output
+   XML_status_output = false</pre>
+<pre class="style1">###############################################################################
+   # clan settings #
+   #-----------------------------------------------------------------------------#</pre>
+<pre class="style1"># Time in hours for a new member of clan to be a newer(Peon icon, cannot premote to Grunt)
+   # default value 168(7 days). If set to 0, all new members could be promote in no time
+   clan_newer_time = 0</pre>
+<pre class="style1"># max members count allowed in a clan, set between 10&amp;255, default 50.
+   clan_max_members = 50</pre>
+<pre class="style1"># Default clan channel status when create a clan, 1 for private, 0 for public
+ clan_channel_default_private = 0</pre>
+<pre class="style1">&nbsp;
+</pre>
+<pre>&nbsp;
 
 </pre>
 <p><strong>A Telnet session to your server<a name="telnet"></a></strong><br>

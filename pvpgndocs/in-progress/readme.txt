@@ -1,33 +1,38 @@
 Comments and miscellaneous.
 ---------------------------
 
-
-
 This document now contains stuff that needs a home.
 Any correspondence or updates should be in the changelog  
-          
- Latest update for WarCraft - bnftp commands (dgwilson65 25 September 2004)
- 
- bnftp --client=WAR3 --arch=IX86 --file=W3XP_IX86_116A_117A_enUS.mpq useast.battle.net 6112
-  length: 16399288 bytes
- 
- bnftp --client=WAR3 --arch=IX86 --file=W3XP_IX86_1xx_117A_enUS.mpq useast.battle.net 6112
-  length: 37507631 bytes
- 
- bnftp --client=WAR3 --arch=IX86 --file=WAR3_IX86_116A_117A_enUS.mpq useast.battle.net 6112
-  length: 2348091 bytes
- 
- bnftp --client=WAR3 --arch=IX86 --file=WAR3_IX86_1xx_117A_enUS.mpq useast.battle.net 6112
-  length: 14916380 bytes 
- 
- Any of update files may be retrieved from any of the battle.net servers.
- csCZ, deDE, enUS, esES, frFR, itIT, jaJA, koKR, plPL, ruRU, zhCN, zhTW 
-  
- You can do this by replacing enUS in the filename string of the bnftp command.
- 
- A word about bnftp. Make sure you have a current version. Use the command "bnftp -h" to ensure that the --arch parameter is accepted
-   
- 
+
+#================================================
+DW: Captured Conversation from IRC 15Nov2004
+DW: --> recommend inserting into diablo doc??
+
+Arelius: PVPGN with Diablo II closed, what is a decent system to run it on? and the diff bewteen 1.6.6 and 1.7.3?
+
+d1zzy: there is a NEWS file into 1.7.x describing the major diffs between 1.6.x and 1.7.x  you will need win32 for d2gs
+d1zzy: so the d2gs machine needs to have about 5-6 mbytes of memory for each game you want to host
+d1zzy: d2gs is a binary win32 only package made by some other people
+
+Arelius: can it not be run in linux?
+d1zzy: I know people run it with wine but it shows instabilities (as you might expect) especially if you host more than 5 games at a time or so
+
+Arelius: and d2gs does what exactally?
+d1zzy: and with wine also the hw requirements are increased d2gs is the game server
+d1zzy: d2 closed games different from all other blizzard games does hosts games serverside
+d1zzy: and it is d2gs that does all the game computation and the world
+
+Arelius: can it be run on a differnet computer?
+d1zzy: yes it can d2cs/d2dbs too can run on another one
+d1zzy: you can even have more than one d2gs for a single realm and d2cs will spread the games evenly between available d2gs
+
+
+d1zzy:
+ok... you want to know how d2 works
+pvpgn package consists of several programs in which there are also 3 daemons: bnetd, d2cs and d2dbs.
+bnetd takes care of most of the battle.net functionality, user management, chatting, game publishing and matching, stats and reports with d2. However things are a little different for d2. bnetd only takes care of account management and chatting it also has a list of "realms" which is sent to the client after successful auth. 
+For each realm you need a d2cs/d2dbs pair of daemons these two manage a realm and have specific functions. d2cs manages characters and games and talks to d2gs for creating games. d2dbs on the other hand manages ladders. We think d2cs connects to bnetd and registers himself so bnetd knows to list that realm to the user because it knows the realm it works. d2gs which manages the games connects to both d2cs and to d2dbs
+
 #================================================    
 
 Captured 15 September 2004 by dgwilson65 - needs a home within the documentation

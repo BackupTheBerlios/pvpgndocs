@@ -86,3 +86,8 @@ dgwilson65 - 27 October 2004
 - Links to images have been updated though this has been unsuccessful. Specifically the documents for 
   installation and banner ads need updating and/or the images need uploading to the specified location.
 - changed some file types to binary (not necessarily a upload problem, maybe user issue at my end!)
+
+dgwilson65 - 16 November 2004
+- Captured converstation on IRC from dizzy about diablo, recommend it go into diablo doc
+- Updated doc on "Running a PVPGN Server", replaced bnetd.conf because of recent updated
+- Updated same doc as above with ladder details for everyone! and also details on /ladderactivate
