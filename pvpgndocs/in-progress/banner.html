@@ -1,0 +1,187 @@
+<center>
+    <h2><a name="top">PvPGN Banner howto</a></h2>
+    <p>By dgwilson65 and U-238</p>
+</center>
+<p><b><a name="contents">Table of contents</a></b></p> 
+  <blockquote>
+    <div style="background-color: #DDDDDD; color: #000000; padding: 4px;">
+      <ul>
+        <li><a href="#intro">Introduction</a></li>
+        <li><a href="#formats">Graphic Formats</a></li>
+	<li><a href="#prepare">Preparation</a></li>
+	<li><a href="#smack">Smack your banner into shape</a></li>
+	<li><a href="#add">Add the new banner to your server</a></li>
+	<li><a href="#notes">Notes that don't fit anywhere else</a></li>
+	<li><a href="#references">References</a></li>
+      </ul>
+    </div>
+  </blockquote>
+<p><b><a name="intro">Introduction</a></b></p>
+  <blockquote>
+        <p>PvPGN Banners are displayed at the top of the screen when chatting on Battle.net (TM)
+	or a PvPGN server.  The real Battle.net (TM) uses these for commercial advertisements, 
+	but you can use them for whatever you want!<br>
+	<br>
+	By default, there are ads for PvPGN displayed here which link to the PvPGN 
+        website, but by following the instructions below, you can easily create your 
+	own banners to display in this space.<br>
+	<br>
+	Unfortunately, Blizzard uses some very strange image formats, which makes this 
+	not as easy as it sounds.</p>
+  </blockquote>
+<p><b><a name="formats">Graphic Formats</a></b></p>
+  <blockquote>
+	<p>The formats that are supported are PCX, MNG, and SMK.  These are the only 
+	known formats that are supported by the Blizzard clients. For animated 
+	banners, you must use the SMK (Smacker) format or MNG format. The actual 
+	size of the images MUST be 468x60 pixels or the image will not display</p>
+	<ul>
+        <li> *.mng only works for Warcraft III</li>
+	<li> *.pcx reportedly works for Starcraft, though we haven't got one to work yet</li>
+	<li> *.smk is known to work for Starcraft and Diablo.</li>
+	</ul>
+	<p>There is however a catch, there's always a catch. PvPGN does not ship with 
+	"*.pcx" files. A "*.pcx" banner displayed in StarCraft will look like a 
+random selection of colours unless you restrict your colour selection to 
+64 colours starting at colour number 32. How do you do that to a PCX file? We don't know. </p>
+	<p> Most graphics programs can create a *.pcx file, if you're looking for some freeware to do this, use <i>The Gimp</i> which is available for all platforms: <a href="http://www.gimp.org" target="_blank">http://www.gimp.org</a>      </p>
+	<p>"*.smk" files are considered to be better than the other 
+	      formats by the developers and supported by all clients. They don't 
+	      have palette limitations and they compress better. Though just to add to 
+    the effort required here, no normal graphics program can produce a "*.smk" file.</p>
+	<p>For Diablo it appears as though the smk file will need to contain multiple frames (210 for example and all the same image). The good news here is that it compresses really well. <br>
+      <br>
+      So your best output format is "*.smk" but how do you produce it?<br>
+      You need "SmackerTools":<br>
+      - It's free! (Phew!)<br>
+      - It only runs on Windows (ugg!)<br>
+      - It is really important to use the <b>OLD</b> version of SmackerTools</p>
+	<p><strong>Very important</strong>. The current version of RadTools for generating Smacker files will 
+      only generate smacker files that will display in a Mac.<br>
+    </p>
+	<p>For full functionality, you must use an older version of the RadTools. Download it from </p>
+	<p><a href="http://www.radgametools.com/smkdown.htm">http://www.radgametools.com/smkdown.htm</a>, look for &quot;The Old Smacker Tools&quot;</p>
+    <p>      Download SmackerTools from:<br>
+      <a href="http://www.radgametools.com/down/Smacker/SmkTools.exe">http://www.radgametools.com/down/Smacker/SmkTools.exe</a><br>
+      <br>
+      SmackerTools can take many different filetypes as input. Try it and see 
+    what works best for you. Also have a read of the SmackerTools FAQ on their web site.</p>
+</blockquote>
+<p><b><a name="prepare">Preparation</a></b></p>
+  <blockquote>
+	<p><ol>
+	  <li>
+	Get hold of a graphical editor, "Paint Shop Pro", "Photoshop", almost 
+	anything.   I have used Paint Shop Pro (<a href="http://www.jasc.com/index.html" target="_blank">http://www.jasc.com/index.html</a>). It has excellent support for manipulating color 
+	pallets (save, load, etc) on Windows.<br>
+	<br>
+	Jasc Paint Shop Pro 8 also includes an Animation Editor. You access it from 
+	the File / Jasac Software Products menu. Select Jasac Anamination Shop. 
+	This is the only program I know at the moment that will generate &quot;*.mng&quot; files. Remember you need to create &quot;*.mng&quot; files for Warcraft.<br>
+	<br>
+	How do you generate *.mng files under Mac OS X, any know? Please help. <br>
+	<br>
+	</li>
+	  <li>
+	Find your ad.conf file.  This will be in your "etc" directory (Linux) or 
+	your "conf" directory (Windows). Read it carefully. Notice that you have ad000001.smk and ad000001.mng (one will display on StarCraft) and the other exclusively for Warcraft)<br>
+	<br>
+      </li>
+	  <li>
+	READ THE HELP TEXT at the beginning of the ad.conf file!
+	</li></ol>
+	</p>
+  </blockquote>
+<p><b><a name="smack">Smack your banner into shape</a></b></p>
+  <blockquote>
+	<p>From the main screen of the RAD Video Tools, highlight the animation that 
+	you want to convert, and click the "SmackIt" button at the bottom of the 
+	window. Once the RAD Compressor window opens, you'll be able to tell SmackerTools what colour range to use. </p>
+	<p><strong>Creating a banner with a single frame </strong></p>
+  </blockquote>
+  <ul>
+    <li>Enter <strong>64</strong> (even though I've used 63 in the example) in the "To Use:" field of 
+	  the Palette area on the screen</li>
+    <li>Enter <strong>32 </strong>(even though I've used 33 in the example)  in the "To begin at:" field</li>
+    <li>Also 
+	    make sure that "<strong>create ring</strong>" is checked</li>
+    <li> Click the Smack button to
+	      convert your graphic. </li>
+  </ul>
+  <blockquote>
+    <p>Take a look at these screenshots to help you:<br>
+      <br>
+      <img src="http://pvpgndocs.sourceforge.net/Old_smacker_1.jpg"><br>
+      <br>
+      <img src="http://pvpgndocs.sourceforge.net/Old_smacker_2.jpg">
+      <br>
+      <br>
+      You have the option of converting a single image into a single converted file or 
+	      converting multiple files into a single smacker file. I'll leave you to 
+        figure out how to do that.</p>
+    <p>&nbsp;</p>
+    <p><strong>Creating your banner with multiple frames</strong></p>
+  </blockquote>
+  <ol>
+    <li>To create smk files with a number of frames (all based on the same image) do the following:</li>
+    <li>      Create a &quot;*.lst&quot; file for smacker, so we'll call it advert.lst</li>
+    <li>      Inside this file (it's just text) we'll provide a file name and some parameters, e.g. &quot;E:\pvpgn\files\ad000001.psd /L210&quot;. All this information goes on one line. You can have multiple entries on successive lines that will combine together to create one smacker file.</li>
+    <li>      Back in SmackerTools, select the graphic processor tab, ensure that you filter the list of files on the left so that it just lists &quot;.lst&quot; files. Select your list file and click convert. SmackerTools will do its stuff. It may take 30 seconds, it may take 10 minutes. The duration depends on the complexity of your graphics and how many entries are in your list. The output from the convert process is *.flc (refer screen shot)</li>
+  </ol>
+  <blockquote>
+    <p><img src="http://pvpgndocs.sourceforge.net/Old_smacker_3.jpg"></p>
+    <p>      Convert the *.flc file into a *.smk file. (refer screen shot) and you're done. <br>
+    <img src="http://pvpgndocs.sourceforge.net/Old_smacker_4.jpg">    </p>
+    <p>Oh, want to add sound? You need some WAV files. Then use the Mixer tab and add the sound.<br> 
+    </p>
+</blockquote>
+  <p><b><a name="add">Add the new banner to your server</a></b></p>
+<blockquote>
+	<p><ol>
+	  <li>
+	Place your graphic file in the "files" directory on your server, make sure you 
+	follow the file naming conventions.<br>
+	<br>
+	</li>
+	  <li>
+	Edit the ad.conf file making sure your follow the format.  See the comments 
+	at the beginning of ad.conf to help you.  The text below is an example only!<br>
+	<pre>"ad000001.smk"  init    30 "http://www.yourwebsite.org"      0x000002  "SEXP"
+"ad000002.smk"  start   30 "http://www.yourwebsite.org"      0x000003  "SEXP"
+"ad000003.smk"  norm    30 "http://www.yourwebsite.org"      0x000002  "SEXP"
+</pre>
+	<strong>Special note for WarCraft entries<br>
+	</strong>Entries in ad.conf can only be of type &quot;init&quot; and are randomly chosen, thus if you have more than one banner to display you must have them in 
+separate files and separate entries in the ad.conf file. <em>This might be a bug or by design?</em> <br>
+<br>
+&quot;*.mng&quot; files with multiple images do work but seem to have a timing limitation 
+that cannot be influenced by the timer in ad.conf<br>
+<br>
+
+	  </li>
+	  <li>
+	Note the last column. This column will restrict display of this new advertisement 
+	to the specific client gametag. So in this case Starcraft:Broodwar. Setting this 
+	to "NULL" will show this banner to all clients that DON'T already have a 
+	client-specific banner<br>
+	<br>
+	  </li>
+	</ol>
+</blockquote>
+<p><b><a name="notes">Notes that don't fit anywhere else</a></b></p>
+  <blockquote>
+	<p>You can save banners from Battle.net (TM) by using bnftp.  bnftp is included in the 
+	PvPGN source tarball.  You will need to know the exact filename.<br>
+	<br>
+	Sound encoding is possible with the SMK format. As to if the clients will play 
+	the sound, well you experiment and tell us.</p>
+  </blockquote>
+<p><b><a name="references">References</a></b></p>
+  <blockquote>
+	<p><a href="http://pvpgndocs.sourceforge.net/README.adbanner.txt" target="_blank">README.adbanner</a> (from the original bnetd project)</p>
+	<p>&nbsp;</p>
+  </blockquote>
+  <p><strong>Legal</strong></p>
+  <blockquote>
+    <p>Battle.net and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment in the U.S. and/or other countries. Usage of the PvPGN software is free under the GNU public license. While every attempt has been made to ensure that the software functions as intended and that the documentation provided is accurate, the PvPGN community of developers and contributors cannot be held responsible for any issues arrising from having or running the software. </p>
+  </blockquote>

@@ -1,0 +1,166 @@
+
+Section 1 - Introduction
+ 
+What is PvPGN?
+    Is software that emulates the Blizzard battle.net server. It is a modification
+    of the bnetd server which aims to provide support for all Blizzard clients.
+    It gives you the power to run your own server, manage your own users, 
+    run your own tournaments etc. 
+    
+    The PvPGN ( or Player versus Player Gaming Network ) is a bnetd based gaming 
+    network server emulation project. It currently supports all Battle.Net clients,
+    such as StarCraft, Diablo II, and Warcraft III. The list of supported clients 
+    and their minimum verion required is:
+        - Diablo 1 v1.09
+        - Starcraft v1.08
+        - BroodWar v1.08
+        - Warcraft II Battle.Net Edition v2.05
+        - Diablo 2 v1.10
+        - Diablo 2 LOD v1.10
+        - Warcraft III Reign Of Chaos v1.13
+        - Warcraft III Frozen Throne v1.13
+
+    You can play games that are restricted to your local LAN or put your PvPGN 
+    server on the Internet. It puts you as a "System Administrator" in control.
+    Use a PvPGN server to host your own LAN parties or put the server online
+    and on the internet for everyone. You can run Tournaments, have your own
+    local competition ladders. The power is in your hands.
+    
+    PvPGN is a SourceForge project and can be accessed at
+    http://sourceforge.net/projects/pvpgn
+
+About this guide
+    This guide has been created as a documentation project for PvPGN. Our intention
+    is to bring together the current knowledge on setting up and running a PvPGN
+    server and to provide details on how the clients can connect.
+    
+    This documentation project is not a commercial venture, nor has it been done
+    for financial gain (though admitedly that would be nice). It has been put
+    together by volunteers who are just trying to "do their bit".
+    
+    Q. Can you help?
+    A. Yes - read this guide
+    
+    If you have encountering an administration issue or your clients are having
+    operational issues then see if that scenario has been covered in this guide.
+    If after doing this you still doing have a working solution, then post a
+    message to the pvpgn forums at http://forums.pvpgn.org
+    
+    If a resolution for your issue has been found, we would appreciate your help
+    by documenting the issue and the resolution so that this guide can be updated.
+    Usually the message forum text can be used with some editing, we'd appreciate
+    you doing this. Don't worry, we'll fix up any bad english or speeling erros.
+    
+    Our intention has been to write this guide relative to PvPGN 1.7, if you have
+    an earlier release then your question may be answered here. We of course would
+    prefer that you updated your copy of the software to the latest release.
+    
+    Finally a big thank you to the PvPGN Developers and you our supporters, and of
+    course Blizzard.
+    
+
+System Requirements    
+    The latest list of PvPGN supported platforms can be found in the docs
+    directory of a PvPGN release docs/PORTS. As of 1.7 the following table
+    shows the compatability.
+
+    Architecture | Operating System | Status  | Comments
+    -------------------------------------------------------------
+    x86          | Linux 2.4.x      | OK      | main development platform
+    x86          | Linux 2.6.x      | OK      | tested
+    x86          | WIN32            | OK      | tested
+    x86          | FreeBSD 4.x      | OK      | tested
+    x86          | FreeBSD 5.x      | OK      | tested but use 5.2.1 at least
+    x86          | BeOS R4 /w BONE  | OK      | tested
+    x86          | OpenBSD 3.x      | OK      | tested
+    x86_64/AMD64 | Linux 2.6.x      | OK      | tested (pvpgn >= 1.6.3 required)
+    sparc64      | SunOS 5.9        | OK      | tested
+    PowerPC G3   | Mac OS X 10.2.x  | OK      | tested
+    PowerPC G3   | Mac OS X 10.3.x  | OK      | tested
+    PowerPC G4   | Mac OS X 10.2.x  | OK      | tested
+    PowerPC G4   | Mac OS X 10.3.x  | OK      | tested
+
+    Clearly x86 is the most tested version. The platforms/operating systems not
+    listed have not been tested or they did not come to the developers attention
+    however, any POSIX system should work.
+
+    If you have an operating PvPGN server on a platform/OS not listed above then
+    please report it to the developers via the forums at http://forums.pvpgn.org
+    
+    The number of concurrent users you are likely to have on your server,
+    in combination with the operating system will dictitate the host machine
+    specifications.
+    
+    For example:
+      * 666MHz PIII 256MB Windows XP
+              estimate 10 concurrent users (limit unknown) 
+              runs PvPGN permanemtly in background
+      * iMac 400MHz <ram>MB Mac OS 10.3
+      
+      * ???   LINUX
+
+
+Downloading PvPGN
+    The official download location for PvPGN is:
+       http://www.sourceforge.net/projects/pvpgn
+
+    Downloads are from the Files area.  Binary packages are available
+    for Windows, Mac OS X and a few flavours of Linux.  If there is no
+    binary package available for your operating system, you can download
+    the source and compile it yourself.  See the install guide for more
+    information on this.
+        
+    Other download sites for PvPGN:
+    http://www.pvpgn.de/
+    http://pvpgn-files.ath.cx/
+
+
+Reporting Problems and or Bugs
+    Sometimes things just don't make sense and are just too hard to nut out.
+    Perhaps someone else has had the same problems and reported it? One great source
+    of information and people to help is available at http://forums.pvpgn.org 
+    here you can post questions where there's a good chance your questions will 
+    be answered and you'll be on your way again.
+    
+    HOWEVER - there are some guidelines to using the forums. Most notably is the
+              "don't post questions that have been answered before" and so
+              you are encouraged to use the search feature of the forums.
+    
+    If you've read this documentation, and searched the forums, and you still
+    are unable to get resolution for your problem then it's time to post a message
+    to the forums. Try "Open Tech Support" first.
+    
+    Guidelines for posting messages
+    It is a good idea to provide revalant information for your question like 
+    the following:
+    
+    1. Where is the PvPGN server, internal LAN?
+    2. How many players on internal LAN?
+    3. How many players on external LAN?
+    4. Details from the revalent configuration file (not the whole file)
+    5. Short extracts from the bnetd.log file
+    6. Software versions that are being used, both server and client.
+
+    
+Places of interest - PvPGN related
+    The PvPGN website:
+      http://www.pvpgn.org
+    
+    PvPGN forums:
+      http://forums.pvpgn.org
+
+    The PvPGN project page on Sourceforge:
+      http://sourceforge.net/projects/pvpgn/
+
+    The official PvPGN documentation:
+      http://pvpgndocs.sourceforge.net
+
+    PHP Utilities for PvPGN
+      http://pvpgn-phputils.sourceforge.net
+
+    IRC channel:
+      #pvpgn on irc.pvpgn.org
+
+    Alternative download sites:
+      http://www.pvpgn.de
+      http://pvpgn-files.ath.cx

@@ -1,0 +1,111 @@
+
+Section 2 - Installing PvPGN
+
+ * denotes completed
+ - denotes still being worked on
+ ? need to agree if we should do more
+
+   Introduction
+ - Pre-Install decisions (Files, CDB, MySQL) - already written
+   Specific Platform Install - Linux         - already written
+   Specific Platform Install - Windows       - status unknown
+   Specific Platform Install - Mac           - already written
+
+Introduction
+
+
+Pre-Install decisions (Files, CDB, MySQL)
+
+   <mark - need to fit your stuff into here too>
+
+   As I recall the installation on windows prompts you for how you want to handle your data files.
+   Somehow I ended up running with CDB. This wasn't really a problem until I wanted to edit some
+   attributes of my users. I though that the user files were just text. I was WRONG.
+   
+   bnetd.conf has quite a bit of self documentation about altering the server configuration
+   to support files, cdb, or mysql. I guess that larger installations would be wise to run 
+   with a mysql database for performance, while at the low end of the scale, "files" will
+   work but performance wont be the best.
+   
+   I switched to files so that I could edit the user files. Hey, I was trying to get ladder
+   games to work (turned out to be a server bug / client version issue), and get "real"
+   administrator access to the server.
+   
+   - cbd - editing user data
+     Stored in var/userscdb
+     The windows version ships with a program called cbd_tool.exe You can use this to 
+     edit your user files if you have the need.
+     
+   - files - editing user data
+     Stored in var/users
+     No special tools required, a text editor is brilliant.
+     
+   - What does the contents of a user file look like?
+     "Record\\SEXP\\0\\last game result"="DRAW"
+     "profile\\location"="GRAGAH"
+     "BNET\\acct\\lastlogin_ip"="192.168.10.193"
+     "Record\\SEXP\\0\\draws"="28"
+     "Record\\SEXP\\0\\last game"="29643220 212508874"
+     "BNET\\acct\\lastlogin_clienttag"="SEXP"
+     "BNET\\acct\\lastlogin_owner"="Grant"
+     "BNET\\acct\\passhash1"="[removed]"
+     "BNET\\acct\\username"="Grant"
+     "BNET\\acct\\lastlogin_time"="1087187841"
+     "Record\\SEXP\\0\\losses"="7"
+     "Record\\SEXP\\0\\wins"="14"
+     "Record\\SEXP\\1\\rank"="2"
+     "Record\\SEXP\\1\\high rating"="1000"
+     "Record\\SEXP\\1\\rating"="975"
+     "BNET\\acct\\userid"="3"
+     "Record\\SEXP\\1\\last game result"="LOSS"
+     "Record\\SEXP\\1\\high rank"="2"
+     "Record\\SEXP\\1\\losses"="1"
+     "Record\\SEXP\\1\\last game"="29642988 164423556"
+
+   - The default user file - but wait there's more
+     Take a look in the conf directory. There are 2 default user files.
+     I believe that only one is used based on your setup in bnetd.conf
+     I have no idea how this works for mysql.
+     
+     bnetd_default_user.cdb - you can't view this with a text editor
+     bnetd_default_user.txt - view with a text editor
+     
+     Using bnetd_default_user.txt as an example, if a value is set in this file
+     the same value does not need to be set in the users actual data file.
+     
+     So if you want o make everyone admins ahve have access to ALL server commands
+     ensure that these lines are uncommented.
+     "BNET\\auth\\admin"="true"
+     "BNET\\auth\\command_groups"="255"
+     Don't leave things like this unless you TRUST everyone. Have these lines
+     only in the user files of the real admins.
+
+     MySQL Cross Platform Compatabilty, Mac OS X to Windows DB's?
+    - text and reply extracted from forum post.
+
+    POST - Gambit642
+    My Mac (G3 900mhz; 40GB HD 7200; 1GB PC100 Memory) kills my
+    PC (Intel 3.2Ghz Extreme Ed. 2MB Cache; 40GB 7200GB; 1GB DDR PC4200)
+    in PvPGN performance and server-end response time. There are also security 
+    conserns when the server goes public, so I want to make it Mac.
+
+    So I want to host as many services as I can on the Mac. Can the DB's directory 
+    in MySQL for OS X be copied over to the Windows MySQL directory and work? 
+    What about the other way? Can PvPGN be hosted on a Mac and connect to MySQL on 
+    a WinXP box?
+
+    REPLY - U-238
+    My recommendation would to be to have PvPGN and MySQL both running on the Mac. 
+
+    Download MySQL for Mac here:
+    http://dev.mysql.com/get/Downloads/MySQL-4.0/mysql-standard-4.0.20-apple-darwin7.3.0-powerpc.dmg/from/pick
+
+    There is an excellent Mac-MySQL How-to here:
+    http://www.macdevcenter.com/pub/a/mac/2002/03/08/apache_mac_5.html
+
+    And you can download PvPGN /w MySQL support for Mac here:
+    http://prdownloads.sourceforge.net/pvpgn/pvpgn-1.6.3-1mysql.macos.ppc32.dmg?download
+
+    Good luck, and finally there will be more than 2 Mac servers on the tracker     
+    
+  

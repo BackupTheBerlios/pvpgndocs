@@ -1,0 +1,1514 @@
+
+Section 3 - Running a PvPGN server     
+
+
+   Introduction
+   Battle.net Message of the Day (conf/bnmotd.txt)
+   Battle.net news
+   Channel topics (conf/channel.conf)
+   Default chat channels
+   Tournaments
+   Changing the maps used for ladder games
+   Changing the "thumbs down" limit for ladder games
+   Server admins
+   Editing user attributes
+   Making your own versioncheck entries
+   Setting up autoupdate
+   Indepth look at conf/bnetd.conf
+   A Telnet session to your server!
+   Weblinks for ladder page/web profiles
+   conf/bnxpcalc.conf
+   conf/bnxplevel.conf   
+   conf/command_groups.conf
+   conf/sql_DB_layout.conf
+   conf/supportfile.conf
+   conf/topics.conf
+   conf/anongame_infos.conf
+   conf/bnmaps.conf
+   conf/bnhelp.conf
+   conf/bnban.conf
+   conf/bnalias.conf
+   Tracking server info
+   
+   
+Introduction
+    As the System Administrator you are responsible for the maintenance and total 
+    TLC (Tender loving care) of your server. This includes:
+      * supply of patches for the various games to your users 
+      * checking that everyone is playing the game at the same version (Versioncheck)
+      * providing maps for tournaments
+      * Chat channels
+      * banner advertisements
+      * changing who can be System Administrators or channel operators
+
+    There are many server configuration options and many of the configuration files 
+    contain some form of help within the header of the file. As you alter various 
+    aspects of the server configuration some changes may require that you restart 
+    your server. This is obviously something you won't want to do while users are 
+    online so you need to think about what change you are trying to make and
+    with any luck you'll get it right first time.
+    
+    A side story
+    Think about what you are trying to administer, do you want an easy or hard 
+    life? Let me tell you something from real experience. I have a group of friends
+    the come to my place every Friday evening. The PvPGN server was a relatively 
+    new beast to us, previously we just played on the same LAN, but we wanted
+    to still play games with our other friends who could not attend on site.
+    
+    Some strange stuff was happening that was not easily explained at the time,
+    but it basically came down to a lack of configuration on my part of the PvPGN
+    server. You see when each client connects PvPGN has a conversation with the 
+    client definatively determine the exact and known client version, right down
+    to the compile date of the software. As you can imagine this is different for
+    every client and every patch release. PvPGN assigns a client version tag
+    to this information, thus SEXP_111B (Starcraft Broodwar, patch 11B) Mac/PC
+    becomes irrelivent at this point.
+    
+    When you successfully log into the server and want to join an existing game
+    the server will only show you games of an identical client version tag.
+    
+    How do you get around this? use the autoupdate feature built into the server
+    and client. You can detect a client logging in with a client version tag of
+    SEXP_110 and force the upgrade to SEXP_111B before they play games. And now
+    with every user playing at the same software level yo eliminate a whole
+    heap of heartache.
+    
+    The subjects later on this section deal with maintaining the client 
+    versioncheck while you'll really only have to maintain if/when Blizzard
+    release patches to the client software. Also described is how to obtain
+    the special "*.mpq" files that must be sent to the client for the update.
+
+    Enjoy this. It's not that hard really.
+    
+        
+    The following sections cover various aspects of system administration for a 
+    PvPGN server.
+     
+
+Battle.net Message of the Day
+Battle.net news
+   
+These have been moved to motdnews.htm   
+
+
+
+Channel topics (conf/channel.conf)
+
+    conf/channel.conf defines..... story... story...
+    
+##############################################################################
+# channel.list  -  Configuration for permanent channels                      #
+#----------------------------------------------------------------------------#
+#                                                                            #
+# These are the channels to create when the server starts up. This file does #
+# not change the channel that the client requests when it logs in, but it    #
+# can be used to give that channel a different "official" name.              #
+#                                                                            #
+# Quotes (") are required around the strings, but they are not allowed       #
+# inside them. An unquoted NULL means there is no entry for that position.   #
+#                                                                            #
+# NONE for special name means to use the format "shortname-ctry num realm"   #
+#  e.g. "D2CS-Starcraft USA-1"                                                #
+# NULL for country creates non-country specific channels.                    #
+# -1 for max sets no limit to the number of users allowed in the channel     #
+#                                                                            #
+# ---special name--- 		-----short name----- 	cltag bots- -ops- -log- ctry- realm max -mod-#
+"The Void"           		"The Void"           	NULL  true  false false  NULL NULL -1   true
+NONE                	 	"Starcraft"          	STAR  true  false false  NULL NULL -1   false
+NONE                 		"Brood War"          	SEXP  true  false false  NULL NULL -1   false
+NONE                 		"Starcraft Shareware" 	SSHR  true  false false  NULL NULL -1   false
+NONE                 		"Diablo Retail"      	DRTL  true  false false  NULL NULL -1   false
+NONE                 		"War2BNE"            	W2BN  true  false false  NULL NULL -1   false
+NONE                 		"Diablo II"          	D2DV  true  false false  NULL NULL -1   false
+NONE						"Diablo II"				D2XP  true  false false  NULL NULL -1   false
+"Warcraft 3 Frozen Throne" 	"W3"					W3XP  true  false false  NULL NULL -1   false
+"Warcraft 3"         		"W3"					WAR3  true  false false  NULL NULL -1   false
+"Human Castle"       		"W3"					W3XP  true  false false  NULL NULL -1   false
+"Orc Stronghold"     		"W3"					W3XP  true  false false  NULL NULL -1   false
+"Undead Necropolis" 		"W3"					W3XP  true  false false  NULL NULL -1   false
+"Night Elf Tree of Life"  	"W3"					W3XP  true  false false  NULL NULL -1   false
+"Dragon Roost"       		"W3"					W3XP  true  false false  NULL NULL -1   false
+"Human Castle"       		"W3"					WAR3  true  false false  NULL NULL -1   false
+"Orc Stronghold"     		"W3"					WAR3  true  false false  NULL NULL -1   false
+"Undead Necropolis" 		"W3"					WAR3  true  false false  NULL NULL -1   false
+"Night Elf Tree of Life"	"W3"					WAR3  true  false false  NULL NULL -1   false
+"Dragon Roost"       		"W3"					WAR3  true  false false  NULL NULL -1   false
+"Chat"               		"Chat"					CHAT  true  false false  NULL NULL -1   false
+"Backstage"					"Backstage"				NULL  true  false false  NULL NULL  0   false
+"Moderated Support"			"Support"				NULL  true  false false  NULL NULL -1    true
+#                                                                            #
+##############################################################################
+
+Default chat channels
+
+Under development
+
+
+
+
+Tournaments (conf/tournament.conf)
+  Tourney support isnt even finished yet...
+
+Changing the maps used for ladder games
+  bnmaps.conf, will write in detail later
+
+Changing the "thumbs down" limit for ladder games
+  anongame_infos.conf, will write in detail later
+
+  
+Server admins
+     This question is asked time and time again. So lets sort it out.
+     No need to post questions in the forums, you'll only get the RTFM response.
+
+     >>> How do I give my account administrative privileges? <<<<
+     >>> What can the administrator do? <<<<
+          
+     In short, this means a user with administrative privileges can ban other players 
+     or delete their accounts within the PvPGN console (if the user delete was
+     ever to be coded). 
+     Users with administrative privileges are indicated differently in the clients
+     that connect to the PvPGN (Starcraft, Warcraft) depending on what game you are playing. 
+     For example, in Starcraft, there would be a small "Blizzard" logo by their name. 
+     In Diablo II, their text color is generally blue while everyone else's is white & 
+     their character will say "Blizzard Rep" when you place your mouse cursor over it. 
+
+     The following only needs to be done to create the first administrative user. 
+     Once that user has administrative privileges, they can give other players the 
+     same privileges, should he or she wish to, within the PvPGN console. 
+
+     If you already have a user with administrative privileges & want to give 
+     another user the same privileges, skip to step 3 for further information. 
+
+     Determine what Storage type you are using:
+       * file:mode=plain
+       * file:mode=cdb
+       * sql
+     This can be confirmed by looking at /conf/bnetd.conf, you will find the 
+     configuration entry near the front of the file.
+     
+     --> Warning: it would pay to backup the users file you are going to edit first.
+     --> because if you stuff it up, you've got nothing to go back to.
+     
+     a. For Storage Type "file:mode=plain" use the following instructions: 
+
+     1. Shutdown PvPGN. 
+     2. Find the name of the user you want to give administrative privileges in the 
+        path where you installed PvPGN, under the var/users sub-directory. 
+     3. Edit the file in a text editor & add the following lines to the beginning 
+        of the user account file. Make sure they are the first lines in user account 
+        files or it wont work: 
+
+        "BNET\\auth\\admin"="true" 
+        "BNET\\auth\\command_groups"="255" 
+        "BNET\\auth\\operator"="true" 
+
+     4. Save & close your text editor. 
+     5. Start PvPGN. 
+
+     
+     b. For Storage Type "file:mode=cdb" use the following instructions: 
+
+     1. Shutdown PvPGN. 
+     2. Find the name of the user you want to give administrative privileges in the 
+        path where you installed PvPGN, under the var/userscdb sub-directory. 
+
+     3. copy the account file you want to edit into another folder
+     4. cdb -d cdbaccountfile > tempfile
+     5. edit tempfile and add the line:
+     6. +24,3:BNET\auth\command_groups->255
+     7. cdb -c cdbaccountfilenew tempfile
+     8. now overwrite your old cdbaccountfile with the cdbaccountfilenew
+     9. Start PvPGN. 
+     
+     
+     c. For Storage Type "sql" use the following instructions: 
+
+     1. Shutdown PvPGN. 
+     2. Edit the PVPGN database. phpMyAdmin is a good program to use to edit MySQL databases. 
+     3. Go to the BNET table in the database. 
+     4. Find the user account you want to give administrative privileges. 
+     5. Change the auth column from false to true. 
+     6. Apply the changes. 
+     7. Start PvPGN. 
+
+     
+     Now that you have at least one user with administrative privileges, log in as that user 
+     & type the following to give administrative privileges to another user. Only give this 
+     privilege to users you trust. This privilege is NOT meant for everybody, just those 
+     that run or manage your PvPGN server. All users are NOT given administrative privileges 
+     by default: 
+
+     /makeadmin jack 
+     This example would give the user jack administrative privileges. 
+
+     To remove administrative privileges, at the console type: 
+     /demoteadmin jack 
+     This example would remove the user jack administrative privileges. 
+
+     This works instantly when PvPGN is setup using MySQL. If you're running in file mode, 
+     PvPGN will need to be restarted for the changes to take effect. 
+
+     For further information on setting privledges and setting user attributes,
+     seet the next section - Editing user attributes.
+
+     Also refer to conf/command_groups.conf file. The comments in the header of this file
+     provide more detail on user access to commands.
+     
+     Notice also that command_groups=255 that has been attributed to our admin user.
+     When you look in the file command_groups.conf you will notice that there are 8
+     command groups. This is "all bits on". 8 bits 11111111 ^ 2 = 255.
+     
+     
+Editing user attributes
+
+     One of the benefits of running a Stroage Type of "file" is that you can 
+     manually open a users "user" file and look at it's contents. THough if you
+     have a server with a large number of users you wouldn't want to use the "file"
+     Storage Type for performance reasons. Below is the contents of a users file.
+     
+     "Record\\SEXP\\0\\last game"="29644162 1322890055"
+     "Record\\SEXP\\0\\last game result"="WIN"
+     "Record\\SEXP\\0\\draws"="1"
+     "BNET\\acct\\passhash1"="9346aa10d04ce7120b6386755e9f6982770c634b"
+     "BNET\\acct\\username"="Shrek"
+     "BNET\\acct\\userid"="10"
+     "profile\\sex"="Cute"
+     "BNET\\acct\\lastlogin_time"="1091859673"
+     "Record\\SEXP\\0\\wins"="15"
+     "profile\\location"="Lovely"
+     "BNET\\acct\\lastlogin_owner"="Home"
+     "profile\\description"="Ugly"
+     "BNET\\acct\\lastlogin_clienttag"="SEXP"
+     "BNET\\acct\\lastlogin_ip"="203.79.67.108"
+
+     As far as I know, the only values listed in the users "user" file are those
+     that are different from the default settings. So users with zero game wins
+     will have no record like "Record\\SEXP\\0\\wins"="15" in their file.
+     
+     By the way, it is possible to edit the default user settings so that everyone
+     on the server has 10, 20, 30... wins when they join the server and not just
+     wins too, any of the other attributes. See the file conf/bnetd_default_user.plain
+     or conf/bnetd_default_user.cdb though this file might be somewhat harder
+     to look at. As at time of writing, I do not know where the sql defaults are 
+     stored.
+     
+     Right, back to the story. Say we want to change the number of wins for our
+     user called "shrek" by changing the existing 15 wins (non ladder by the way)
+     to 9 wins. You do this either through a telnet session to the server (see
+     topic later in this section on how to get telnet to your server working) or
+     through the game client interface. 
+     
+     Where you would normally key messages to other users on the server in a
+     channel or type the /help commands, do this...
+     
+     /set shrek Record\SEXP\0\wins 9
+
+     So, following the same logic, how do you give another user complete
+     administrative access to your server?
+     
+     /set jack BNET\auth\command_groups 255
+     
+     Note: These changes will not be effective until the user logs off and logs 
+     back on (if they are already logged on).
+
+     Keying /set on it's own will echo the command syntax back to the screen.
+     
+
+     
+     When a new user connects to your server, they inherit all of the settings
+     in the "default user" file. WHat actually happens is nothing. This is easier 
+     to explain by example. If a user has recorded 0 wins for a particular game
+     and the default user file has a default of 0 wins for that same game, then
+     no attributes are stored for wins of that game in the user file.
+     
+     Complicated? Well lets just say that if you modify the default user file
+     and make "BNET\\auth\\command_groups"="255" then every user will have
+     administrative access to your server. Not just new users.
+     
+     If you run your server in "file" mode then the default user file is 
+     bnetd_default_user.plain and it's listed below.
+     
+     If you run your server in "cdb" mode then the default user file is
+     bnetd_default_user.cdb and it's not listed here because it's a binary file!
+     
+     If you run your server in "SQL" mode then the default user details are
+     held in the SQL database with the user id of 0.
+      
+bnetd_default_user.plain     
+##############################################################################
+# bnetd_default_user  -  Default values for user accounts                    #
+#----------------------------------------------------------------------------#
+#                                                                            #
+# When a value is not stored in a player's account file, the value is taken  #
+# from this file instead.                                                    #
+#                                                                            #
+##############################################################################
+
+##############################################################################
+# Game record section                                                        #
+#----------------------------------------------------------------------------#
+# Brood War stats
+"Record\\SEXP\\0\\last game result"="NONE"
+"Record\\SEXP\\0\\last game"="0"
+"Record\\SEXP\\0\\disconnects"="0"
+"Record\\SEXP\\0\\losses"="0"
+"Record\\SEXP\\0\\wins"="0"
+"Record\\SEXP\\1\\last game result"="NONE"
+"Record\\SEXP\\1\\last game"="0"
+"Record\\SEXP\\1\\high rank"="0"
+"Record\\SEXP\\1\\rank"="0"
+"Record\\SEXP\\1\\high rating"="0"
+"Record\\SEXP\\1\\rating"="0"
+"Record\\SEXP\\1\\disconnects"="0"
+"Record\\SEXP\\1\\losses"="0"
+"Record\\SEXP\\1\\wins"="0"
+
+# Starcraft stats
+"Record\\Star\\0\\last game result"="NONE"
+"Record\\Star\\0\\last game"="0"
+"Record\\Star\\0\\disconnects"="0"
+"Record\\Star\\0\\losses"="0"
+"Record\\Star\\0\\wins"="0"
+"Record\\Star\\1\\last game result"="NONE"
+"Record\\Star\\1\\last game"="0"
+"Record\\Star\\1\\high rank"="0"
+"Record\\Star\\1\\rank"="0"
+"Record\\Star\\1\\high rating"="0"
+"Record\\Star\\1\\rating"="0"
+"Record\\Star\\1\\disconnects"="0"
+"Record\\Star\\1\\losses"="0"
+"Record\\Star\\1\\wins"="0"
+
+# Starcraft Shareware stats
+"Record\\SSHR\\0\\last game result"="NONE"
+"Record\\SSHR\\0\\last game"="0"
+"Record\\SSHR\\0\\disconnects"="0"
+"Record\\SSHR\\0\\losses"="0"
+"Record\\SSHR\\0\\wins"="0"
+
+# Diablo Retail stats
+"BNET\\Record\\DRTL\\0\\level"="0"
+"BNET\\Record\\DRTL\\0\\class"="99"
+"BNET\\Record\\DRTL\\0\\diablo kills"="0"
+"BNET\\Record\\DRTL\\0\\strength"="0"
+"BNET\\Record\\DRTL\\0\\magic"="0"
+"BNET\\Record\\DRTL\\0\\dexterity"="0"
+"BNET\\Record\\DRTL\\0\\vitality"="0"
+"BNET\\Record\\DRTL\\0\\gold"="0"
+
+# WarCraft II BNE stats
+"Record\\W2BN\\0\\last game result"="NONE"
+"Record\\W2BN\\0\\last game"="0"
+"Record\\W2BN\\0\\disconnects"="0"
+"Record\\W2BN\\0\\losses"="0"
+"Record\\W2BN\\0\\wins"="0"
+"Record\\W2BN\\1\\last game result"="NONE"
+"Record\\W2BN\\1\\last game"="0"
+"Record\\W2BN\\1\\high rank"="0"
+"Record\\W2BN\\1\\rank"="0"
+"Record\\W2BN\\1\\high rating"="0"
+"Record\\W2BN\\1\\rating"="0"
+"Record\\W2BN\\1\\disconnects"="0"
+"Record\\W2BN\\1\\losses"="0"
+"Record\\W2BN\\1\\wins"="0"
+# FIXME: what is 2 for?
+"Record\\W2BN\\3\\last game result"="NONE"
+"Record\\W2BN\\3\\last game"="0"
+"Record\\W2BN\\3\\high rank"="0"
+"Record\\W2BN\\3\\rank"="0"
+"Record\\W2BN\\3\\high rating"="0"
+"Record\\W2BN\\3\\rating"="0"
+"Record\\W2BN\\3\\disconnects"="0"
+"Record\\W2BN\\3\\losses"="0"
+"Record\\W2BN\\3\\wins"="0"
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+# Default profile info                                                       #
+#----------------------------------------------------------------------------#
+# No good defaults for these :)
+"profile\\description"=""
+"profile\\location"=""
+"profile\\age"=""
+"profile\\sex"=""
+# These 3 are ignored in the template, but they make it easier
+# to use this file by hand to create a new account...
+"BNET\\acct\\username"="bnetd_default_user"
+"BNET\\acct\\userid"="0"
+"BNET\\acct\\passhash1"="67452301efcdab8998badcfe10325476c3d2e1f0"
+#"BNET\\fakeclienttag"="WAR3"
+#                                                                            #
+##############################################################################
+
+##############################################################################
+# Authorization flags (comments show defaults)                               #
+#----------------------------------------------------------------------------#
+# "BNET\\auth\\admin"="false"
+"BNET\\auth\\command_groups"="1"
+# "BNET\\auth\\announce"="false"
+# "BNET\\auth\\botlogin"="false"
+# "BNET\\auth\\operator"="false"
+"BNET\\auth\\normallogin"="true"
+"BNET\\auth\\changepass"="true"
+"BNET\\auth\\changeprofile"="true"
+# "BNET\\auth\\createnormalgame"="true"
+# "BNET\\auth\\joinnormalgame"="true"
+# "BNET\\auth\\createladdergame"="true"
+# "BNET\\auth\\joinladdergame"="true"
+# "BNET\\auth\\lock"="false"
+# Specific channels can be specified to override the
+# channel defaults and the plain operator setting:
+# (use the long channel name)
+# "BNET\\auth\\operator\\example channel"="false"
+"BNET\\auth\\botlogin"="true"
+# "BNET\\auth\\operator"="false"
+# Set to "false" to not check IP, set to IP
+# (like: "192.168.1.2" to require an IP to login for warcraft3)
+"BNET\\auth\\w3_require_ip"="false"
+#                                                                            #
+##############################################################################
+
+
+Making your own versioncheck entries (versioncheck.conf)
+
+    Warning. Incorrect maintenance of version for connecting gamers can cause problems on the server 
+    that are difficult to explain and lead you right up the garden path. For instance someone trying 
+    to join a game running version B of the software will not see any games listed if all the other 
+    players on the server are running version C.
+    
+    versioncheck.conf
+    This file lives at conf/versioncheck.conf if maintained properly it will list every client version 
+    of software produced, product by product, version by version. A updated version of this 
+    file is distributed with new server releases and updates posted to http://forums.pvpgn.org though you 
+    need to copy and paste in the entries yourself.
+    
+    Creating your own entries is very easy, just think about what you are doing:
+    a. backup your existing versioncheck.txt file.
+    b. connect to your server with the new or updated client software
+    c. capture the entries from the bnetd.log file (these have all the information you need)
+    
+    Blizzard from time to time release software updates for the clients (Starcraft, Warcraft, etc)
+    As system administrator, you need to update your own clients manually or update them
+    via Battle.Net. Importantly an entry for every combination is required (PC and Mac).
+    
+    So, update your client, connect to your PvpGN server, then log out. Examine your
+    var/bnetd.log file searching for the entry that matches your login. It will look similar
+    to the one below. (actually this one is valid, a mismatch will not translate and you will
+    be given a client game tag of SEXP_XXX (for StarCraft Broodwar).
+
+    var/bnetd.log
+    Jun 13 11:01:25 [info ] _client_authreq109: [220] CLIENT_AUTHREQ_109 ticks=0x4805126a, verstr=1.1.1.3 exeinfo="starcraft.exe 05/26/04 00:46:00 1048576" versionid=0x000000c9 gameversion=0x01010103 checksum=0xe6380bff
+    Jun 13 11:01:25 [info ] versioncheck_validate: got a matching entry: SEXP_111B
+
+    The log entry above has been translated by a match in the conf/versioncheck.conf file.
+    conf/versioncheck.conf
+    # Starcraft - Broodwar (Expansion) 1.11b - (Broodwar mode)
+    "A=2521522835 B=3428392135 C=218673704 4 A=A^S B=B-C C=C+A A=A-B" \
+    "IX86ver1.mpq" \
+    IX86 \
+    SEXP \
+    "starcraft.exe 05/26/04 00:46:00 1048576" \
+    0x000000c9 \
+    1.1.1.3 \
+    0xe6380bff \
+    SEXP_111B
+
+    All the information you need to make your own version check entries is contained
+    in the var/bnetd.log and conf/versioncheck.conf files. Also read the comments in the 
+    start of the versioncheck.conf file for more and up-to-date information.
+    
+
+Setting up autoupdate (autoupdate.conf)
+
+    Maintaining the file conf/autoupdate.conf and conf/versioncheck.conf will 
+    allow you as server administrator to ensure that the only clients that can join
+    your server are on a client release that matches everyone else.
+    
+    For this server feature to work the setting of allow_autoupdate in the file
+    conf/bnetd.conf must be set to true.
+    
+    In addition to maintaining the conf/autoupdate.conf file, you also need to have
+    the *.mpq files or client patch releases on your server in the files/ directory
+    so that they can be automatically sent to your users. Later on in this topic we
+    explain how-to download and where-to download from the *.mpq files.
+    
+    So assuming you have the *.mpq files and you have maintained the 
+    conf/versioncheck.txt file you can now update your conf/autoupdate.conf file.
+    It's simply a list of machine type, software flavour, current version, file to download.
+    Looking at the example below column by column,
+    IX86                   = windows based client
+    SEXP                   = Starcraft Broodwar
+    SEXP_110               = verion 1.10 
+    SEXP_IX86_1xx_111B.mpq = file to download, will upgrade to version 1.11B
+    
+    # StarCraft Updates - Broodwar    #
+    # =============================== #
+    IX86     SEXP    SEXP_110        SEXP_IX86_1xx_111B.mpq
+    IX86     SEXP    SEXP_111        SEXP_IX86_1xx_111B.mpq
+    XMAC     SEXP    SEXP_110        SEXP_XMAC_1xx_111B.mpq
+    XMAC     SEXP    SEXP_111        SEXP_XMAC_1xx_111B.mpq
+    PMAC     SEXP    SEXP_110        SEXP_PMAC_1xx_111B.mpq
+    PMAC     SEXP    SEXP_111        SEXP_PMAC_1xx_111B.mpq
+
+    # StarCraft Updates - StarCraft   #
+    # =============================== #
+    IX86     STAR    SEXP_111        STAR_IX86_1xx_111B.mpq
+    IX86     STAR    SEXP_110        STAR_IX86_1xx_111B.mpq
+    XMAC     STAR    SEXP_110        STAR_XMAC_1xx_111B.mpq
+    XMAC     STAR    SEXP_111        STAR_XMAC_1xx_111B.mpq
+    PMAC     STAR    SEXP_110        STAR_PMAC_1xx_111B.mpq
+    PMAC     STAR    SEXP_111        STAR_PMAC_1xx_111B.mpq
+
+    # WarCraft III Updates - TFT #
+    #----------------------------#
+    IX86    W3XP    W3XP_107a       W3XP_IX86_1xx_116A.mpq
+    IX86    W3XP    W3XP_110a       W3XP_IX86_1xx_116A.mpq
+    XMAC    W3XP    W3XP_107a       W3XP_XMAC_1xx_116A.mpq
+    XMAC    W3XP    W3XP_110a       W3XP_XMAC_1xx_116A.mpq
+
+    # Incremental update from version 115a
+    IX86    W3XP    W3XP_115a	    W3XP_IX86_115A_116A.mpq
+    XMAC    W3XP    W3XP_115a       W3XP_XMAC_115A_116A.mpq
+
+    # WarCraft III Updates - ROC #
+    #----------------------------#
+    IX86    WAR3    WAR3_107a       WAR3_IX86_1xx_116A.mpq
+    IX86    WAR3    WAR3_110a       WAR3_IX86_1xx_116A.mpq
+    XMAC    WAR3    WAR3_107a       WAR3_XMAC_1xx_116A.mpq
+    XMAC    WAR3    WAR3_110a       WAR3_XMAC_1xx_116A.mpq
+
+    # Incremental update from version 115a
+    IX86    WAR3    WAR3_115A	    WAR3_IX86_115A_116A.mpq
+    XMAC    WAR3    WAR3_115A       WAR3_XMAC_115A_116A.mpq 
+
+    Downloading *.mpq files
+    You'll need download the *.mpq files if you're going to maintain
+    a server that has users all with the same level of software. And there's
+    a cool tool that will help you. "bnftp.exe" on windows. It will download the
+    files for you from any server that you specify.
+
+    bnftp can be found in the bin directory of the PvPGN software. If it's not there
+    for any reason, you can compile it from the source (see the section on compiling
+    your own PvPGN server else where in this manual)
+     
+    Below are real command line entries that can be put into a windows batch 
+    file if required. Note that bnftp.exe must be in your PATH so that bnftp can 
+    execute as expressed here, or you could be more explicit about its location.
+    
+    bnftp --client=SEXP --arch=IX86 --file=SEXP_IX86_1xx_111B.mpq useast.battle.net 6112
+    bnftp --client=STAR --arch=IX86 --file=STAR_IX86_1xx_111B.mpq useast.battle.net 6112
+    bnftp --client=SEXP --arch=XMAC --file=SEXP_XMAC_1xx_111B.mpq useast.battle.net 6112
+    bnftp --client=STAR --arch=XMAC --file=STAR_XMAC_1xx_111B.mpq useast.battle.net 6112 
+    bnftp --client=SEXP --arch=PMAC --file=SEXP_PMAC_1xx_111B.mpq useast.battle.net 6112
+    bnftp --client=STAR --arch=PMAC --file=STAR_PMAC_1xx_111B.mpq useast.battle.net 6112
+    
+    bnftp --client=W3XP --arch=IX86 --file=W3XP_IX86_1xx_116A_enUS.mpq useast.battle.net 6112   --REM 23MB
+    bnftp --client=WAR3 --arch=IX86 --file=WAR3_IX86_1xx_116A_enUS.mpq useast.battle.net 6112   --REM 15MB
+    bnftp --client=W3XP --arch=XMAC --file=W3XP_XMAC_1xx_116A_enUS.mpq useast.battle.net 6112   --REM 25MB
+    bnftp --client=WAR3 --arch=XMAC --file=WAR3_XMAC_1xx_116A_enUS.mpq useast.battle.net 6112   --REM 19MB
+    bnftp --client=W3XP --arch=PMAC --file=W3XP_PMAC_1xx_116A_enUS.mpq useast.battle.net 6112   --REM doesn't exist
+    bnftp --client=WAR3 --arch=PMAC --file=WAR3_PMAC_1xx_116A_enUS.mpq useast.battle.net 6112   --REM doesn't exist
+    
+    or
+    
+    bnftp --client=W3XP --arch=IX86 --file=W3XP_IX86_115A_116A_enUS.mpq useast.battle.net 6112 --REM 216K
+    bnftp --client=WAR3 --arch=IX86 --file=WAR3_IX86_115A_116A_enUS.mpq useast.battle.net 6112 --REM 277k
+    bnftp --client=W3XP --arch=XMAC --file=W3XP_XMAC_115A_116A_enUS.mpq useast.battle.net 6112 --REM 770K
+    bnftp --client=WAR3 --arch=XMAC --file=WAR3_XMAC_115A_116A_enUS.mpq useast.battle.net 6112 --REM 831k
+    bnftp --client=W3XP --arch=PMAC --file=W3XP_PMAC_115A_116A_enUS.mpq useast.battle.net 6112 --REM doesn't exist
+    bnftp --client=WAR3 --arch=PMAC --file=WAR3_PMAC_115A_116A_enUS.mpq useast.battle.net 6112 --REM doesn't exist
+    
+    The resulting output files "*.mpq" need to be moved to the files/ directory 
+    of the PvPGN server and you need to make appropriate updates to conf/autoupdate.conf
+    
+    Notice in the examples above the downloads of the incremental updates for Warcraft.
+    It would be a good idea to support this type of update, i.e. your users could 
+    download a 216K update or 23MB update. The larger update could be rather frustrating 
+    especially if they didn't really need it.
+
+    
+Indepth look at conf/bnetd.conf
+
+    conf/bnconf.conf is the configuration file that drives your PvPGN server. 
+    The changes you make to this file will impact the whole operation of your
+    server. Any changes you make to this file will require you to restart your
+    server.
+    
+    Depending on your PvPGN package distribution or installation, you may or 
+    may not have a conf/bnetd.conf if you don't have one of these files, look
+    for conf/bnetd.conf.in or conf/bnetd/conf.win32 the first file listed
+    here is pre setup for unix while the second is pre setup for windows.
+
+    Instead of redocumenting each configuration option of the server in this
+    document it is best if you take a look at the actual file. The in-line
+    documentation explains what each of the configurations are. Some
+    specific options will be discussed later in the manual. In the mean time
+    the Unix bnetd.conf file bnetd.conf.in is reproduced here for your reading
+    pleasure. Printout this documentation. Take it away with you on holiday. It
+     could hold vital clues that will assist in the running of your server.
+     pleasure.  
+ 
+     The developers have done a really good job of providing in-line documentation
+     withing the conf/bnetd.conf file. So why spoil that and re-write into another 
+     form that will only require maintenance and become outdated.
+
+    The file consists of a list of configuration entries and comments.  
+    A comment starts with a pound (#) sign and continues to the end of the line.
+    Blank lines and whitespace are ignored between entries. A configuration entry 
+    is composed of two fields separated by an equals (=) sign:
+
+    directive = value
+
+    The directive field contains the name of the configuration item you want 
+    to set to the value of value. If the value contains spaces it should be 
+    surrounded by quotation marks ("). The value may not contain quotation 
+    marks. Multiple entries are not allowed on a single line.
+
+    If the field is Boolean, any of true, false, yes, no, 1, or 0 may be used.
+    If the field is numeric, it must be in base ten. If the field is an address
+    list, it must be delimited by commas. Each element may contain a hostname
+    (or IP) and a port number. If a port number is given, it must be preceded 
+    by a colon (:). A colon by itself may be used to represent the wildcard 
+    address. If the field is a file or directory path, use of an absolute 
+    pathname is recommended.  The values for iconfile, tosfile, and mpqauthfile
+    are not pathnames but just the names of the files. They must be in the 
+    filedir directory.
+    
+    The file is close to self documenting though there are a couple of setting
+    that we wish to highlight.
+    
+    loglevels - Specify A comma-delimited list of message levels to log.  
+                The avaliable levels are:
+                trace - flow tracing statements
+                debug - debugging information
+                info - potentially useful informational
+                warn - potentially serious events
+                error - error messages and unexpected events
+                fatal - fatal errors
+
+
+conf/bnetd.conf
+##############################################################################
+# bnetd.conf  -  Configuration file for the Unix Battle.net daemon           #
+#----------------------------------------------------------------------------#
+#                                                                            #
+# This file is an example configuration and may require modification to      #
+# suit your needs or your site.  Blank lines and lines starting with a "#"   #
+# are ignored.  Use quotes around values that contain spaces.                #
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+# Privileges to work under                                                   #
+# Use either the names from the corresponding files or numerical id's (with  #
+# a leading '#').  If none are specified, the userid will not be changed.    #
+#----------------------------------------------------------------------------#
+
+#effective_user  = games
+#effective_group = games
+
+# effective_user  = #12
+# effective_group = #20
+
+#                                                                            #
+##############################################################################
+
+##############################################################################
+# Storage section                                                            #
+# storage_path will tell pvpgn how and where from/to to read/write accounts  #
+# right now it supports 2 "drivers" : file and sql                           #
+#                                                                            #
+# Syntax:                                                                    #
+# * for plain file driver:                                                   #
+#  storage_path = file:mode=plain;dir=<path_to_user_files>;clan=<path_to_clan_files>;default=/path/to/default/account #
+# * for cdb file driver:                                                     #
+#  storage_path = file:mode=cdb;dir=<path_to_cdb_files>;clan=<path_to_clan_files>;default=/path/to/default/account   #
+# * for sql driver:                                                          #
+#  storage_path = sql:variable=value;...;default=0 (0 is the default uid)    #
+# Variables can be:                                                          #
+# - "mode" : tells PVPGN the sql mode you will use (mysql/pgsql/etc..)       #
+# - "host" : the database host                                               #
+# - "port" : the TCP/IP port if needed                                       #
+# - "socket" : the UNIX local socket if needed                               #
+# - "name" : database name                                                   #
+# - "user" : db username                                                     #
+# - "pass" : db password                                                     #
+#                                                                            #
+# Examples:                                                                  #
+# storage_path = file:mode=plain;dir=/usr/local/var/users;clan=/usr/local/var/clans;default=/usr/local/etc/bnetd_default_user
+# storage_path = file:mode=cdb;dir=/usr/local/var/userscdb;clan=/usr/local/var/clans;default=/usr/local/etc/bnetd_default_user.cdb
+# storage_path = sql:mode=mysql;host=127.0.0.1;name=PVPGN;user=pvpgn;pass=pvpgnrocks;default=0
+# storage_path = sql:mode=pgsql;host=127.0.0.1;name=pvpgn;user=pvpgn;pass=pvpgnrocks;default=0
+#----------------------------------------------------------------------------#
+
+storage_path = file:mode=plain;dir=/usr/local/var/users;clan=/usr/local/var/clans;default=/usr/local/etc/bnetd_default_user.plain
+
+#                                                                            #
+##############################################################################
+
+##############################################################################
+# File section                                                               #
+# The pidfile can be set to "" to turn it off.                               #
+# Use absolute paths in these lines to avoid problems!                       #
+#----------------------------------------------------------------------------#
+
+filedir     = /usr/local/var/files
+reportdir   = /usr/local/var/reports
+chanlogdir  = /usr/local/var/chanlogs
+motdfile    = /usr/local/etc/bnmotd.txt
+issuefile   = /usr/local/etc/bnissue.txt
+channelfile = /usr/local/etc/channel.conf
+newsfile    = /usr/local/etc/news.txt
+adfile      = /usr/local/etc/ad.conf
+topicfile   = /usr/local/etc/topics.conf
+ipbanfile   = /usr/local/etc/bnban.conf
+helpfile    = /usr/local/etc/bnhelp.conf
+mpqfile     = /usr/local/etc/autoupdate.conf
+logfile     = /usr/local/var/bnetd.log
+realmfile   = /usr/local/etc/realm.conf
+maildir     = /usr/local/var/bnmail
+versioncheck_file = /usr/local/etc/versioncheck.conf
+mapsfile    = /usr/local/etc/bnmaps.conf
+xplevelfile = /usr/local/etc/bnxplevel.conf
+xpcalcfile  = /usr/local/etc/bnxpcalc.conf
+#pidfile    = /usr/local/var/bnetd.pid
+ladderdir   = /usr/local/var/ladders
+command_groups_file = /usr/local/etc/command_groups.conf
+tournament_file = /usr/local/etc/tournament.conf
+statusdir   = /usr/local/var/status
+aliasfile   = /usr/local/etc/bnalias.conf
+anongame_infos_file = /usr/local/etc/anongame_infos.conf
+DBlayoutfile = /usr/local/etc/sql_DB_layout.conf
+supportfile = /usr/local/etc/supportfile.conf
+transfile   = /usr/local/etc/address_translation.conf
+
+fortunecmd  = /usr/games/fortune
+
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+# Message logs                                                               #
+#----------------------------------------------------------------------------#
+
+# Multiple log levels can be defined by connecting them with a comma (,)
+# Available loglevels are:
+#   none
+#   trace
+#   debug
+#   info
+#   warn
+#   error
+#   fatal
+loglevels = fatal,error,warn,info,debug,trace
+#loglevels = fatal,error,warn,info
+
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+# D2CS realm server settings                                                 #
+#----------------------------------------------------------------------------#
+
+# Version of D2CS server to connect with (set to zero to disable version check)
+d2cs_version = 0
+
+# Allow the D2CS server to change realm names?
+allow_d2cs_setname = true
+
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+# Downloadable files                                                         #
+#----------------------------------------------------------------------------#
+
+# These filenames are reported directly to the client and are relative to
+# the "filedir" directory specified above.
+iconfile = "icons.bni"
+war3_iconfile = "icons-WAR3.bni"
+star_iconfile = "icons_STAR.bni"
+
+tosfile = "tos.txt"
+
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+# Client verification and upgrades                                           #
+#----------------------------------------------------------------------------#
+
+# If this option is enabled, the verification step is skipped if possible.
+# This only works with clients < 109.  It is useful because you no longer
+# need any of the IX86AUTH?.MPQ and PMACAUTH?.MPQ files.  Note that it will
+# also skip over all the autoupdate checks effectively disabling it.
+#
+# If you disable this you must have one or more of the MPQ files.  Otherwise
+# clients will hang when they first connect because they are attempting to
+# download them.  The versioncheck can only be skipped for clients older
+# than 109.  Starting with version 109 the clients will always do version
+# checking since they do not function properly if the server does not
+# request it.
+skip_versioncheck = false
+
+# If you enable the version checks but want to allow clients that don't pass
+# the checksum test then enable this.
+allow_bad_version = false
+
+# If you enable the version checks but want to allow clients that aren't
+# listed in the versioncheck configuration file then enable this.  Unless
+# you have a very complete file or are very paranoid about cheaters this
+# is a good idea.
+allow_unknown_version = true
+
+# This defines how the exeinfo field in the versioncheck file is being
+# checked. In the past the string given by the client was just compared
+# with the string in versioncheck. However, this lead to some problems,
+# since the different ways to patch a game (via downloaded executable or
+# autoupdate) sometimes caused filetimes which differed by just some
+# seconds. Thus, you can now choose between exact match [exact], exact
+# case-sensitive match [exactcase], dumb wildcard match [wildcard], and
+# parsed value comparison [parse]. NOTE: [parse] needs the mktime() 
+# function and might therefore not work on every system. 
+version_exeinfo_match = parse
+
+# If you have choosen [parse] above, this is the tolerance with which
+# the time can differ. The value must be given in seconds. If it's 0 this 
+# check is disabled.
+version_exeinfo_maxdiff = 0
+
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+# Time values                                                                #
+#----------------------------------------------------------------------------#
+
+# Time in seconds between account file updates, 0 means wait forever.
+usersync  = 300
+# Number of seconds of inactivity before file is unloaded from memory.
+# (only checked during account file updates)
+userflush = 1200
+# Number of users checked for updates at once. Higher values make sense if you 
+# either have very fast hardware or you don't have many number of accounts.
+# Lower values make sense if you have very high CPU usage on the system you run
+# the server (dont make it too low or your system will save accounts continously).
+# Modify this value ONLY if you know what you are doing!!
+userstep = 100
+
+# How often to send user latency tests in seconds.
+latency = 10
+
+# How often to send null or keepalive packets in seconds.
+nullmsg = 120
+
+# Amount of time to delay shutting down server in seconds.
+shutdown_delay = 300
+# Amount of time delay period is decremented by either a SIGTERM or SIGINT
+# (control-c) signal in seconds.
+shutdown_decr = 60
+
+# How often should bans be checked for expiration? (in seconds)
+#ipban_check_int = 30
+
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+# Policy options                                                             #
+#----------------------------------------------------------------------------#
+
+# If you don't want people to be able to create new accounts, set this to
+# false.
+new_accounts = true
+
+# Set this to the maximum number of accounts you want to allow to be
+# created on your server. A value of 0 means infinite and is the default.
+#max_accounts = 0
+
+# If someone attempts to log in more than once, should it kick off the old
+# login, or deny the new one?
+kick_old_login = true
+#kick_old_login = false
+# With no passwords, this is bad to have enabled --NonReal
+
+# If you want to heck storage(file directory or sql database) to look for manual
+# added new account while account is not found on login.
+# It can be used for web-based register system
+load_new_account = false
+
+# If a user is creating a new channel, should it be added automatically, or
+# prompt them first?
+ask_new_channel = true
+
+# Should a game report be written for every game played or just ladder
+# games?
+#report_all_games = false
+report_all_games = true
+
+# Should Diablo I/II reports be written?  There are no winners/losers.
+report_diablo_games = false
+
+# Should games with passwords be hidden on the game list?
+hide_pass_games = true
+
+# Should games already started be hidden on the game list? (for heavily
+# loaded servers)
+hide_started_games = true
+
+# Should non-permanent channels hidden on the channel list?
+hide_temp_channels = true
+
+# Should the extended /-commands be avaliable? (of course!)
+extra_commands = true
+
+# Should any and all disconnects to be counted as losses?
+# (Turning this on will override the user's choice in ladder games!)
+disc_is_loss = false
+
+# Should all users be able to use the /con and /connections commands?
+enable_conn_all = true
+
+# Should client IP addresses (from /con, /games, /gameinfo, /netinfo)
+# be hidden from non-admins?
+hide_addr = false
+
+# Should private channel messages be logged to files in the chanlogdir
+# directory? (see channels.list for public channels)
+chanlog = false
+
+# Do you want to use the channel quota feature?
+quota = yes
+
+# The following options deal with flood prevention.
+#
+# How many lines do you accept in quota_time seconds?
+# (The default should allow 5 lines in 5 seconds,
+# longer time periods allow "bursts" of traffic before the quota is full.)
+quota_lines = 5     # must be between 1 and 100 lines
+quota_time = 5      # must be between 1 and 60 seconds
+# "virtual wrapping", so long lines count as multiple lines
+quota_wrapline = 40 # must be between 1 to 256 chars
+# absolute maximum characters allowed in a line
+quota_maxline = 200 # must be between 1 to 256 chars
+#
+# How many lines do you accept in quota_time seconds before user is
+# disconnected?
+# (According to Jung-woo, Dobae is a Korean term for flooding the game server...
+# it originally meant "to paint the wallpaper on a new or refurbished house").
+# If it less than or equal to quota_lines, there is no warning before
+# disconnection so don't set this too low.
+quota_dobae = 10     # must be between 1 and 100 lines
+
+# Mail support
+mail_support = true
+mail_quota = 5
+
+# Channel logging message
+log_notice = "*** Please note this channel is logged! ***"
+
+# Ban on repeated password fails against bruteforce password thieves
+# Fails required to get ip banned (0 to disable ban on password fail)
+passfail_count = 0
+
+# Password fail IP ban duration (in seconds)
+passfail_bantime = 300
+
+# Max users limit in private channels (0 = unlimited)
+maxusers_per_channel = 0
+
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+# Account configuration                                                      #
+#----------------------------------------------------------------------------#
+
+# Should account files be named by the account number or the player name?
+savebyname = true
+
+# How man rows should the account lookup hash table have?  Servers with
+# more accounts should use a larger table for better performance.
+hashtable_size = 61
+
+# per default, only alphanumerical symbols are allowed in account names
+# with this variable you can add some extra symbols to be allowed
+# but be warned - that some of them might cause trouble - at least with
+# savebyname=true (some symbols are forbidden in filenames or might cause
+# you real trouble - plz neither allow wildcard symbols like '*' or '?' nor 
+# allow path delimiters like '/' or '\'. also note that allowing the '.' might
+# cause u some headache on win32 systems. u have been warned - the rest is up
+# to you.
+# default setting is "-_[]" as it was previous versions
+account_allowed_symbols = "-_[]"
+
+# maximum number of friends a user can add to there friends list
+# default setting is 20
+max_friends = 20
+
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+# Tracking server info                                                       #
+#----------------------------------------------------------------------------#
+
+# Set track=0 to disable tracking.  Any other number will set number
+# of seconds between sending tracking packets. This is OFF by default.
+#track = 0
+track = 60
+# 10 minutes
+
+# Tracking server(s)
+# Use a comma delimited list of hostnames with optional UDP port numbers
+# after colons. (port 6114 is the default for the newer tracking protocol)
+#trackaddrs = "track.bnetd.org,localhost:9999"
+#trackaddrs = "track.pvpgn.org"
+
+# Change these to match your system, for example:
+location = "unknown"
+description = "unknown"
+url = "unknown"
+contact_name = "a PvPGN user"
+contact_email = "unknown"
+
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+# Server network info                                                        #
+#----------------------------------------------------------------------------#
+
+# Set this option to true to allow TCP to detect and close stale
+# connections.
+use_keepalive = false
+
+# Limit maximum number of connections per IP (0 = unlimited)
+# this feature is new, so no recommended value so far
+max_conns_per_IP = 0
+
+# This is a comma delimited list of hostnames that the server should
+# listen on.  It might be useful to make an internal-only server on a
+# gateway machine for example.  If the list is not set or if it has a
+# entry with no host component, the server will bind to that port on all
+# interfaces.
+#servaddrs = ":9999"
+#servaddrs = "myinternalname.some.com,localhost"
+#servaddrs = ":" # default interface (all) and default port (6112)
+
+# Don't change these unless you really need to!  You will need to run a proxy
+# or modify the clients.  Also note that these will not change when simply
+# sending a HUP signal to the server; they are only read on startup.
+
+# This is the port the server send the UDP test packets to by default.
+# Setting it to zero makes the server use the same port as the TCP connection
+# comes from. Newer clients can override this setting on a per connection
+# basis.
+#udptest_port = 6112
+
+
+# W3 Play Game router address. Just put your server address in here
+# or use 0.0.0.0:6200 for server to bind to all interfaces,
+# but make sure you set up w3trans if you do.
+w3routeaddr = "0.0.0.0:6200"
+
+# w3routeshow has been removed.
+# see the w3trans file for translating the w3route ip for local networks
+
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+# Internet Relay Chat (IRC) configuration                                    #
+#----------------------------------------------------------------------------#
+
+# NOTE: IRC support is still experimental!
+
+# This specifies the addresses where IRC connections should be accepted. See
+# the description of servaddrs for formatting information. Leave this field
+# blank if you do not want to accept IRC connections.  If the port is not
+# specifed then 6667 will be used.
+#ircaddrs = ":6667"
+
+# This is the server name used for IRC connections. Set this to your
+# server name, if the automatic detection doesn't correctly. 
+#servername = "none"
+
+# Set this to the desired IRC connection timeout in seconds.
+#irc_latency = 180
+
+#                                                                            #
+##############################################################################
+
+
+##############################################################################
+# Telnet configuration                                                       #
+#----------------------------------------------------------------------------#
+
+# This specifies the addresses where telnet connections should be accepted.
+# See the description of servaddrs for formatting information. Leave this
+# field # blank if you do not want to accept telnet connections.  If the port
+# is not specifed then 23 will be used.
+#telnetaddrs = ":23"
+
+###############################################################################
+# war3 ladder textual output                                                  #
+#-----------------------------------------------------------------------------#
+# this is for all the guys, that want Warcraft 3 ladder, but don't want their
+# server to run with MySQL support.
+# For each ladder (solo, team, ffa, at) a corresponing file is created,
+# so it's easy to build your ladder pages with them
+
+# the following value determines, at which rate, these files are created
+# set to 0 if you don't want or need these files
+war3_ladder_update_secs = 300
+
+# jfro's latest ladder is based on XML... so we can switch to XML output of ladder
+# on demand
+XML_output_ladder = false
+
+###############################################################################
+# server status textual output                                           #
+#-----------------------------------------------------------------------------#
+# This is for writing status of the server in an attempt to see number of user
+# on line actually, and games/chans.
+# This is store in file var\status\warcraft3.dat as a *.ini format.
+# Shouldn't be so hard in php to create dynamic website using this content.
+
+# the following value determines, at which rate, these files are created
+# set to 0 if you don't want or need these files
+output_update_secs = 60
+
+# jfro's latest ladder is based on XML... so we can switch to XML output of ladder
+# on demand. Maybe we should set update interval bigger cause XML output version
+# is much more verbose than the standard output
+XML_status_output = false
+
+###############################################################################
+# clan settings                                                               #
+#-----------------------------------------------------------------------------#
+
+# Time in hours for a new member of clan to be a newer(Peon icon, cannot promote to Grunt)
+# default value 168(7 days). If set to 0, all new members could be promote in no time
+clan_newer_time = 0
+
+# max members count allowed in a clan, set between 10&255, default 50.
+clan_max_members = 50
+
+# Default clan channel status when create a clan, 1 for private, 0 for public
+clan_channel_default_private = 0
+
+
+
+A Telnet session to your server
+    
+    As system administrator you can telnet into your server. Though to do so you
+    must have pre configured your server to accept telnet sessions. To accept
+    telnet connections you need to edit conf/bnetd.conf. Search for the entry
+    "telnetaddrs". You can simply uncomment the line and restart the server.
+    
+    telnetaddrs = ":23"
+    
+    You can change the telnet port to another port number if you wish.
+    
+    Here is an example Telnet session:
+
+    ># telnet 192.168.10.198
+    >Trying 192.168.10.198...
+    >Connected to 192.168.10.198.
+    >Escape character is '^]'.
+    >BOT or Telnet Connection from [192.168.10.200]
+    >
+    >Enter your account name and password.
+    >Sorry, there is no guest account.
+    >
+    >Username: ~your administrator account~
+    >
+    >Password: dbadmin
+    >
+    >Your unique name: ~your administrator account~
+    >Joining channel: "Chat"
+    >[~your administrator account~ is here]
+    >Hello ~your administrator account~, welcome to a PvPGN Server!
+    >Running version PvPGN BnetD Mod 1.7.0-CVS on MACHINE667.
+    >This server is hosted by Magic
+    >
+    >There are 20 user accounts on this server.
+    >There are currently 1 users in 0 games of Chat,
+    >and 1 users playing 0 games and chatting in 23 channels.
+    >Having trouble with a command?  Type   /help   to
+    >learn more about it.
+    >Chat topic: This is the public chat channel. Feel free to chat...
+    >/help
+    >Chat commands:
+    > /whois /whereis /where
+    [output deleted]
+    >/quit
+    >Connection closed by foreign host.
+        
+
+Weblinks for ladder page/web profiles
+
+    documentation yet to be written
+    
+
+conf/bnxpcalc.conf
+
+    documentation yet to be written
+
+    
+conf/bnxplevel.conf  
+
+    documentation yet to be written
+ 
+    
+conf/command_groups.conf
+
+    All of the commands that can be issued to the server are separated
+    into 8 groups. The groups are pre-defined as follows though you
+    are fee to change the groupings if you wish. By default all users
+    get access to command group 1. Multiple commands can be listed
+    on a single line.
+    
+    
+    1	/c /clan
+    1	/f /friends
+    1	/me
+    1	/msg /whisper /w /m /r /reply
+    1	/status /users /lusers
+    1	/who /whois /whereis /where /whoami
+    1	/beep /nobeep
+    1	/version /copyright /warrenty /license
+    1	/uptime /stats /astat /time
+    1	/channel /join /rejoin
+    1	/away /dnd /ignore /squelch /unignore /unsquelch
+    1	/watch /unwatch /watchall /unwatchall
+    1	/news /games /channels /chs /admins
+    1	/logout /quit /exit
+    1	/ladderinfo
+    1	/timer /quota
+    1	/help
+    1	/mail
+    1	/motd
+    1	/bitsinfo
+    1	/latency /ping /p
+    1	/topic
+
+    The following commands all require different levels of access to the server,
+    possibly admin status or operator status. For detailed and up-to-date
+    information on these commands please consult the file 
+    conf/command_groups.conf.
+    
+    1	/kick /ban /unban /op /deop /aop /voice /devoice /vop /devop /tmpop
+    1	/connections /con
+    1	/games /finger /gameinfo
+    1	/netinfo /chpass
+    2	/realmann /ann /announce
+    3	/serverban /ipban
+    4	/kill /killsession /addacct /lockacct /unlockacct
+    5	/ladderactivate
+    6	/admin-con /admin-addr /admin-chpass
+    6	/operator /admin /flag /tag
+    7	/set /commandgroups /cg
+    8	/shutdown /rehash
+    
+    Rights to use commands in Groups '2' through '8' must be given
+    to a user using the /commandgroups or /cg command.
+
+    usage /cg <add|del|list> <username> [<groups>]
+
+    ie. /cg list pvpgnplayer  <-- list the current command groups for user
+    ie. /cg add pvpgnplayer 234  <-- adds groups 2, 3, & 4 to user
+    ie. /cg del pvpgnplayer 24 <-- deletes groups 2 & 4 from user
+
+    If the previous commands were done, pvpgnplayer would have access
+    to commands in groups 1 & 3
+
+    Commands not listed in this file will be deactivated by the server
+    
+    FILE MODE:
+        Add the following line to your user file to get access to all groups:
+           	"BNET\\auth\\command_groups"="255"
+        For regualar users to be able to use the regualr commands make sure to
+       	use the updated 'bnetd_default_user' file
+    SQL MODE:
+        Issue the following commands to get access to all groups:
+        	ALTER TABLE BNET ADD COLUMN auth_command_groups VARCHAR(128) default '1';
+        	UPDATE BNET SET auth_command_groups='255' WHERE uid='youruserid'
+        
+        For regular users to be able to use the reqular commands
+        issue the following command:
+        	UPDATE BNET SET auth_command_groups='1' WHERE uid='0'
+
+
+    The PvPGN development team recommends that you do not edit the 
+    conf/command_groups.conf file unless you know what you are doing.
+    
+       	
+conf/sql_DB_layout.conf
+
+    This file determines the layout of the PvPGN SQL database the server 
+    will create the tables with their columns as specified in here.
+    
+    Don't mess with this file. Leave it to the PvPGN developers.
+
+
+conf/supportfile.conf
+    
+    This file contains the names of all files that need to be installed in 
+    the filedir (but that aren't any longer part of the pvpgn package)
+    some lines are commented out, cause they weren't installed by default 
+    in older versions
+
+    Don't mess with this file. Leave it to the PvPGN developers.
+
+    
+conf/topics.conf
+
+    documentation yet to be written
+    
+    "Chat","This is the public chat channel. Feel free to chat..."
+    "Moderated Support","Support is provided in this channel..."
+
+
+conf/anongame_infos.conf
+ 
+    documentation yet to be written     
+
+    This file shows a sample config of a Frozen Throne ladder URL config
+    replace www.your-ladder-page.com with your actual ladder stats URL
+    
+    
+conf/bnmaps.conf
+
+    documentation yet to be written
+    
+
+conf/bnhelp.conf
+
+    This file is used for describing the commands to the user. When
+    connected to the server either by Telnet for through a game and the 
+    user enters /help the contents of this file is displayed.
+
+
+conf/bnban.conf
+
+    conf/bnban.conf allows you to ban specific IP addresses from connecting to your
+    server. You can specify an exact IP address, wildcard matching, address ranges
+    or on a network basis. A copy of the file supplied with the release is below.
+    Note that all lines are commented out.
+    
+    Edit the file as you require making sure not to comment out entries that you 
+    need. You will be required to restart the server after making changes to this
+    file.
+
+        
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    # an example wildcard-match entry
+    #127.*.*.*
+    
+    # an example exact-match entry
+    #127.0.0.1
+    
+    # an example range-match entry
+    #127.0.0.79-127.0.0.84
+    
+    # two example network entries
+    #127.0.0.0/8
+    #127.0.0.0/255.0.0.0
+
+    
+conf/bnalias.conf
+
+    List of Locally Defined Alias Commands.
+    This file can be used to define shortcuts for often-used commands or for
+    unusually long commands.  It can also be used to make custom emotes which
+    are especially useful for non-English servers.
+
+    The header of this file contains a lot of help text.
+    
+    # Lines starting with a # are considered to be comments.
+    # The format is:#
+    # @
+    # aliasname [aliasshortcut1 [aliasshortcut2 [...]]]
+    # [!]text or command to type as if the player typed it
+    # [!]%Iinformation to print to the player
+    # [!]%Eerror to print to the player
+    #
+    # Where ! is either an integer representing the number of arguments given to
+    # the alias by the user or an asterisk (*) meaning it will match any number
+    # of arguments.  The plus sign (+) will match with any non-zero number of
+    # arguments.
+    #
+    # There may be as many lines as you want following the aliasname.  If
+    # multiple lines match they will be executed in the order they are listed.
+    #
+    # The text or command is actually formatted text as used in the bnmotd file.
+    # It contains special formatting characters which can be used to specify the
+    # type of message or substitue special values (the hostname, the player's
+    # own name, and many more).  These all start with a percent sign (%).  There
+    # are also special formatters which subsitute arguments which were entered
+    # by the user.  These start with a dollar sign.
+    #
+    # $*             -  substitute all arguments here
+    # $0 through $9  -  substitute that argument here (0 means the command)
+    # ${43}          -  substitute that argument here (0 means the command)
+    # ${-19}         -  substitute arguments 0-19 here
+    # ${2-}          -  substitue all arguments from 2 until the end here
+    #
+    
+    @
+    //doubt //dt //d
+    [0]/me looks with doubt
+    [1+]/me looks at ${1-} with doubt
+    @
+    //numusers //nu
+    [0]%IThere are %u users online.
+    [0]%IThere are %g games online.
+    [0]%IThere are %c channels online.
+    [1+]%EThat command does not take any arguments.
+    @
+    //askban //ab
+    [2+]/w $1 Please ban ${2-}.
+    @
+    //statsme //sm
+    [0]/stats %u
+    @
+    //pvpgn
+    [*]/announce PVPGN rulez!
+
+
+Tracking server info
+
+    By updating the PvPGN server tracking details in your conf/bnetd.conf file
+    the extistence of your server is published at http://pvpgn.mivabe.nl/index.php
+    The attributes that are set in the conf/bnetd.conf file determine what 
+    information is published and how often it is updated.
+    
+    An excellent search facility exists at the site. Search on anything, host IP address,
+    location, description, PvPGN version.
+    
+    The site also contains a How-to that describes how you can publish a 
+    description of your server complete with icons and details of what
+    games are supported. Here's an example configuration:
+    
+        location = "Chattam Islands"
+        description = "SCSBW 1.11b OPE - Dax NZ PvPGN Server"
+        url = "http://justanexample.com"
+        contact_name = "David"
+        contact_email = "anyone@justanexample.com"
+
+

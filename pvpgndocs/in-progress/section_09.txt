@@ -1,0 +1,332 @@
+Section 9 - The doc that just doesn't fit anywhere else
+
+ * denotes completed
+ - denotes still being worked on
+ ? need to agree if we should do more
+
+ *  Introduction
+ *  Users can't see games created by others
+ *  PvPGN Development
+ *  main: failed to initialize network (exiting) 
+    Bot what?
+    
+    
+Introduction
+
+    It had to happen. We've got some bits and pieces of text that are too 
+    important to loose, but dont' have a good place fro them in the main
+    body of the document. So this is where they'll go:
+    Tips
+    Advise
+    Questions and Answers
+    
+
+Users can't see games created by others
+
+    This is a reoccurring theme in the forums at http://forums.pvpgn.org 
+    You need to fix this error yourself with some careful analysis and updating.
+
+    First, ask some questions:
+    Do you know specifically what version of the client software you are using?
+    Do you know specifically what version of the client software your fellow game 
+    players are using?
+
+    My StarCraft experiences with PvPGN show that if the "GAME VERSION TAG"
+    is not identical for all players then you can't see one anothers games. 
+    (I'm sure it's versiontag).
+
+    Depending on how the server is setup, it may or may not check versiontags. 
+    Even if it is setup, but the admin running the PvPGN server has not 
+    maintained the versioncheck.txt file then it is possible for you to connect 
+    to the server and get a version tag that doesn't match everyone elses.
+
+    OK, so you can't play on battlenet because of lag. I recommend you connect 
+    to battle.net to at least verify that you are using the most up-to-date 
+    version of the client software.
+
+    If problems persist your PvPGN admin needs to update his versioncheck.txt file.
+
+    examples... there are 4 x examples below, the last line is the versiontag 
+    that is used inside the server. So you can connect and play with different 
+    versions, but you must use matching software version to play games.
+
+    It is posisble to cheat the system (under certain circumstances) and to 
+    do that you must know the name of a game that has been created and key it 
+    on your secrren (true for starcraft at least). Though it may not work in 
+    all circumstances or for WarCraft.
+
+    # Warcraft III - TFT (Expansion) 1.15a
+    [text deleted]
+    W3XP_115A 
+
+    # Warcraft III - ROC 1.15a
+    [text deleted]
+    WAR3_115A
+
+    # Warcraft III - TFT (Expansion) 1.14b
+    [text deleted]
+    W3XP_114B
+
+    # Warcraft III - TFT (Expansion) 1.14a
+    [text deleted]
+    W3XP_114A
+
+
+PvPGN Development
+
+   So you're interested in changing the PvPGN server code yourself? 
+   Here's some tips....
+
+   What if I want to compile this thing?
+   Prepare to be shocked and amazed....
+   a. download the source from sourceforge.net
+   b. decompress the file into a directory on your machine
+   c. READ and I mean READ the file 
+       docs\Compile.Instructions.Win32.Borland.txt
+       - yes I am assuming you are on Windows and don't have .NET compiler at hand
+       - The instructions tell you that a FREE compiler is available from 
+         ftp://ftpd.borland.com/download/bcppbuilder/freecommandLinetools.exe
+       - Just read the rest of the instructions and follower the compiler install
+         instruction to the letter. It's not complicated.
+       - Once installed do a test compile (without changes). This will confirm your installation.
+
+   *** How do I Help out on the PvPGN development?
+    This section is more for my random collection of notes at this point.
+    We'll see how it evolves.
+    
+    dizzy: README.DEV document if you go on the pvpgn development road
+    
+    The "latest" source code is available at:
+    dizzy: If you do development you need to do it on current CVS (ie 1.7) not on 1.6 
+    releases. for that you need to fetch the latest CVS 
+    from sf.net: :pserver:anonymous@cvs.sf.net:/cvsroot/pvpgn
+    
+    If you're new to this, search http://sourceforge.net for stuff about "CVS"
+    and if you're on windows, look for a program called "wincvs". It's not the only
+    CVS program for windows, I've provided the name here as a pointer for you.
+    Sourceforge has a good write up about CVS and there are free PDF books available
+    on the subject too.
+    
+    dizzy: If you want to contribute code back to the forums, please give use unified 
+    diffs against latest CVS not whole files or part of files (its easier to 
+    read them, check them, commit them). To get such a diff do something like this:
+    cvs diff -u > /path/to/patchfile
+
+    If you are in the root source directory of a checked out CVS source tree 
+    it should output a unified diff into patchfile file.
+
+    And your output looks like the file below c/- wincvs using the 
+    Query/Diff selection menu option... (this shows code that I have added
+    and is not in the current Sourceforge version)
+
+#== START =========================================================    
+cvs diff -u handle_bnet.c (in directory E:\CVS\pvpgn\src\bnetd\)
+Index: handle_bnet.c
+===================================================================
+RCS file: /cvsroot/pvpgn/pvpgn/src/bnetd/handle_bnet.c,v
+retrieving revision 1.200
+diff -u -r1.200 handle_bnet.c
+--- handle_bnet.c	19 Jul 2004 13:44:53 -0000	1.200
++++ handle_bnet.c	20 Jul 2004 08:06:44 -0000
+@@ -4357,11 +4357,18 @@
+ static int _client_startgame4(t_connection * c, t_packet const * const packet)
+ {
+    t_packet * rpacket;
++   char const * name; // David Wilson
+    
+    if (packet_get_size(packet)<sizeof(t_client_startgame4)) {
+       eventlog(eventlog_level_error,__FUNCTION__,"[%d] got bad STARTGAME4 packet (expected %u bytes, got %u)",conn_get_socket(c),sizeof(t_client_startgame4),packet_get_size(packet));
+       return -1;
+    }
++
++   // David Wilson - Edit 5 July 2004 - need to see what packets are being sent
++   //                                   for player to player communication
++   eventlog(eventlog_level_debug,__FUNCTION__,"Start of Procedure: Data from ->%s<-, packet ->",
++                  addr_num_to_addr_str(conn_get_addr(c),conn_get_port(c)));
++   eventlog_hexdump_data(packet,packet_get_size(packet));
+    
+    // Quick hack to make W3 part channels when creating a game
+    if (conn_get_channel(c))
+
+***** CVS exited normally with code 1 *****
+#== END =========================================================    
+
+   *** Can I edit a source file and compile so I can play Fastest Speed on Ladder on my server? 
+   Quite possibly, see #11 below.   
+
+   The maximum ladder speed is tied up with the client (i.e. your machine) 
+   and Starcraft ruinning on it. In other words it's coded in Starcraft and 
+   is difficult to influence at the server end.
+
+   c/- http://forums.pvpng.org Comments and Suggestions, v1.7 Feature Requests 
+   Response c/- dizzy
+   I dont think this is server side setting. the client hardcodes the speed 
+   of the ladder games AFAIK
+
+   *** Not able to play ladder on "Fastest" speed? Can't find the 1.11b hack? 
+    No problem, fix it server side.
+
+    It's not a ladder game, but you can play One on One games and the results
+    count towards the ladder.
+    
+    PitchWhite posted this patch on Jun 22 2004. It has been successfully applied
+    again PvPGN 1.6.3
+    
+    
+    Open... 
+
+    /src/bnetd/game.c
+
+    Find...
+
+    CODE  
+        if (realcount>=1 && !game->bad)
+        {
+           if (game_get_type(game)==game_type_ladder ||
+               game_get_type(game)==game_type_ironman)
+               {
+                t_ladder_id id;
+    
+           if (game_get_type(game)==game_type_ladder)
+               id = ladder_id_normal;
+           else
+               id = ladder_id_ironman; 
+
+    Replace with
+
+    CODE  
+        if (realcount>=1 && !game->bad)
+        {
+           if (game_get_type(game)==game_type_ladder ||
+               game_get_type(game)==game_type_ironman ||
+               game_get_type(game)==game_type_oneonone)
+              {
+               t_ladder_id id;
+    
+           if (game_get_type(game)==game_type_ladder || 
+               game_get_type(game)==game_type_oneonone)
+                id = ladder_id_normal;
+           else
+                id = ladder_id_ironman; 
+
+    Basically, One on One Gametypes now count as ladder. Do not worry about 
+    computers, though, either. The server is programmed to give an error for 
+    a game if there is no loser, which there wouldn't be in a 1v1 PvC game. 
+    So no ladder points are recieved, nor is the game counted.
+
+    Enjoy! 
+
+main: failed to initialize network (exiting)
+    When I look in my log file after starting PvPGN, it says 
+    "main: failed to initialize network (exiting)". Make sure you edited the 
+    bnetd.conf file correctly. Their are two possibilities as to what causes this:
+
+   1. The servaddrs in the bnetd.conf is set incorrectly, make the servaddrs look like this:
+
+          * servaddrs  =  "0.0.0.0:6112"
+            This will tell PvPGN to listen on all IP addresses for port 6112. 
+
+      or if you want PvPGN to listen only on a specific IP address, make the servaddrs look like this:
+
+          * servaddrs  =  "X.X.X.X:6112"
+            Replace X.X.X.X with your internet IP address.
+            If your behind a router, replace X.X.X.X with your internal IP address. 
+
+
+   2. The w3routeaddr in the bnetd.conf is set incorrectly, make the w3routeaddr look like this:
+
+          * w3routeaddr  =  "X.X.X.X:6200"
+            Replace X.X.X.X with your internet IP address.
+            If your behind a router, replace X.X.X.X with your internal IP address. 
+
+
+
+Example exert from the bnetd.conf file:
+############################################################################# 	#
+# Server network info 	#
+#----------------------------------------------------------------------------------------------------- 	#
+# Set this option to true to allow TCP to detect and close stale 	#
+# connections. 	#
+use_keepalive  =  false 	
+# 	#
+# This is a comma delimited list of hostnames that the server should 	#
+# listen on. It might be useful to make an internal-only server on a 	#
+# gateway machine for example. If the list is not set or if it has a 	#
+# entry with no host component, the server will bind to that port on all 	#
+# interfaces. 	#
+servaddrs  =  "26.135.61.243:6112" 	
+# 	#
+# Don't change these unless you really need to! You will need to run a proxy 	#
+# or modify the clients. Also note that these will not change when simply 	#
+# sending a HUP signal to the server; they are only read on startup. 	#
+# 	#
+# This is the port the server send the UDP test packets to by default. 	#
+# Setting it to zero makes the server use the same port as the TCP connection 	#
+# comes from. Newer clients can override this setting on a per connection 	#
+# basis. 	#
+#udptest_port  =  6112 	
+# 	#
+# added by zap-zero: 	#
+# W3 Play Game router address. Just put your server address in here. 	#
+# It's needed to tell clients where to connect to init anonymous games. 	#
+# Change it, or clients will get "Error handling the request"! 	#
+w3routeaddr  =  "26.135.61.243:6200" 	
+# 	#
+############################################################################# 	#
+
+
+No realms are available right now
+    When I log in using Diablo II, it says: "No realms are available right now. 
+    Please try again later". This is typically caused when the IP address in the 
+    realm.conf file is set incorrectly.
+
+   1. Edit the realm.list file and change the IP address of the D2CS realm to the 
+   IP address of the computer that is running the D2CS program:
+
+          * X.X.X.X:6113
+            Replace X.X.X.X with the IP address of the computer running D2CS. 
+            This must be specific, 0.0.0.0:6113 won't work. 
+
+
+            Then restart PvPGN and check your log files. If all went well, 
+            it should look something like this:
+
+    Partial exert from the bnetd log:
+    Aug 22 19:22:00 realm_create: created realm "D2CS"
+    Aug 22 19:22:00 server_process: listening for bnet connections on 26.135.61.243:6112 TCP
+    Aug 22 19:22:00 server_process: listening for w3route connections on 26.135.61.243:6200 TCP
+    Aug 22 19:22:01 sd_accept: [7] accepted connection from 26.135.61.243:1025 on 26.135.61.243:6112
+    Aug 22 19:22:01 conn_create: [7][5] sessionkey=0x56eef14e sessionnum=0x00000000
+    Aug 22 19:22:01 handle_init_packet: [7] client initiated d2cs_bnetd connection
+    Aug 22 19:22:01 handle_d2cs_init: sent init packet to d2cs (sessionnum=0)
+    Aug 22 19:22:01 on_d2cs_authreply: d2cs 26.135.61.243 authed
+    Aug 22 19:22:01 realm_active: realm D2CS actived
+
+
+Example exert from the realm.list file:
+############################################################################# 	#
+# realm.list - List of Diablo II Realms 	#
+#----------------------------------------------------------------------------------------------------- 	#
+# 	#
+# Realms are areas that hold closed characters and games. Users are given 	#
+# this list of realms to choose from when creating a new character. Next 	#
+# time the character is used, they will automatically join the same realm. 	#
+# 	#
+# The realm server runs on port 6113 by default. If you do not specify a 	#
+# port number it will use this by default. You must enter an IP Address 	#
+# There is no default 	#
+# 	#
+# ------realm name------        --------------description--------------        ----ip:port---- 	#
+# 	#
+"D2CS"                                 "Divine Knights"                                           26.135.61.243:6113 	
+# 	#
+############################################################################# 	#
+
+
+Bot what?
+
+    Try using "bnbot" included with the Linux and Mac versions of PvPGN
+    Another good bot is prolix: http://prolix.sourceforge.net
+
+    Also Stealth Bot, which all you do is point it to your server.
+    www.stealthbot.net 

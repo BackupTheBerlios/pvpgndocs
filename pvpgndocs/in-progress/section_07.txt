@@ -1,0 +1,21 @@
+
+Section 7 - Website integration
+
+ * denotes completed
+ - denotes still being worked on
+ ? need to agree if we should do more
+
+    Introduction
+    How to display server status on a web page
+    How to display ladders and profiles on a web page
+
+    
+Introduction
+
+
+
+How to display server status on a web page
+
+
+
+How to display ladders and profiles on a web page

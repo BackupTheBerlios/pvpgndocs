@@ -1,0 +1,504 @@
+<style type="text/css">
+<!--
+.style11 {font-size: 18px; color: #FF9933; }
+.style3 {	font-size: 24px;
+	color: #FF9933;
+}
+.style6 {color: #FF9933}
+-->
+</style>
+<center>
+    <h2><a name="top">Installation Instructions for PvPGN </a></h2>
+    <p>By dgwilson65 and U-238</p>
+    <p><em>** Note: Parts of this document still under construction, consider this a pre-release** </em></p>
+</center>
+<p><b><a name="contents">Table of contents</a></b></p>
+  <blockquote>
+    <div style="background-color: #DDDDDD; color: #000000; padding: 4px;">
+      <ul>
+        <li><a href="#intro">Introduction</a></li>
+        <li><a href="#StorageMode">Choosing a storage mode</a></li>
+        <li><a href="#OSChoice">Server Operating System and PvPGN software updates or source vs. compiled</a></li>
+        <li><a href="#Installation">Installation of PvPGN software</a></li>
+        <li><a href="#Linux">Installing PvPGN on Linux</a></li>
+        <li><a href="#Mac">Installing PvPGN on Mac</a></li>
+        <li> <a href="#Windows">Installing PvPGN on Windows</a></li>
+        <li><a href="#MacFink">Installing PvPGN on Mac with Fink</a></li>
+        <li><a href="#Gentoo">Installing PvPGN with Gentoo Portage</a></li>
+      </ul>
+    </div>
+  </blockquote>
+<p><b><a name="intro">Introduction</a></b></p>
+<blockquote>
+  <p>Hello and welcome from the PvPGN development team. Thank you taking the time to read these instructions, time spent reading them could save you many hours of frustration or backtracking on installation instructions or repeating your install. PvPGN is a complex environment that has many parameters that you can alter to effect the experiences of the various clients that connect to the server, so reading the documentation and help text within the server configuration files is important.  
+  <p>Right now you have an important decision to make, or rather several actually. These decisions may be easy as they depend on the hardware you have available to run your server and also depend on the number of clients/users you anticipate on connecting to you server. Something elese to remember is how many users will maintain a concurrent connection to your server (the most number of users online at any one time). If you can't answer these questions yet, read on and see what the impact might be.  
+</blockquote>
+<ol>
+  <li>Which flavour of hardware / operating system to run your PvPGN server on. If you have that choice that&rsquo;s fantastic. Others may be limited in their choice or just want to get something small up and running quickly. </li>
+  <li>How many users you are anticipating on hosting and therefore the potential performance impact that your predicted number of users will have. </li>
+  </ol>
+<blockquote>
+  <p>Question 2 is important in that if you anticipate that you will have &gt;1000 registered users, then perhaps storage of user files and game reports are better in a database. It is possible to configure PvPGN to use a &quot;mysql&quot; database for this mechanism. It will of course require that you have &quot;mysql&quot; installed on your server. Note: it may be possible to get a distribution of PvPGN that does this for you.
+  <p>The following section discusses PvPGN Storage Modes. From this you can make your own assessment.   
+  <p>    
+</blockquote>
+<p><strong>Choosing a storage mode<a name="StorageMode"></a></strong></p>
+<blockquote>
+  <p>Before you install PvPGN, you must decide what storage mode you are going to use. &quot;Storage&quot; is what we call in PvPGN the method used to save user account data (usernames, passwords, win/loss records and lots more). Thus it is a very important part of PvPGN and can drastically increase or decrease speed of the server depending on the chosen method. Because we wanted it to be easy to add new storage types we designed a modular solution, something like this:</p>
+  <p align="left"><img src="http://pvpgndocs.sourceforge.net/storage.png" width="350" height="250"></p>
+  <p align="left">PvPGN can be compiled with support for more than one storage type but (of course) at runtime it will only use one (as chosen by the server admin from the configuration file).</p>
+  <p align="left"><strong>File mode</strong></p>
+  <p align="left">Plain file storage support stores accounts in plain text files. It is included with PvPGN by default, chosen by default in configuration file, and is the oldest and most used storage type. </p>
+  <p align="left"><strong>Advantages:</strong><br>
+  - The text files are in plain english, so it is very easy to create and modify accounts by hand.</p>
+  <p align="left"><strong>Disadvantages:</strong><br>
+    - It&rsquo;s the slowest storage type. Servers with lots of active user accounts will run very slowly.<br>
+  - More difficult to use in a PHP script. Not recommended if you want to have a ladder page on your website.</p>
+  <p align="left"><strong>CDB mode</strong></p>
+  <p align="left">CDB is a constant non-relational database. We included and adapted code from the tinycdb project to achieve this. Because cdb doesnt have any external dependencies and is pretty stable it is (as the &quot;file&quot; driver) included with PvPGN by default.</p>
+  <p align="left"><strong>Advantages:</strong><br>
+  - Runs faster than file accounts</p>
+  <p align="left"><strong>Disadvantages:</strong><br>
+    - To edit the files outside of PvPGN, you need to use a separate tool.<br>
+  - More difficult to use in a PHP script. Not recommended if you want to have a ladder page on your website.</p>
+  <p align="left"><strong>SQL mode</strong></p>
+  <p align="left">SQL mode currently supports MySQL and PostgreSQL. PvPGN does NOT support SQL mode by default. If you want SQL support, you can compile PvPGN with SQL support very easily (see below). If you are using an installer, make sure the installer includes SQL support.</p>
+  <p align="left"><strong>Advantages:</strong><br>
+    - The fastest storage method. Recommended for big servers with lots of user accounts.<br>
+  - Offers easy integration with PHP websites for online ladder pages and user profiles.</p>
+  <p align="left"><strong>Disadvantages:</strong><br>
+  - Not very easy to edit accounts by hand, but much easier to edit than CDB.</p>
+  <p align="left">Configuring your server to use a certain storage mode will be discussed later, but for now just decide which one you are going to use, because if you want to use an SQL storage mode, you will need to do some things different in the next step:</p>
+  <p>&nbsp;</p>
+  <p>Storage Mode Rule of Thumb  </p>
+  <p>Not withstanding the advantages and disadvantages for each storage mode listed above, the following rule of thumb can be used to aid your storage mode decision, though your millage on actual usage may vary. </p>
+  <table width="291" border="1">
+    <tr>
+      <td width="133"><strong>Users</strong></td>
+      <td width="142"><strong>Storage Mode </strong></td>
+    </tr>
+    <tr>
+      <td>&lt; 100 </td>
+      <td>Files</td>
+    </tr>
+    <tr>
+      <td>&gt; 100 and &lt; 1000 </td>
+      <td>CDB</td>
+    </tr>
+    <tr>
+      <td>&gt; 1000 </td>
+      <td>SQL</td>
+    </tr>
+  </table>
+  <p>&nbsp;</p>
+</blockquote>
+<p><strong>Server Operating System and PvPGN software updates or source vs. compiled  <a name="OSChoice"></a></strong></p>
+<blockquote>
+  <p>You can run PvPGN on Linux/Unix (yes there are Solaris implementations), Mac (OS X &ndash; Unix), and Windows. There are versions around for other operating systems, though at time of writing the haven't hit the main stream, For each of operating systems in the core group you can obtain what you need from http://sourceforge.net/projects/pvpgn within the files area. Windows and Mac isers can obtain pre-compiled versions of the software from this area.</p>
+  <p>You can of course obtain the source code and compile it yourself. You can choose a stable release or be on the cutting edge and take the latest release from the soureforge CVS. The latest version of the source code is available from the CVS using :pserver:anonymous@cvs.sf.net:/cvsroot/pvpgn and the module pvpgn. Note accessing the CVS is not like using ftp, so if this is foreign to you and you want to find out more, read up more about CVS at http://sourceforge.net there's heaps of information and it's all free.</p>
+  <p>There are other distribution mechanisms for PvPGN besides getting what you need from sourceforge. </p>
+</blockquote>
+<ol>
+  <li>Mac OS X users will soon be able to obtain a PvPGN release via fink (you will have to have fink installed) and the good news here is that if you think that using a SQL database for your system is best, fink will install what you need for that too. Fink will automatically download and install all package dependencies, compile, and install. All you need to do is complete the configuration and start the PvPGN server. </li>
+  <li>Gentoo Portage is another PvPGN distribution mechanism. <em>(be good if I had some more text here)</em> </li>
+</ol>
+<blockquote>
+  <p>&nbsp;</p>
+</blockquote>
+<p><strong>Installation of PvPGN software<a name="Installation"></a> </strong></p>
+<blockquote>
+  <p>The install instructions in the following sections describe their particular install scenario. There may be more, we&rsquo;ve provided these as getting started examples. Regardless of which distribution of PvPGN you are going to use, you will need to follow this rough guide:</p>
+</blockquote>
+<ol>
+  <li> Install dependencies</li>
+  <li> Install PvPGN</li>
+  <li> Configure PvPGN</li>
+  <li> Start PvPGN</li>
+  <li> Test PvPGN connection with appropriate client software</li>
+  <li> Enhance PvPGN configuration if required</li>
+</ol>
+<blockquote>
+  <p>&nbsp;       </p>
+</blockquote>
+<p><strong>Installing PvPGN on Linux<a name="Linux"></a></strong></p>
+<blockquote>
+  <p>If you downloaded a source distribution (.tar.gz), follow the instructions below. If you got a binary distribution (RPM, etc), see the instructions <a href="#binary">here</a>. If you want to use an SQL storage mode with a binary distribution, you must get a binary distribution that supports your desired storage mode.</p>
+  <p class="style3"><a name="source"></a>Installing PvPGN from source</p>
+  <p class="style4">Quick overview for the impatient:</p>
+  <pre>   cd src
+   ./configure --prefix=PREFIX (--with-mysql) (--with-pgsql)
+   make
+   make install</pre>
+  <p class="style11">Running the configure script</p>
+  <p>The most important options here are the directory where PvPGN is to be installed later, and whether or not you want SQL support.</p>
+  <p>To configure without SQL support, just run:</p>
+  <pre>	./configure</pre>
+  <p>or</p>
+  <pre>	./configure --prefix=&lt;path&gt;</pre>
+  <p>Replace &lt;path&gt; with the directory where you want to install PvPGN.</p>
+  <p>To configure with MySQL support:</p>
+  <pre>	./configure --with-mysql --prefix=&lt;path&gt;</pre>
+  <p>or for PostgreSQL support:</p>
+  <pre>	./configure --with-pgsql --prefix=&lt;path&gt;</pre>
+  <p>If you do not specify a prefix, PvPGN will be installed into <strong>/usr/local</strong></p>
+  <p>If run configure with the --with-mysql/--with-pgsql parameter, check the configure output where it detects the MySQL / PostgreSQL paths, it should find the right locations of your MySQL / PostgreSQL includes and libraries. If configure does not find the SQL includes and libraries, then PvPGN will NOT be compiled with SQL support.</p>
+  <p>For a list of all available options, run:</p>
+  <pre>	./configure --help</pre>
+  <p class="style11">Compiling PvPGN</p>
+  <p>After running the configure script, you can compile PvPGN simply by typing:</p>
+  <pre>	make</pre>
+  <p>Hopefully there will be no errors while compiling.</p>
+  <p class="style11">Installing PvPGN</p>
+  <p>Now it&rsquo;s time to install PvPGN under the prefix you specified in the configure script (with the --prefix option). If you did not specify a prefix, PvPGN will be installed into /usr/local. To do this, simply type:</p>
+  <pre>	make install</pre>
+  <p>WARNING!!! If you already have PvPGN installed in the destination directory, your configuration files will be overwritten. If upgrading from an old PvPGN release, you should see Upgrading to 1.7</p>
+  <p class="style11">Installing the support files</p>
+  <p>You will also need to install the PvPGN support files.</p>
+  <p>Download the PvPGN support files from:<br>
+      <a href="http://pvpgn-files.ath.cx/pvpgn-support-1.0.tar.gz">http://pvpgn-files.ath.cx/pvpgn-support-1.0.tar.gz</a><br>
+  or get <strong>pvpgn-support-1.0.tar.gz</strong> from <a href="http://sourceforge.net/projects/pvpgn/">http://sourceforge.net/projects/pvpgn/</a></p>
+  <p>Unpack the tarball and put the files into <strong>PREFIX/var/files/</strong>, replacing PREFIX with the prefix you specified during installation (<strong>/usr/local</strong> by default).</p>
+  <p>Now it&rsquo;s time to configure and start your server. See <a href="#config">Configuring your server</a> below.</p>
+  <p class="style3"><a name="binary"></a>Installing PvPGN from a binary distribution</p>
+  <p>Installation instructions for binary distributions differ depending on the type of package you have obtained.</p>
+  <p>Examples:</p>
+  <pre>  rpm -ivh pvpgn-&lt;ver&gt;.rpm</pre>
+  <pre>  installpkg pvpgn-&lt;ver&gt;.tgz</pre>
+  <pre>  dpkg -i pvpgn-&lt;ver&gt;.deb</pre>
+  <p>After installation you will have to edit the configuration files, usually installed into <strong>/etc/pvpgn</strong>. See Configuring your server below.</p>
+  <p>If you have problems with a binary package, it is recommended that you compile from source.</p>
+  <p class="style11">Installing the support files</p>
+  <p>After installing PvPGN (whether from source or binary package) you will need to also install the PvPGN support files. </p>
+  <p>Download the PvPGN support files from:<br>
+      <a href="http://pvpgn-files.ath.cx/pvpgn-support-1.0.tar.gz">http://pvpgn-files.ath.cx/pvpgn-support-1.0.tar.gz</a><br>
+  or get <strong>pvpgn-support-1.0.tar.gz</strong> from <a href="http://www.sourceforge.net/projects/pvpgn/">http://www.sourceforge.net/projects/pvpgn/</a></p>
+  <p>Unpack the tarball and put the files into<strong> /var/files/</strong></p>
+  <p>The next step is to configure your server:</p>
+  <p class="style3"><a name="config"></a>Configuring your server</p>
+  <p>The configuration files are located in the etc directory within the directory where PvPGN was installed. The most important of these is bnetd.conf, the main server configuration file.</p>
+  <p>The main thing that needs to be set up here is the storage mode. You will have decided before whether you are going to use File, CDB, MySQL or PostgreSQL for storage. Scroll down to the option labeled &ldquo;storage_path&rdquo;. If you want to use File mode, then nothing needs to be changed here, the default settings should work fine.</p>
+  <p><strong>An example setup for file mode:</strong><br>
+  storage_path = file:dir=/usr/local/var/users;clan=/usr/local/var/clans;default=/usr/local/etc/bnetd_default_user</p>
+  <p><strong>dir</strong> = Directory where the user account files are stored<br>
+      <strong>clan</strong> = Directory where the clan files are stored<br>
+      <strong>default</strong> = The &ldquo;default user&rdquo;. This is a template that will be used whenever a new user is created.</p>
+  <p><strong>An example setup for CDB mode:</strong><br>
+  storage_path = cdb:dir=/usr/local/pvpgn/var/userscdb;clan=/usr/local/pvpgn/var/clans;default=/usr/local/pvpgn/etc/bnetd_default_user.cdb</p>
+  <p><strong>dir</strong> = Directory where user account CDB files are stored<br>
+      <strong>clan</strong> = Directory where clan CDB files are stored<br>
+      <strong>default</strong> = The &ldquo;default user&rdquo;. This is a template that will be used whenever a new user is created.</p>
+  <p><strong>An example setup for SQL mode:</strong><br>
+  storage_path = sql:mode=mysql;host=127.0.0.1;name=PVPGN;user=pvpgn;pass=pvpgnrocks;default=0</p>
+  <p><strong>mode</strong> = The SQL mode you will use. The only possible values here are &ldquo;mysql&rdquo; and &ldquo;pgsql&rdquo;<br>
+      <strong>host</strong> = The SQL host<br>
+      <strong>name</strong> = The name of the database that PvPGN will use for storage<br>
+      <strong>user</strong> = The SQL user<br>
+      <strong>pass</strong> = The password for that SQL user<br>
+      <strong>default </strong> = The uid of the &ldquo;default user&rdquo;. This value is almost never changed. The &ldquo;default user&rdquo; is a template that will be used whenever a new user is created.</p>
+  <p class="style3"><a name="w3rout"></a>Setting up Warcraft 3 ladder games</p>
+  <p>If you are not planning on having any Warcraft 3 users access your server, you can skip this section and jump straight to the <a href="#start">next section</a>.</p>
+  <p class="style11">Simple setup for servers without a router</p>
+  <p>In bnetd.conf, scroll down to the section titled &ldquo;Server network info&rdquo; and find w3routaddr. Change it to this:</p>
+  <p><strong>w3routaddr = xxx.xxx.xxx.xxx:6200</strong></p>
+  <p>and replace xxx.xxx.xxx.xxx with your server&rsquo;s IP address. Now move on to the <a href="#start">next section</a>.</p>
+  <p class="style11">Setup for servers behind a router</p>
+  <p>In bnetd.conf, make sure that w3routaddr is set to 0.0.0.0:6200. This is the default, so it should be set to this unless you have changed it.</p>
+  <p>Now open the w3trans file, which should be in the same directory as bnetd.conf.</p>
+  <p>Syntax of this file is:<br>
+&lt;IP with bitmask&gt; &lt;w3routaddr to be shown to those users&gt;</p>
+  <p>Here&rsquo;s an example of a typical router setup:</p>
+  <p>Router&rsquo;s external IP: 11.22.33.44<br>
+    Router&rsquo;s internal IP: 192.168.0.1<br>
+    Server&rsquo;s internal IP: 192.168.0.2<br>
+  Server&rsquo;s subnet mask: 255.255.255.0</p>
+  <p>Then w3trans should be configured like this:</p>
+  <table width="300" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>192.168.0.0/32</td>
+      <td>192.168.0.2:6200</td>
+    </tr>
+    <tr>
+      <td>0.0.0.0/0</td>
+      <td>11.22.33.44:6200</td>
+    </tr>
+    </table>
+  <p>This will display the w3routaddr as being 192.168.0.2 to users on the local network, and it will display 11.22.33.44 to users from the outside world.</p>
+  <p>Your bitmask can be determined from your server&rsquo;s subnet mask. Here&rsquo;s a simple conversion table:</p>
+  <table width="200" border="1" cellpadding="0" cellspacing="0" bordercolor="#FF9933">
+    <tr>
+      <td>Subnet mask </td>
+      <td>Bitmask</td>
+    </tr>
+    <tr>
+      <td>255.0.0.0</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>255.255.0.0</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>255.255.255.0</td>
+      <td>32</td>
+    </tr>
+    </table>
+  <p class="style3"><a name="start"></a>Starting your server</p>
+  <p>Your server is now configured. To start the server, type:</p>
+  <pre>  PREFIX/sbin/bnetd</pre>
+  <p>And replace PREFIX with the prefix you specified during installation (<strong>/usr/local</strong> by default). The server will run in the background. If you want to monitor what the server is doing, look in the log file, stored in PREFIX/var/bnetd.log </p>
+  <p><span class="style11">Related links:</span><br>
+    Setting up the game clients to access the server<br>
+  Getting your server listed on the official server list</p>
+  <p>&nbsp; </p>
+</blockquote>
+<p><strong>Installing PvPGN on Mac <a name="Mac"></a> </strong></p>
+<blockquote>
+  <p><strong>Note: PvPGN requires Mac OS X 10.3 or later</strong></p>
+  <p>On Mac, it is recommended that you use the installer distribution. The installer is the easiest way to install PvPGN on a Mac, however you may wish to compile PvPGN from source if:<br>
+    - The latest version of PvPGN has just been released and the Mac installer is not yet available.<br>
+  - You have made changes to the PvPGN code.</p>
+  <p align="left"> The Mac installer package can be downloaded from any of the sites listed below. It usually has a name like: <em>pvpgn-1.7.0-1.macos.ppc32.dmg</em> or something similar. The source distribution usually has a name like <em>pvpgn-1.7.0.tar.gz</em></p>
+  <p align="left"><a href="http://pvpgn-files.ath.cx/releases/mac/">http://pvpgn-files.ath.cx/releases/mac/<br>
+    </a><a href="http://sourceforge.net/projects/pvpgn/">http://sourceforge.net/projects/pvpgn/</a></p>
+  <p align="left">If you downloaded the installer, see the instructions below. If you downloaded the source distribution, see the instructions <a href="#installfromsource">here</a>.</p>
+  <p align="left" class="style3"><a name="usinginstaller"></a>Installing PvPGN using the installer </p>
+  <p align="left">If you are using the File or CDB storage mode: <em>pvpgn-1.7.0-1.macos.ppc32.dmg<br>
+    </em>If you are using MySQL for storage: <em>pvpgn-1.7.0-1mysql.macos.ppc32.dmg<br>
+    </em>If you are using PostgreSQL for storage: <em>pvpgn-1.7.0-1pgsql.macos.ppc32.dmg</em></p>
+  <p align="left">After downloading the installer, most web browsers will mount the disk image for you. If it doesn't, just double-click the .dmg file to mount the disk image. Open the newly mounted disk called &quot;PvPGN 1.7.0&quot; </p>
+  <p align="left">To install PvPGN, just run the installer called &quot;pvpgn-1.7.0.pkg&quot; or something similar. Follow the instructions on the screen.</p>
+  <p align="left">If you want PvPGN to start when the computer starts up, you should also run the the installed called &quot;PvPGNStartupItem.pkg&quot;. <strong>Note: The PvPGN StartupItem only needs to be installed once. You won't need to install it again when upgrading to a new version of PvPGN.</strong></p>
+  <p align="left">PvPGN is installed into <strong>/usr/local/pvpgn-1.7.0</strong> and a shortcut is made to this folder at <strong>/usr/local/pvpgn</strong></p>
+  <p align="left">You will now need to edit the configuration files. See <a href="#config">configuring your server</a>. </p>
+  <p align="left" class="style3"><a name="installfromsource"></a>Installing PvPGN from source</p>
+  <p align="left"><strong>To compile PvPGN on Mac, you must have the Mac OS X Developer Tools installed.<br>
+  Download from <a href="http://developer.apple.com/tools/macosxtools.html">http://developer.apple.com/tools/macosxtools.html</a></strong></p>
+  <p align="left" class="style11">Quick overview for the impatient:</p>
+  <pre align="left">  cd src
+  ./configure --prefix=PREFIX (--with-mysql) (--with-pgsql)
+  make
+  make install</pre>
+  <p align="left" class="style11">Step by step instructions:</p>
+  <p align="left">Download <em>pvpgn-1.7.0.tar.gz</em> and unzip it. Then move the folder &quot;pvpgn-1.7.0&quot; into your home folder.</p>
+  <p align="left">Open the Terminal (found in Applications &gt; Utilities &gt; Terminal).<br>
+  To move into the PvPGN src folder, type: </p>
+  <div align="left">
+    <pre>	cd pvpgn-1.7.0/src </pre>
+  </div>
+  <p align="left">Now you're ready to run the configure script.</p>
+  <p align="left" class="style11">Running the configure script</p>
+  <p align="left">The most important options here are the directory where PvPGN is to be installed later, and whether or not you want SQL support.</p>
+  <p align="left">To configure without SQL support, just run:</p>
+  <div align="left">
+    <pre>	./configure</pre>
+  </div>
+  <p align="left">or</p>
+  <div align="left">
+    <pre>	./configure --prefix=&lt;path&gt;</pre>
+  </div>
+  <p align="left">Replace &lt;path&gt; with the directory where you want to install PvPGN. If a path is not specified, PvPGN will be installed into <strong>/usr/local</strong></p>
+  <p align="left">To configure with MySQL support:</p>
+  <div align="left">
+    <pre>	./configure --with-mysql --prefix=&lt;path&gt;</pre>
+  </div>
+  <p align="left">or for PostgreSQL support:</p>
+  <div align="left">
+    <pre>	./configure --with-pgsql --prefix=&lt;path&gt;</pre>
+  </div>
+  <p align="left">If you do not specify a prefix, PvPGN will be installed into <strong>/usr/local</strong></p>
+  <p align="left">If run configure with the --with-mysql/--with-pgsql parameter, check the configure output where it detects the MySQL / PostgreSQL paths, it should find the right locations of your MySQL / PostgreSQL includes and libraries. If configure does not find the SQL includes and libraries, then PvPGN will NOT be compiled with SQL support.</p>
+  <p align="left">For a list of all available options, run:</p>
+  <div align="left">
+    <pre>	./configure --help</pre>
+  </div>
+  <p align="left" class="style11">Compiling PvPGN</p>
+  <p align="left">After running the configure script, you can compile PvPGN simply by typing:</p>
+  <div align="left">
+    <pre>	make</pre>
+  </div>
+  <p align="left">Hopefully there will be no errors while compiling.</p>
+  <p align="left" class="style11">Installing PvPGN</p>
+  <p align="left">Now it&rsquo;s time to install PvPGN under the prefix you specified in the configure script (with the --prefix option). If you did not specify a prefix, PvPGN will be installed into /usr/local. To do this, simply type:</p>
+  <div align="left">
+    <pre>	make install</pre>
+  </div>
+  <p align="left">WARNING!!! If you already have PvPGN installed in the destination directory, your configuration files will be overwritten. If upgrading from an old PvPGN release, you should see Upgrading to 1.7.</p>
+  <p align="left">If you want to start PvPGN when the computer starts up, you can do this by installing the PvPGN StartupItem. Download it from:<br>
+  <a href="http://pvpgn-files.ath.cx/releases/mac/PvPGNStartupItem.dmg">http://pvpgn-files.ath.cx/releases/mac/PvPGNStartupItem.dmg</a></p>
+  <p align="left">The StartupItem assumes that PvPGN is installed in <strong>/usr/local/pvpgn</strong> (this being the place where the PvPGN installer would install it). If you installed PvPGN elsewhere, edit <strong>/Library/StartupItems/PvPGN/PvPGN</strong> in a text editor and change the path to PvPGN.</p>
+  <p class="style11">Installing the support files</p>
+  <p>You will also need to install the PvPGN support files.</p>
+  <p>Download the PvPGN support files from:<br>
+    <a href="http://pvpgn-files.ath.cx/pvpgn-support-1.0.tar.gz">http://pvpgn-files.ath.cx/pvpgn-support-1.0.tar.gz</a><br>
+  or get <strong>pvpgn-support-1.0.tar.gz</strong> from <a href="http://sourceforge.net/projects/pvpgn/">http://sourceforge.net/projects/pvpgn/</a></p>
+  <p>Unpack the tarball and put the files into <strong>PREFIX/var/files/</strong>, replacing PREFIX with the prefix you specified during installation (<strong>/usr/local</strong> by default).</p>
+  <p>Now it&rsquo;s time to configure and start your server. See Configuring your server below.</p>
+  <p align="left" class="style3"><a name="config"></a>Configuring your server</p>
+  <p align="left">The configuration files are located in the etc directory within the directory where PvPGN was installed.</p>
+  <p align="left">If you used the installer, then the config files will be located in /usr/local/pvpgn/etc</p>
+  <p align="left">I strongly recommend using BBEdit to edit these files. BBEdit has the ability to open files that are inside hidden folders, which makes it ideal for editing the PvPGN configuration files.<br>
+  You can download the BBEdit demo here: <a href="http://www.barebones.com/products/bbedit/demo.shtml">http://www.barebones.com/products/bbedit/demo.shtml</a></p>
+  <p align="left">The most important of these is bnetd.conf, the main server configuration file.</p>
+  <p align="left">The main thing that needs to be set up here is the storage mode. You will have decided before whether you are going to use File, CDB, MySQL or PostgreSQL for storage. Scroll down to the option labeled &ldquo;storage_path&rdquo;. If you want to use File mode, then nothing needs to be changed here, the default settings should work fine.</p>
+  <p align="left"><span class="style6"><strong>An example setup for file mode:</strong></span><br>
+  storage_path = file:dir=/usr/local/var/users;clan=/usr/local/var/clans;default=/usr/local/etc/bnetd_default_user</p>
+  <p align="left"><strong>dir</strong> = Directory where the user account files are stored<br>
+    <strong>clan</strong> = Directory where the clan files are stored<br>
+  <strong>default</strong> = The &ldquo;default user&rdquo;. This is a template that will be used whenever a new user is created.</p>
+  <p align="left"><span class="style6"><strong>An example setup for CDB mode:</strong><br>
+    </span>storage_path = cdb:dir=/usr/local/pvpgn/var/userscdb;clan=/usr/local/pvpgn/var/clans;default=/usr/local/pvpgn/etc/bnetd_default_user.cdb</p>
+  <p align="left"><strong>dir</strong> = Directory where user account CDB files are stored<br>
+    <strong>clan</strong> = Directory where clan CDB files are stored<br>
+  <strong>default</strong> = The &ldquo;default user&rdquo;. This is a template that will be used whenever a new user is created.</p>
+  <p align="left"><span class="style6"><strong>An example setup for SQL mode:</strong></span><br>
+  storage_path = sql:mode=mysql;host=127.0.0.1;name=PVPGN;user=pvpgn;pass=pvpgnrocks;default=0</p>
+  <p align="left"><strong>mode</strong> = The SQL mode you will use. The only possible values here are &ldquo;mysql&rdquo; and &ldquo;pgsql&rdquo;<br>
+    <strong>host</strong> = The SQL host<br>
+    <strong>name</strong> = The name of the database that PvPGN will use for storage<br>
+    <strong>user</strong> = The SQL user<br>
+    <strong>pass</strong> = The password for that SQL user<br>
+  <strong>default</strong> = The uid of the &ldquo;default user&rdquo;. This value is almost never changed. The &ldquo;default user&rdquo; is a template that will be used whenever a new user is created.</p>
+  <p align="left" class="style3"><a name="war3ladder"></a>Setting up Warcraft 3 ladder games </p>
+  <p align="left">If you are not planning on having any Warcraft 3 users access your server, you can skip this section and jump straight to the <a href="#startserver">next section</a>.</p>
+  <p align="left" class="style11">Simple setup for servers without a router</p>
+  <p align="left">In bnetd.conf, scroll down to the section titled &ldquo;Server network info&rdquo; and find w3routaddr. Change it to this:</p>
+  <p align="left"><strong>w3routaddr = xxx.xxx.xxx.xxx:6200</strong></p>
+  <p align="left">and replace xxx.xxx.xxx.xxx with your server&rsquo;s IP address. Now move on to the <a href="#startserver">next section</a>.</p>
+  <p align="left" class="style11">Setup for servers behind a router</p>
+  <p align="left">In bnetd.conf, make sure that <strong>w3routaddr</strong> is set to <strong>0.0.0.0:6200</strong>. This is the default, so it should be set to this unless you have changed it.</p>
+  <p align="left">Now open the w3trans file, which should be in the same directory as bnetd.conf.</p>
+  <p align="left">Syntax of this file is:<br>
+&lt;IP with bitmask&gt; &lt;w3routaddr to be shown to those users&gt;</p>
+  <p align="left">Here&rsquo;s an example of a typical router setup:</p>
+  <p align="left">Router&rsquo;s external IP: 11.22.33.44<br>
+    Router&rsquo;s internal IP: 192.168.0.1<br>
+    Server&rsquo;s internal IP: 192.168.0.2<br>
+  Server&rsquo;s subnet mask: 255.255.255.0</p>
+  <p align="left">Then w3trans should be configured like this:</p>
+  <div align="left">
+    <table width="300" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td>192.168.0.0/32</td>
+        <td>192.168.0.2:6200</td>
+      </tr>
+      <tr>
+        <td>0.0.0.0/0</td>
+        <td>11.22.33.44:6200</td>
+      </tr>
+      </table>
+  </div>
+  <p align="left">This will display the w3routaddr as being 192.168.0.2 to users on the local network, and it will display 11.22.33.44 to users from the outside world.</p>
+  <p align="left">Your bitmask can be determined from your server&rsquo;s subnet mask. Here&rsquo;s a simple conversion table:</p>
+  <div align="left">
+    <table width="200" border="1" cellpadding="0" cellspacing="0" bordercolor="#FF9933">
+      <tr>
+        <td>Subnet mask </td>
+        <td>Bitmask</td>
+      </tr>
+      <tr>
+        <td>255.0.0.0</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>255.255.0.0</td>
+        <td>16</td>
+      </tr>
+      <tr>
+        <td>255.255.255.0</td>
+        <td>32</td>
+      </tr>
+      </table>
+  </div>
+  <p align="left" class="style3"><a name="startserver"></a>Starting the server</p>
+  <p align="left">Your server is now configured! If you installed PvPGN using the installer, you can simply start the server typing the following at a terminal window:</p>
+  <div align="left">
+    <pre>	PvPGN start</pre>
+  </div>
+  <p align="left">If you compiled PvPGN from source, then you can start the server by typing:</p>
+  <div align="left">
+    <pre>	PREFIX/sbin/bnetd</pre>
+  </div>
+  <p align="left">Where PREFIX is the prefix you specified when using the configure script. </p>
+  <p align="left">Your server will now listen for connections! Remember that if you installed the PvPGN StartupItem, the server will start when the computer starts up.</p>
+  <p align="left" class="style3"><a name="stoprestartserver"></a>Stopping / restarting the server</p>
+  <p align="left">If you installed PvPGN using the installer, you can stop or restart the server by typing the following at a terminal window:</p>
+  <div align="left">
+    <pre>	PvPGN stop
+
+
+
+	PvPGN restart</pre>
+  </div>
+  <p align="left">If you compiled from source:</p>
+  <div align="left">
+    <pre>	To stop: sudo killall bnetd
+
+
+	To restart: sudo killall -HUP bnetd
+
+
+	To force quit: sudo killall -KILL bnetd
+                  </pre>
+  </div>
+  <p align="left">If there are still users connected when you try to stop the server, the server will enter into a 5 minute shutdown sequence. The users will be warned that the server is going to shut down in 5 minutes, and when that 5 minute time limit is reached, all remaining users will be disconnected.</p>
+  <p align="left">Restarting a server will reload all the configuration files while keeping all users online. This is good if you have made changes to the configuration but don't want to disconnect all your users.</p>
+  <p align="left" class="style3"><a name="alldone"></a>All done!</p>
+  <p align="left">Congratulations! You now have your very own PvPGN server. It is now recommended that you see the section of this documentation on adminstering and customizing your server.</p>
+  <p align="left">Related links:<br>
+    <a href="#">Setting up the game clients to access the server</a><br>
+  <a href="#">Getting your server listed on the official server list</a></p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+</blockquote>
+<p><strong>Installing PvPGN on Windows <a name="Windows"></a></strong></p>
+<blockquote>
+  <p>To install on Windows there are two different PvPGN distributions available. Firstly in the file section of the PvPGN project st sourceforge. <a href="http://sourceforge.net/projects/pvpgn">http://sourceforge.net/projects/pvpgn</a> and the other from <a href="http://www.pvpgn.de">http://www.pvpgn.de</a> or <a href="http://www.world-of-amadeus.de">http://www.world-of-amadeus.de</a> - make sure you download the release that includes the required support files if this is your first installation or you intend to perform a clean installation..</p>
+  <p>Using the Windows installer is the easiest installation method and it includes all the support files necessary for your server to start work right away. The screen shots below illistrate just how simple the install is. It even updates the configuration files for you. Though you would do well to understand them in some detail later as you may want to make changes. </p>
+  <p align="center"><em>The folder shown below contains both the Windows installer from <a href="http://www.pvpgn.de">http://www.pvpgn.de</a> and the release from <a href="http://sourceforge.net/projects/pvpgn">http://sourceforge.net/projects/pvpgn</a> along with the &quot;support files&quot;. </em></p>
+  <p><img src="http://pvpgndocs.sourceforge.net/win_inst-01.jpg" width="830" height="244"></p>
+    <p align="center"><em>A look inside the release from <a href="http://sourceforge.net/projects/pvpgn">http://sourceforge.net/projects/pvpgn</a> after it has been decompressed. For installation you would need to copy the entire folder to your c:\Program Files directory. Decompress the support files (shown above) and copy them into the &quot;files&quot; directory of the PvPGN release. Next you would edit the bnetd.conf file as required paying particular attention to the storage mode. You can run the server in windows GUI mode by double clicking on PvPGN.exe or read on for installing PvPGN as a Windows service.</em></p>
+  <p><img src="http://pvpgndocs.sourceforge.net/win_inst-02.jpg" width="822" height="519"></p>
+    <p align="center"><em>The support files decompressed. The contents of this folder should reside in the &quot;Files&quot; folder of the PvPGN release.  </em></p>
+  <p><img src="http://pvpgndocs.sourceforge.net/win_inst-03.jpg" width="836" height="377"></p>
+    <p align="center"><em>Want to run PvPGN as a service? Running this script will install the required services. </em></p>
+  <p><img src="http://pvpgndocs.sourceforge.net/win_inst-04.jpg" width="352" height="151"></p>
+  <p>&nbsp;</p>
+  <p align="center"><em>The Windows Installer for PvPGN. Much easier and includes automatic configuration. </em></p>
+  <p><img src="http://pvpgndocs.sourceforge.net/win_inst-05.jpg" width="503" height="394"></p>
+    <p>&nbsp; </p>
+  <p><img src="http://pvpgndocs.sourceforge.net/win_inst-06.jpg" width="503" height="394"></p>
+    <p>&nbsp; </p>
+  <p><img src="http://pvpgndocs.sourceforge.net/win_inst-07.jpg" width="503" height="394"></p>
+    <p>&nbsp; </p>
+  <p><img src="http://pvpgndocs.sourceforge.net/win_inst-08.jpg" width="503" height="394"></p>
+    <p>&nbsp; </p>
+  <p><img src="http://pvpgndocs.sourceforge.net/win_inst-09.jpg" width="503" height="394"></p>
+    <p>&nbsp; </p>
+  <p><img src="http://pvpgndocs.sourceforge.net/win_inst-10.jpg" width="503" height="394"></p>
+    <p align="center"><em>Once the installation has been completed the following program groups folder is created and appears in your START Programs menu. </em></p>
+    <p><img src="http://pvpgndocs.sourceforge.net/win_inst-11.jpg" width="825" height="306"></p>
+  <p>&nbsp; </p>
+  <p>&nbsp; </p>
+</blockquote>
+<p><strong>Installing PvPGN on Mac with Fink</strong><a name="MacFink"></a></p>
+<blockquote>
+  <p>These instruction are pending the release of the fink package installer by the &quot;fink gods&quot;. </p>
+  <p>&nbsp;</p>
+  <p><em>Special note on how to get SQL from fink auto start after your Mac is rebooted</em></p>
+  <p>&nbsp; </p>
+  <p>&nbsp; </p>
+  <p>&nbsp; </p>
+</blockquote>
+<p><strong>Installing PvPGN with Gentoo Portage
+    </strong><a name="Gentoo"></a>  
+</p>
+<blockquote>
+  <p> PvPGN has made it into the Gentoo Portage 
+system. One very nice feature about the ebuild is the mysql/pgsql USE flags which if enabled will compile PvPGN with support for those. <a href="http://www.gentoo-portage.com/">http://www.gentoo-portage.com/</a> Look under games-server and then for pvpgn. </p>
+  <p><em>really need more information here.... <br>
+    </em><br>
+              </blockquote>
+<p><strong>Legal</strong></p>
+<blockquote>
+  <p>Battle.net and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment in the U.S. and/or other countries. Usage of the PvPGN software is free under the GNU public license. While every attempt has been made to ensure that the software functions as intended and that the documentation provided is accurate, the PvPGN community of developers and contributors cannot be held responsible for any issues arrising from having or running the software. </p>
+</blockquote>

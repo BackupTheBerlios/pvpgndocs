@@ -1,0 +1,346 @@
+<center>
+    <h2><a name="top">NAT / Firewall and PvPGN </a></h2>
+    <p>By dgwilson65 and U-238</p>
+</center>
+<p><b><a name="contents">Table of contents</a></b></p> 
+  <blockquote>
+    <div style="background-color: #DDDDDD; color: #000000; padding: 4px;">
+      <ul>
+        <li><a href="#intro">Introduction</a></li>
+        <li><a href="#ports"> What ports does PvPGN use?</a></li>
+        <li><a href="#portforwarding"> Setting up port forwarding</a></li>
+        <li><a href="#translation"> Setting up address_translation (formerly gametrans</a>)</li>
+        <li><a href="#diablorouter"> Setting up a Diablo 2 closed realm from behind a router </a></li>
+        <li><a href="#firewallissues"> Diagnosing Router/Firewall issues</a></li>
+      </ul>
+    </div>
+  </blockquote>
+<p><b><a name="intro">Introduction</a></b></p>
+<blockquote>
+  <p>  This section takes a look at the TCP/IP ports used by PvPGN and the clients
+  that access it. How to get internet users and local LAN users playing on the
+  same PvPGN server, and what special configuration you need to have applied to
+  your router/firewall.</p>
+  <p>Welcome to an adventure in TCP/IP administration. Sorry I didn't mean it
+    to sound scary but it can be if you let it. Think of this subject as 
+    plumbing, keep a cool head and you should be OK. Remember that for each
+    TCP/IP address on the internet it can open up to 65535 ports from that
+    address to establish a connection to another server or client. Each port
+    has a number. Some of the numbers are reserved for special things and given
+    names, e-mail, ftp, http (web - port 80). If you're not with the program by
+    now then perhaps its time to skip this section.</p>
+</blockquote>
+<p><br>
+  <strong>What ports does PvPGN use?<a name="ports"></a></strong></p>
+<blockquote>
+    <p> In order to connect to your PvPGN server, you will need to open at least one 
+    if not multiple ports. What ports you open really depend on what games you want
+    to support/connect to your server. Port 6112 must be open for both the TCP &amp; UDP 
+    protocols. Their are no exceptions here...6112 must be open period to connect to PvPGN.<br>
+    <br>
+  Here's a break down of what ports go to each program on the server side:</p>
+    <pre>     Port Protocol   Program Name    Program Description
+       23   TCP      bnetd           Telnet Connection Support
+     4000   TCP      d2gs            Diablo II Closed Game Server
+     6112   TCP/UDP  bnetd           Basic Battle.net (TM) Chat &amp; Game Initialization
+     6113   TCP      d2cs/d2closed   Diablo II Realm Server
+     6114   TCP      d2dbs/d2closed  Diablo II Database Server
+     6114   UDP      bntrackd        Tracking Daemon for Producing Stats
+     6200   TCP      bnetd           Warcraft III Router
+     6667   TCP      bnetd           IRC Connection Support</pre>
+    <pre>&nbsp;</pre>
+    <p> Here is a break down of what games uses what port on the client side:</p>
+    <pre>     Game Name                               Port Number(s)
+     Warcraft II Battle.net (TM) Edition (BNE)  6112
+     Warcraft III Reign of Chaos                6112, 6200
+     Starcraft                                  6112
+     Starcraft Brood War                        6112
+     Diablo                                     6112
+     Diablo II Open Battle.net (TM)             6112
+     Diablo II Closed Battle.net (TM)           6112, 4000</pre>
+    <p>For people to be able to access your server from the internet you will need to configure your firewall/router to allow these ports to send traffic (UDP and TCP) to the PvPGN server on your LAN.</p>
+</blockquote>
+<p><br>
+  <strong>Setting up port forwarding<a name="portforwarding"></a></strong></p>
+<blockquote>
+    <p> If all your users are only ever going to access your PvPGN server from the 
+    local LAN then you don't need to worry about this.<br>
+    <br>
+    If you have users on the Internet that will be accessing your PvPGN server 
+    then you are going to more than likely have a firewall amnd/or router as part of your setup.<br>
+    <br>
+    You will require administration rights to your firewall/router. If you
+    don't have these then either get the access required or understand what
+    you need from this documentation so that you can request that the 
+    administrator make the appropriate changes for you.<br>
+    <br>
+    Due to the vast numbers of firewalls and routers available it is not possible
+    to provide instructions on configuring your specific device for port
+    forwarding rules. However for home sized installations you would more
+    than likely access your firewall/router via a web page and add or
+    modify existing entries to achieve the desired setup. An example of some
+  port forwarding entries is listed below</p>
+    <pre>      
+       Proto     External source IP     Source port     Destination IP      Destination port
+       TCP             ALL                  6112        192.168.10.198            N/A
+       UDP             ALL                  6112        192.168.10.198            N/A
+       TCP             ALL                  6113        192.168.10.198            N/A
+       UDP             ALL                  6113        192.168.10.198            N/A
+       TCP             ALL                  6114        192.168.10.198            N/A
+       UDP             ALL                  6114        192.168.10.198            N/A
+       TCP             ALL                  4000        192.168.10.198            N/A
+       UDP             ALL                  4000        192.168.10.198            N/A
+       
+       TCP             ALL                 16100        192.168.10.100           6112
+       UDP             ALL                 16100        192.168.10.100           6112</pre>
+    <p> Final note. Do you need a free firewall/router? Do you have a spare older
+    model PC with at least a 600MB hard drive, 32MB-64MB of RAM and maybe
+    slightly better than 100MHz processor?
+    Take a look at <a href="http://www.smoothwall.org">http://www.smoothwall.org</a> you'll end up downloading a free
+    ~35MB CD image that will be installed onto the &quot;donor&quot; PC. Install 2
+    Network Interface Cards in the PC and you're away.<br>
+  </p>
+</blockquote>
+<p><strong>Setting up address_translation (formerly gametrans)<a name="translation"></a></strong></p>
+<blockquote>
+    <p> The configuration file address_translation.conf can be found in the conf
+      directory. Previously known as gametrans.conf, w3trans.conf, realm.conf, and 
+      d2gstrans.conf PvPGN 1.7 now combines all these files into a single file.<br>
+      <br>
+      The address_translation configuration file provides a mechanism for external
+      users to communicate with game playing users on the same LAN as the PvPGN 
+      server. Thus you map all of your internal ip addresses to your external ip 
+      address on different TCP/IP ports giving an illusion of appearing externally.
+      The address_translation file is important in that it can be used to solve 
+      NAT/Firewall issues in conjunction with Port Forwarding and or LooseUDP methods.<br>
+      <br>
+      Warning: This provides address translation for PvPGN. You must also configure
+      your firewall/router to match this port mapping and do the required<br>
+  translation.</p>
+    <p> To put it simply it is all plumbing. When you first meet on the server, the
+      server handles the communication. When the game starts communication <br>
+      responsibility is passed to the game or each machine.<br>
+      <br>
+      Lets look at an example...<br>
+      Internal LAN 192.168.10.100 - game player a<br>
+      192.168.10.101 - game player b<br>
+      192.168.10.102 - game player c<br>
+      192.168.10.198 - PvPGN Server<br>
+      201.201.20.201 - external IP address<br>
+      <br>
+      VPN LAN 192.168.20.150 - game player d<br>
+  202.202.20.202 - external IP address</p>
+    <p> Internet 123.123.12.123 - game player e</p>
+    <p> We want game players a,b,c,d,e all to be aple to play on the PvPGN server 
+      at 201.201.20.201. This means Internet user requires some direct visibility
+  of game players a,b,c,d and you need to provide that. </p>
+    <p> The address_translation.conf entries to support the above example would look
+  like the table below to support StarCraft gameplay.</p>
+    <pre>       192.168.10.100:6112      201.201.20.201:16100      192.168.10.0/24,192.168.20.0/24      ANY
+       192.168.10.101:6112      201.201.20.201:16101      192.168.10.0/24,192.168.20.0/24      ANY
+       192.168.10.102:6112      201.201.20.201:16102      192.168.10.0/24,192.168.20.0/24      ANY
+       192.168.20.150:6112      202.202.20.202:16150      192.168.10.0/24,192.168.20.0/24      ANY</pre>
+    <p> To describe the first entry in tis table, game player a on 192.168.10.100 and
+      port 6112 (Starcraft) is externally mapped to 202.201.20.201 and port 16100.
+      Notice how ip address *.*.*.100 is mapped to port 16100. This is just a convention
+      that has been used for tracking entries at the firewall/router and what they mean.
+      Any other players on the network 192.168.10.0/24 are excluded from this translation
+      as are any players on 192.168.20.0/24 across the VPN.<br>
+      <br>
+      To support the address_translation.conf you also need to make the entries in your
+      firewall/router. Again using the example above you need to setup a rule that:
+      Forwards TCP port 16100 as port 6112 to IP address 192.168.10.100 and
+      Forwards UDP port 16100 as port 6112 to IP address 192.168.10.100
+  Make similar entries for everyone on the same LAN as the PvPGN server.</p>
+    <p> For the VPN user, they must also make a simiar entry in their firewall/router.
+      Making sure that both the TCP and UDP traffic is routed.<br>
+      <br>
+      After making changes to the address_translation.conf file you will need to
+      restart the PvPGN server for the changes to be effective.<br>
+      <br>
+      Below is the address_translation.conf file as supplied with the 1.7 release.
+      Notice that it is split into 4 sections:<br>
+      w3route server ip (removed from w3trans.conf) (Port 6200)<br>
+      Game Translations for clients (removed from gametrans.conf) (client data ports)<br>
+      Diablo II Charactar Server (d2cs) - (removed from realm.conf) (Port 6113)<br>
+  Diablo II Game Server (d2gs) - (removed from d2gstrans.conf) (Port 4000)</p>
+    <p> Make sure you read the comments within the file as they contain more detailed
+      information on the setup. They may also be more accurate than the documentation.<br>
+      <br>
+      <em>&lt;Editors note: Documentation requires expansion for w3route, Diablo II &gt; </em></p>
+    <pre>         ########################################################################################################
+         #------------------------------------------------------------------------------------------------------#
+         # Address Translation table #
+         #------------------------------------------------------------------------------------------------------#
+         # #
+         # This is a list of ip:port addresses that get translated #
+         # #
+         # The entries are broken into four parts: #
+         # #
+         # * the IP address w/port to be translated #
+         # * the output IP address w/port #
+         # * comma delimited list of networks to be excluded from translation #
+         # * comma delimited list of networks to be included in translation #
+         # #
+         # Each line must contain all four parts or the entire entry will be rejected #
+         # There are no default ports, make sure input and output includes the port number #
+         # #
+         # The entries are searched in the order listed in this file #
+         # Exclude networks are searched before include networks #
+         # Only the first matching line is used #
+         # Lines begining with '#' are ignored #
+         # #
+         # If no match is found, the input ip will be returned. #
+         # #
+         # NONE = There are no neworks to exclude/include (just a place holder, no entries will be added) #
+         # ANY = All networks will be excluded/included (same as 0.0.0.0/0) #
+         # #
+         ########################################################################################################</pre>
+    <pre>         ########################################################################################################
+         # w3route server ip (removed from w3trans.conf) (Port 6200) #
+         # #
+         # Set input address the same as the w3routeaddr setting in the bnetd.conf #
+         # Set output address to the address to be sent to war3 clients #
+         # Set exclude to the range of clients you want to recieve the input address #
+         # instead of the output address #
+         # Set include to the range of clients you want to recieve the output address #
+         # #
+         # input (ip:port) output (ip:port) exclude (ip/netmask) include (ip/netmask) #
+         #--------------------- ---------------------- ---------------------------- -------------------------#
+         #0.0.0.0:6200 192.168.1.100:6200 NONE 192.168.1.0/24
+         0.0.0.0:6200 internetip:6200 NONE ANY</pre>
+    <pre>         ########################################################################################################
+         # Game Translations for clients (removed from gametrans.conf) (client data ports) #
+         # #
+         # Set input address to the client to be translated #
+         # Set output address to the address to be sent to the other clients #
+         # Set exclude to the range of clients you want to recieve the input address #
+         # instead of the output address #
+         # Set include to the range of clients you want to recieve the output address #
+         # #
+         # input (ip:port) output (ip:port) exclude (ip/netmask) include (ip/netmask) #
+         #--------------------- ---------------------- ---------------------------- -------------------------#</pre>
+    <pre>         #192.168.1.1:6119 internetip:6119 192.168.1.0/24,10.0.0.0/8 ANY
+         #192.168.1.2:6118 internetip:6118 192.168.1.0/24 ANY</pre>
+    <pre>         ########################################################################################################
+         # Diablo II Charactar Server (d2cs) - (removed from realm.conf) (Port 6113) #
+         # #
+         # Set input address to the ip of d2cs (same as the ip in the realm.conf) #
+         # Set output address to the address to be sent to the clients #
+         # Set exclude to the range of clients you want to recieve the input address #
+         # instead of the output address #
+         # Set include to the range of client you want to recieve the output address #
+         # #
+         # input (ip:port) output (ip:port) exclude (ip/netmask) include (ip/netmask) #
+         #--------------------- ---------------------- ---------------------------- -------------------------#
+         #192.168.1.100:6113 internetip:6113 192.168.1.0/24 ANY</pre>
+    <pre>         ########################################################################################################
+         # Diablo II Game Server (d2gs) - (removed from d2gstrans.conf) (Port 4000) #
+         # #
+         # Set input address to the ip of d2gs (same as the gameservlist in d2cs.conf) #
+         # Set output address to the address to be sent to the clients #
+         # Set exclude to the range of clients you want to recieve the input address #
+         # instead of the output address #
+         # Set include to the range of client you want to recieve the output address #
+         # #
+         # input (ip:port) output (ip:port) exclude (ip/netmask) include (ip/netmask) #
+         #--------------------- ---------------------- ---------------------------- -------------------------#
+         #192.168.1.100:4000 internetip:4000 192.168.1.0/24 ANY</pre>
+    <pre>&nbsp;</pre>
+    <p> Comment:<br>
+      This is a personal comment (dgwilon65) <br>
+      As of PvPGN 1.6.3, it is my belief that the gametrans file does not _fully_ 
+      work for StarCraft/Broodwar. You can test this by starting a game on the same
+      LAN as your PvPGN server and getting an external user to connect. If your 
+      Gametrans.conf file and firewall rules are setup correctly, it should work. 
+      (full speed). Repeat this test using another computer on your internal LAN 
+      (not the PvPGN server). Next try running two computers on your internal LAN 
+      and one external user. Game speeed should drop and become unplayable.
+      --&gt; I'm guessing, but the external user has been told how to communicate with
+      the game host (i.e. the machine that initiated the game). The external
+      user DOES NOT know how to communicate with the other LAN user or all
+      communication is routed through the game host. If the game host quits
+      or gets killed off then the game ends for everyone.<br>
+      <br>
+      Don't know.<br>
+      The Gametrans file is always read in order and will stop at the first matching
+      rule. So if you want two different rules for the same client, you will need 
+      to make sure that each rule is unique.
+  </p>
+</blockquote>
+<p><strong>          Setting up a Diablo 2 closed realm from behind a router<a name="diablorouter"></a></strong></p>
+<blockquote>
+    <p>&lt;<em>Editors note: Documentation required</em>&gt;</p>
+    <p>&nbsp;</p>
+</blockquote>
+<p><strong>Diagnosing Router/Firewall issues<a name="firewallissues"></a></strong></p>
+<blockquote>
+    <p>This help text has come c/- <a href="http://pvpgn.ez15loan.com/originals/The-Warcraft-III-Pub.htm">http://pvpgn.ez15loan.com/originals/The-Warcraft-III-Pub.htm</a><br>
+    It may assist you in diagnosing some configuration issues.<br>
+    <br>
+    Battle.net (TM) Router/Firewall Configuration<br>
+    By: Draino<br>
+  Aim: CyrusL</p>
+    <p> The reason people are having problems is because of 
+  either a firewall, or a non-forwarded port on their routers.</p>
+    <p> A. Its the router!<br>
+    When you have a router you essentially have multiple computers connected to the
+    internet off one IP address. Now each computer has an individual LAN IP and the 
+    shared internet (or WAN) IP. When another comptuer wants to send a packet to your 
+    computer it goes to the router, who has to route it (pun intended), to your specific 
+    computer. Lets say your LAN IP is 1.2.3.4 and your internet IP is 12.34.45.78. 
+    Blizzard wants to send you a packet, but it doesnt know/care about your LAN IP. 
+    It sends that packet to 12.34.45.78 because as far as it knows, that is your 
+    computer. Your router gets this packet, but doesnt know it's supposed to go to you, 
+  so it ends up getting lost and not sent to 1.2.3.4.</p>
+    <p> B. Its the firewall!<br>
+    This is far more simple. A firewall is almost always used for security reasons, 
+    by blocking ports or blocking all ports and only leaving a few open. This prevents 
+    hackers from getting in by not allowing them an entry point. For example, I may 
+    run a firewall that blocks everything but my ports used for browsing the net, 
+    using kazaa, and going on AIM. This means my war3 port is closed, 
+  so packets cannot be sucessfully sent to blizzard, and received.</p>
+    <p> So how do we fix this mess up in here?</p>
+    <p> A. Router Fix<br>
+    What you need to do is forward port 6112 to your internal LAN IP from the router, 
+    so the router knows where to send it. You will do this by accessing your router, 
+  and changing its settings.</p>
+    <p> 1. Connect to the box<br>
+    All routers these days have access through an html page. You just need to know your 
+    routers IP. There's a couple ways to do this. Check your manual, guess, or check 
+    your gateway. Option 1 is self-explanatory. Option 2 is a little complicated. A 
+    couple common ones are 192.168.2.1 , 192.168.1.1 , and 192.168.0.1. Odds are it 
+    is your IP with a .1 as the last subnet. Option C is to go to your IP properties, 
+    and find the default gateway. For NT based opperating systems (XP and Win 2000) 
+    go start -&gt; run -&gt; command. Type in ipconfig and hit enter. Default gateway will <br>
+    be there. For 9x opperating systems, go start -&gt; run -&gt; winipcfg and hit enter. 
+    To connect to your router go to http://&lt;routerip&gt;. For example, I connect to my 
+  router by going to http://192.168.2.1 in internet explorer.</p>
+    <p> 2. Going to port forwarding options<br>
+    Once you are at your router screen, logon. Odds are if you didnt know how to do 
+    step 1 your password is either nothing, or your router companie's name. Now this 
+    is where it gets a little tricky because each router differs. You need to find the 
+  section of your router with settings for something like &quot;Virtual Server&quot; or&quot;Port forwarding.&quot; This will enable you to forward port 6112. </p>
+    <p> B. Firewall Fix<br>
+    You have two options. Either unblock port 6112, or turn off your firewall. 
+    This is much easier. For those of you who actually know you have a firewall 
+    running, you should know how to open 6112. Most of the people that are looking 
+    at this probably have XP and haven't turned off the default firewall thats 
+    crapping you out. To disable this right click on network connections 
+    (on the desktop), and select properties. Then right click on Local Area Network 
+  and select properties again. Go to the advanced tab, and uncheck firewall.</p>
+    <p> So in conclusion, if you are still having problems after this, it probably 
+    isnt a network related thing, but still ask for help in the comments. In the 
+    remote case that you changed your warcraft 3 port in the registry away from 
+    6112, just change the port forwarding to that port.<br>
+  </p>
+</blockquote>
+<p><strong>Legal</strong></p>
+<blockquote>
+    <p>Battle.net and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment in the U.S. and/or other countries. Usage of the PvPGN software is free under the GNU public license. While every attempt has been made to ensure that the software functions as intended and that the documentation provided is accurate, the PvPGN community of developers and contributors cannot be held responsible for any issues arrising from having or running the software. </p>
+    <p>&nbsp;    </p>
+</blockquote>
+<blockquote>
+  <p>&nbsp;</p>
+</blockquote>
+<blockquote>&nbsp;</blockquote>

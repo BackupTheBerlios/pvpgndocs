@@ -1,0 +1,801 @@
+<head>
+<head></head>
+<body>
+<!-- (C) 2004 David/dgwilson65, submitteed and formatted by dizzy from original version 0.1j -->
+
+<center><h2>How-To: PvPGN - Admin for Beginners</h2><hr></center>
+<p><br>
+  WARNING. Much of this document has been superseeded as it has been stripped apart and distributed into separate docs. Read at your own risk.</p>
+<p>- David  </p>
+<p><br>
+</p>
+<p>
+Many thanks to the dedicated programmers and team that are part of the PvPGN for their support
+and ongoing committment to the support of the project. The team at http://forums.pvpgn.org have
+been wonderful and an "oracle" for information.
+<br>
+I guess I've come along relatively late in the piece. The server version is now at 1.6.3 and
+I've had a relatively bug free run with things. I wanted to write this documentation as a
+contribution to the development effort such that others would be able to learn and utilise
+the information to "get past the dumb questions".
+<br>
+Note: My experiences are based on the Windows version and as such should be able to be adapted to
+any of the product variants.
+<br>
+Some of the questions and answers have been lifted directly from the FAQ section at
+<a href="http://forums.pvpgn.org">http://forums.pvpgn.org</a> I have done this to consolidate the questions/answers into
+one archive and because the questions relate to StarCraft or Windows or a relevant
+to other content in this How-To.
+</p>
+<br>
+<ol>
+<li><a href=#tools>What do I need to be familiar with? Where are the tools?</a>
+<li><a href=#download>How do I download new mpq files</a>
+<li><a href=#conf>What files in the "Conf" directory need to be maintained?</a>
+<li><a href=#compile>What if I want to compile this thing?</a>
+<li><a href=#install>Installation decisions - files, cdb, mysql?</a>
+<li><a href=#more>More help and FAQ's</a>
+<li><a href=#scaccess>How do I access my PvPGN server with StarCraft?</a>
+<li><a href=#cdbtool>How do I use the CDB_Tool for editing a user file?</a>
+<li><a href=#scnat>How can I have more than one SC/BW client behind a router?</a>
+<li><a href=#scfastest>Can I edit a source file and compile so I can play Fastest
+ Speed on Ladder on my server?</a>
+<li><a href=#sc111b>Not able to play ladder on "Fastest" speed? Can't find the 1.11b hack?</a>
+<li><a href=#nogames>Cannot find any games?</a>
+<li><a href=#mysql>MySQL Cross Platform Compatabilty, Mac OS X to Windows DB's?</a>
+<li><a href=#war3>How do I connect to my server with WarCraft III?</a>
+<li><a href=#macos9>Loosing Battle.net (TM) preferences for Mac OS 9?</a>
+<li><a href=#helpdev>How do I Help out on the PvPGN development?</a>
+<li><a href=#ownbanner>How do I setup my own banner adverts?</a>
+</ol>
+<hr>
+
+<ol>
+<li><b><a name=tools>What do I need to be familiar with? Where are the tools?</a></b><br><ul>
+<li>bnftp.exe - you need this for downloading "*.mpq" files from blizzard. The mpq files are used
+               as part of the autoupdate machanism of the PvPGN server.
+<li>the software version should match that of the PvPGN server (i.e. 1.6.3)
+<li>I created my version by downloading the product source from sourceforge and compiling the product. The bnftp.exe software was in the bin directory of the source.
+</ul>               
+<li><b><a name=download>How do I download new mpq files</a></b><br><ul>
+<li>you need a current version of the bnftp software, see elsewhere in this how-to on how to obtain it
+<li>below is real command line entries that can be put into a windows batch file if required( Note that bnftp.exe must be in your PATH):<br><pre>
+   bnftp --client=SEXP --arch=IX86 --file=SEXP_IX86_1xx_111B.mpq useast.battle.net 6112
+   bnftp --client=STAR --arch=IX86 --file=STAR_IX86_1xx_111B.mpq useast.battle.net 6112
+   bnftp --client=SEXP --arch=XMAC --file=SEXP_XMAC_1xx_111B.mpq useast.battle.net 6112
+   bnftp --client=STAR --arch=XMAC --file=STAR_XMAC_1xx_111B.mpq useast.battle.net 6112
+   bnftp --client=SEXP --arch=PMAC --file=SEXP_PMAC_1xx_111B.mpq useast.battle.net 6112
+   bnftp --client=STAR --arch=PMAC --file=STAR_PMAC_1xx_111B.mpq useast.battle.net 6112
+   
+   bnftp --client=W3XP --arch=IX86 --file=W3XP_IX86_1xx_116A_enUS.mpq useast.battle.net 6112
+   bnftp --client=WAR3 --arch=IX86 --file=WAR3_IX86_1xx_116A_enUS.mpq useast.battle.net 6112
+   bnftp --client=W3XP --arch=XMAC --file=W3XP_XMAC_1xx_116A_enUS.mpq useast.battle.net 6112  
+   bnftp --client=WAR3 --arch=XMAC --file=WAR3_XMAC_1xx_116A_enUS.mpq useast.battle.net 6112   
+   bnftp --client=W3XP --arch=PMAC --file=W3XP_PMAC_1xx_116A_enUS.mpq useast.battle.net 6112   
+   bnftp --client=WAR3 --arch=PMAC --file=WAR3_PMAC_1xx_116A_enUS.mpq useast.battle.net 6112   
+   
+   or
+   
+   bnftp --client=W3XP --arch=IX86 --file=W3XP_IX86_115A_116A_enUS.mpq useast.battle.net 6112 
+   bnftp --client=WAR3 --arch=IX86 --file=WAR3_IX86_115A_116A_enUS.mpq useast.battle.net 6112 
+   bnftp --client=W3XP --arch=XMAC --file=W3XP_XMAC_115A_116A_enUS.mpq useast.battle.net 6112
+   bnftp --client=WAR3 --arch=XMAC --file=WAR3_XMAC_115A_116A_enUS.mpq useast.battle.net 6112
+   bnftp --client=W3XP --arch=PMAC --file=W3XP_PMAC_115A_116A_enUS.mpq useast.battle.net 6112
+   bnftp --client=WAR3 --arch=PMAC --file=WAR3_PMAC_115A_116A_enUS.mpq useast.battle.net 6112
+</pre><br>
+
+   The resulting output files "*.mpq" need to be moved to the "Files" directory of the PvPGN server.
+</ul>
+<li><b><a name=conf>What files in the "Conf" directory need to be maintained?</a></b><br><ul>
+<li>versioncheck.txt
+<li>autoupdate.txt
+<li>gametrans.conf
+</ul>
+
+<p> Warning. Incorrect maintenance of version for connecting gamers can cause problems on the server
+   that are difficult to explain and lead you right up the garden path. For instance someone trying
+   to join a game running version B of the software will not see any games listed if all the other
+   players on the server are running version C. </p>
+<br><ul>
+<li>versioncheck.txt<br>
+<p>This file lives in your "conf" directory. If maintained properly it will list every client version
+   of software produced, product by product, version by version. I believe that updated version of this
+   file are distributed with new server releases and updates posted to <a href="http://forums.pvpgn.org">http://forums.pvpgn.org</a> though you
+   need to copy and paste in the entries yourself.</p><br>
+   Creating your own entries is very easy, just think about what you are doing:<ol>
+<li>backup your existing versioncheck.txt file
+<li>connect to your server with the new or updated client software
+<li>capture the entries from the bnetd.log file (these have all the information you need)
+</ol>
+<p>thus...<br>
+<q>
+   Jun 13 11:01:25 [info ] _client_authreq109: [220] CLIENT_AUTHREQ_109 ticks=0x4805126a, verstr=1.1.1.3 exeinfo="starcraft.exe 05/26/04 00:46:00 1048576" versionid=0x000000c9 gameversion=0x01010103 checksum=0xe6380bff<br>
+   Jun 13 11:01:25 [info ] versioncheck_validate: got a matching entry: SEXP_111B<br>
+</q>
+   translates to<br>
+<q><pre>
+   # Starcraft - Broodwar (Expansion) 1.11b - (Broodwar mode)
+   "A=2521522835 B=3428392135 C=218673704 4 A=A^S B=B-C C=C+A A=A-B" \
+   "IX86ver1.mpq" \
+   IX86 \
+   SEXP \
+   "starcraft.exe 05/26/04 00:46:00 1048576" \
+   0x000000c9 \
+   1.1.1.3 \
+   0xe6380bff \
+   SEXP_111B
+</pre></q>
+<li>autoupdate.txt<br>
+<p>This file along with the correct setting in bnetd.conf give you as server administrator
+   to enforce that only up-todate client can play on your server.
+   So assuming I've got things right so far (and I have tested this for Mac OS X and PC)
+   the autoupdate.txt file needs to contain the following lines. This caters for upgrades
+   from v1.10 to 1.11b and from 1.11 to 1.11b...
+</p>
+<q><pre>
+# StarCraft Updates - Broodwar    #
+# =============================== #
+IX86     SEXP    SEXP_110        SEXP_IX86_1xx_111B.mpq
+IX86     SEXP    SEXP_111        SEXP_IX86_1xx_111B.mpq
+XMAC     SEXP    SEXP_110        SEXP_XMAC_1xx_111B.mpq
+XMAC     SEXP    SEXP_111        SEXP_XMAC_1xx_111B.mpq
+PMAC     SEXP    SEXP_110        SEXP_PMAC_1xx_111B.mpq
+PMAC     SEXP    SEXP_111        SEXP_PMAC_1xx_111B.mpq
+
+# StarCraft Updates - StarCraft   #
+# =============================== #
+IX86     STAR    SEXP_111        STAR_IX86_1xx_111B.mpq
+IX86     STAR    SEXP_110        STAR_IX86_1xx_111B.mpq
+XMAC     STAR    SEXP_110        STAR_XMAC_1xx_111B.mpq
+XMAC     STAR    SEXP_111        STAR_XMAC_1xx_111B.mpq
+PMAC     STAR    SEXP_110        STAR_PMAC_1xx_111B.mpq
+PMAC     STAR    SEXP_111        STAR_PMAC_1xx_111B.mpq
+
+# WarCraft III Updates - TFT #
+#----------------------------#
+IX86    W3XP    W3XP_107a       W3XP_IX86_1xx_116A.mpq
+IX86    W3XP    W3XP_110a       W3XP_IX86_1xx_116A.mpq
+XMAC    W3XP    W3XP_107a      W3XP_XMAC_1xx_116A.mpq
+XMAC    W3XP    W3XP_110a      W3XP_XMAC_1xx_116A.mpq
+
+# Incremental update from version 115a
+IX86    W3XP    W3XP_115a     W3XP_IX86_115A_116A.mpq
+XMAC    W3XP    W3XP_115a       W3XP_XMAC_115A_116A.mpq
+
+# WarCraft III Updates - ROC #
+#----------------------------#
+IX86    WAR3    WAR3_107a       WAR3_IX86_1xx_116A.mpq
+IX86    WAR3    WAR3_110a       WAR3_IX86_1xx_116A.mpq
+XMAC    WAR3    WAR3_107a       WAR3_XMAC_1xx_116A.mpq
+XMAC    WAR3    WAR3_110a       WAR3_XMAC_1xx_116A.mpq
+
+# Incremental update from version 115a
+IX86    WAR3    WAR3_115A     WAR3_IX86_115A_116A.mpq
+XMAC    WAR3    WAR3_115A     WAR3_XMAC_115A_116A.mpq
+</pre></q>
+<li>gametrans.conf<br>
+<p>I'm not going to pretend to know anything much here. On 
+<a href="http://forums.pvpgn.org">http://forums.pvpgn.org</a>
+   in the Official Tech Support forum, there is an in-depth article posted by Daytranno. READ IT!</p>
+<br>
+   What I will put here is one of my replies to a message on the forums: 
+   <a href="http://forums.pvpgn.org/index.php?showtopic=77">http://forums.pvpgn.org/index.php?showtopic=77</a> (link to in-depth article)
+   <p>This is an indepth review of how the gametrans file works. It's a supporting
+   file in your "conf" directory. The problem is basically that your external user
+   needs to communicate with you 192.168.x.x and is unable to do so. All of your
+   internal IP addresses need to be mapped externally to your external ip address
+   and different ports. You also need to open these ports on your firewall and
+   route the ports to the specific ip addresses.</p><br>
+   <p>So, currently the plumbing can't get to where it needs to go. When you first
+   meet on the server, the server handles the communication. When the game starts,
+   communication responsibility is passed to the "game" or each machine.</p><br>
+
+   <p>Here's an extract from my gametrans.conf file (currently commented out):</p>
+   <q><pre>
+   # Firewall rules have been modified to route TCP and UDP traffic of the external ports
+   # direct to the specified machine.
+   :      192.168.10.200:6112      <external_ip>:16200       192.168.10.0/24
+   :      192.168.10.199:6112      <external_ip>:16199       192.168.10.0/24
+   :      192.168.10.197:6112      <external_ip>:16197       192.168.10.0/24
+   :      192.168.10.195:6112      <external_ip>:16195       192.168.10.0/24
+   :      192.168.10.193:6112      <external_ip>:16193       192.168.10.0/24
+   :      192.168.10.189:6112      <external_ip>:16189       192.168.10.0/24
+   :      192.168.10.106:6112      <external_ip>:16106       192.168.10.0/24
+</pre></q>
+</ul>
+<h3>VPN</h3>
+<p>I have a friend connecting through via VPN (firewall - to - firewall) and all
+   hell breaks loose when he connects, and we have an external player too.
+   i.e. it doesn't work. I haven't completed the analysis on what to do to the
+   gametrans.conf file in this situation. His internal network is 10.1.1.*</p><br>
+<p>I believe that after you change this file, you will have to restart your server.
+   When you've made this change and people connect, watch what happens in the bnetd.log file.
+   It is your primary source of information to tell you what is happening!</p>
+
+<li><b><a name=compile>What if I want to compile this thing?</a></b><br>
+<p>Prepare to be shocked and amazed....<ol>
+<li>download the source from sourceforge.net
+<li>decompress the file into a directory on your machine
+<li>READ and I mean READ the file docs\Compile.Instructions.Win32.Borland.txt
+<ul>
+<li>yes I am assuming you are on Windows and don't have .NET compiler at hand
+<li>The instructions tell you that a FREE compiler is available from 
+<a href="ftp://ftpd.borland.com/download/bcppbuilder/freecommandLinetools.exe">ftp://ftpd.borland.com/download/bcppbuilder/freecommandLinetools.exe</a>
+<li>Just read the rest of the instructions and follower the compiler install instruction to the letter. It's not complicated
+<li>Once installed do a test compile (without changes). This will confirm your installation
+</ul></ol></p>
+<li><b><a name=install>Installation decisions - files, cdb, mysql?</a></b><br>
+<p>As I recall the installation on windows prompts you for how you want to handle your data files.
+ Somehow I ended up running with CDB. This wasn't really a problem until I wanted to edit some
+ attributes of my users. I though that the user files were just text. I was WRONG.</p>
+ 
+<p><i>bnetd.conf</i> has quite a bit of self documentation about altering the server configuration
+ to support files, cdb, or mysql. I guess that larger installations would be wise to run
+ with a mysql database for performance, while at the low end of the scale, "files" will
+ work but performance wont be the best.</p>
+ 
+<p>I switched to files so that I could edit the user files. Hey, I was trying to get ladder
+ games to work (turned out to be a server bug / client version issue), and get "real"
+ administrator access to the server.</p>
+<ul>
+<li>cbd - editing user data<br>
+<p>Stored in var/userscdb<br>
+The windows version ships with a program called cbd_tool.exe You can use this to 
+edit your user files if you have the need.</p>
+  
+<li>files - editing user data<br>
+<p>Stored in var/users<br>
+No special tools required, a text editor is brilliant.<br>
+
+What does the contents of a user file look like?<br>
+<pre>
+    "Record\\SEXP\\0\\last game result"="DRAW"
+    "profile\\location"="GRAGAH"
+    "BNET\\acct\\lastlogin_ip"="192.168.10.193"
+    "Record\\SEXP\\0\\draws"="28"
+    "Record\\SEXP\\0\\last game"="29643220 212508874"
+    "BNET\\acct\\lastlogin_clienttag"="SEXP"
+    "BNET\\acct\\lastlogin_owner"="Grant"
+    "BNET\\acct\\passhash1"="[removed]"
+    "BNET\\acct\\username"="Grant"
+    "BNET\\acct\\lastlogin_time"="1087187841"
+    "Record\\SEXP\\0\\losses"="7"
+    "Record\\SEXP\\0\\wins"="14"
+    "Record\\SEXP\\1\\rank"="2"
+    "Record\\SEXP\\1\\high rating"="1000"
+    "Record\\SEXP\\1\\rating"="975"
+    "BNET\\acct\\userid"="3"
+    "Record\\SEXP\\1\\last game result"="LOSS"
+    "Record\\SEXP\\1\\high rank"="2"
+    "Record\\SEXP\\1\\losses"="1"
+    "Record\\SEXP\\1\\last game"="29642988 164423556"
+</pre><p>
+<li>The default user file - but wait there's more 
+Take a look in the conf directory. There are 2 default user files. 
+I believe that only one is used based on your setup in bnetd.conf 
+SQL storage types use the attribute information stored for user ID 0 for default values.<br>
+
+bnetd_default_user.cdb - you can't view this with a text editor (but you could use -d 
+parameter of the CDB tool to dump it)<br>
+bnetd_default_user.txt - view with a text editor<br>
+
+    Using bnetd_default_user.txt as an example, if a value is set in this file
+    the same value does not need to be set in the users actual data file.
+<br>
+    So if you want o make everyone admins have have access to ALL server commands
+    ensure that these lines are uncommented.<br>
+<pre>
+    "BNET\\auth\\admin"="true"
+    "BNET\\auth\\command_groups"="255"
+</pre>
+    Don't leave things like this unless you TRUST everyone. Have these lines
+    only in the user files of the real admins.
+</ul>
+<li><b><a name=more>More help and FAQ's</a></b><br>
+<p>There's a FAQ at <a href="http://pvpgn.ez15loan.com/">http://pvpgn.ez15loan.com/</a><br>
+ There is a detailed FAQ at <a href="http://www.world-of-amadeus.de">http://www.world-of-amadeus.de</a><br>
+ This site also has details about PvPGN and mysql</p>
+  
+<p>Now, I'm going to repeat part of that FAQ here only because it was the first
+ thing that I tried to get done when I fired up the server, and I got nailed
+ on the forums because the subject had been covered and covered before (not that
+ I could find :-)  )</p>
+<q>
+<p>> How do I give my account administrative privileges & what does this mean?</p>
+   
+<p>In short, this means a user with administrative privileges can ban other players or delete their accounts within the Battle.net (TM) console. Users with administrative privileges are indicated differently depending on what game you are playing.</p>
+<p>For example, in Starcraft, their would be a small Blizzard logo by their name. In Diablo II, their text color is generally blue while everyone else's is white & their character will say "Blizzard Rep" when you place your mouse cursor over it.</p>
+
+<p>The following only needs to be done to create the first administrative user. Once that user has administrative privileges, they can give other players the same privileges, should he or she wish to, within the Battle.net (TM) console.</p>
+<p>If you already have a user with administrative privileges & want to give another user the same privileges, skip to step 3 for further information.</p>
+<p>If you installed PvPGN without MySQL support, it means you are using the flat files to store players account information & stats. The user accounts are typically named by the users name. The PVPGN database is not located here.</p>
+
+<p>If you installed PvPGN without MySQL support:<ol>
+
+<li>Shutdown PvPGN.
+<li>Find the name of the user you want to give administrative privileges in the path where you installed PvPGN, under the var/users sub-directory.
+<li>Edit the file in a text editor & add the following lines to the beginning of the user account file. Make sure they are the first lines in user account files or it wont work:
+<pre>
+       "BNET\\auth\\admin"="true"
+       "BNET\\auth\\command_groups"="255"
+       "BNET\\auth\\operator"="true"
+</pre>
+<li>Save & close your text editor.
+<li>Start PvPGN.</ol></p>
+
+<p>If you installed PvPGN with MySQL support:<ol>
+<li>Shutdown PvPGN.
+<li>Edit the PVPGN database. phpMyAdmin is a good program to use to edit MySQL databases.
+<li>Go to the BNET table in the database.
+<li>Find the user account you want to give administrative privileges.
+<li>Change the auth column from false to true.
+<li>Apply the changes.
+<li>Start PvPGN.</ol></p>
+
+<p>Now that you have at least one user with administrative privileges, log in as that user & type the following to give administrative privileges to another user. Only give this privilege to users you trust. This privilege is NOT meant for everybody, just those that run or manage your PvPGN server. All users are NOT given administrative privileges by default:
+<pre>
+    /makeadmin jack
+</pre>
+This example would give the user jack administrative privileges.</p>
+
+<p>To remove administrative privileges, at the console type:
+<pre>
+    /demoteadmin jack
+</pre>
+    This example would remove the user jack administrative privileges.</p>
+
+<p>This works instantly (no need to restart PvPGN)</p>.
+
+<p>To give access to all of the command groups, logon as the "admin" user and type:
+<pre>    /set jack BNET\auth\command_groups 255</pre>
+    This example will give user jack access to all commands on the server.
+    Type /set on its own to confirm the syntax.
+    Also refer to /conf/command_groups.txt file. The comments in the header of this file
+    provide more detail on user access to commands.</p>
+</q>
+<li><b><a name=scaccess>How do I access my PvPGN server with StarCraft?</a></b><ul>
+<li>bnetconfig.exe (win32)
+<li>bnetse.dmg (Mac OS 10.3 image file)
+    <a href="http://pvpgn.cyfx.net/files/MacBNetGatewayEditor-v0.3.dmg">http://pvpgn.cyfx.net/files/MacBNetGatewayEditor-v0.3.dmg</a><br>
+    Note: I think version 0.2 worked under 10.2, but required some fiddling with resedit.
+
+<p>Also, check out this site for additional PvPGN materials. <a href="http://pvpgn.cyfx.net/">http://pvpgn.cyfx.net/</a>
+  These programs allow you to edit the Battle.net (TM) preferences files to provide additional servers
+  i.e. your PvPGN server.</p>
+
+<p>Special notes for MAC users! - I needed these steps for Mac OS X 10.2.
+  May not be required for new software.
+  StarCraft version was 1.10 at the time I believe.</p>
+<ol>
+<li>Run the Battle.net Server Editor program
+<li>Add in your server, name, ipaddress, zone (actually timezone referenced to GMT)
+<li>Save changes....  The file you have just updated is "[user]/Library/Preferences/Starcraft prefs"
+<li>Backup this file
+<li>Backup "battle.net Preferences" in the same folder
+<li>Find ResEdit, run it
+<li>Open both files
+<li>In the Starcraft prefs file, copy the following resource 
+HKEY_CURRENT_USER/software/battle.net/configuration/battle.net gateways
+<li>Paste this resource into the Battle.net preferences file (replacing the one currently there!!!)
+<li>Run StarCraft, connect to battle.net server</ol>
+</ul>
+<li><b><a name=cdbtool>How do I use the CDB_Tool for editing a user file?</a></b><br>
+<p>The detail for this question has been taken directly from the FAQ section at <a href="http://forums.pvpgn.org">http://forums.pvpgn.org</a>
+<br>Answer c/- aaron<ol>
+
+<li>copy the account file you want to edit into another folder
+<li>cdb -d cdbaccountfile > tempfile
+<li>edit tempfile and add the line:
+<li>+24,3:BNET\auth\command_groups->255
+<li>cdb -c cdbaccountfilenew tempfile
+<li>now overwrite your old cdbaccountfile with the cdbaccountfilenew</ol></p>
+
+<li><b><a name=scnat>How can I have more than one SC/BW client behind a router?</a></b><br>
+<p>The detail for this question has been taken directly from the FAQ section at <a href="http://forums.pvpgn.org">http://forums.pvpgn.org</a><br>
+ Answer c/- aaron<br>
+ 
+  When you wanna play SC/BW games with more than one user behind the same router.. it won't work....<br>
+  here is the solution...<br>
+  for each gaming PC behind the router do this:<ol>
+
+<li>use regedit to edit/create:<br>
+     HKLM\Software\Battle.net\Configuration REG_DWORD "Game Data Port"
+     (choose a unique so far unused port for each client)
+<li>Then on your router forward each of those ports to the correct client computer...
+     (UDP, not sure if TCP needed)</ol></p>
+
+<li><b><a name=scfastest>Can I edit a source file and compile so I can play Fastest Speed on Ladder on my server?</a></b><br>
+ 
+<p>Quite possibly, see #11 below.</p>
+
+<p>The maximum ladder speed is tied up with the client (i.e. your machine)
+ and Starcraft ruinning on it. In other words it's coded in Starcraft and
+ is difficult to influence at the server end.</p>
+
+<p>c/- http://forums.pvpng.org Comments and Suggestions, v1.7 Feature Requests<br>
+  Response c/- dizzy<br>
+  I dont think this is server side setting. the client hardcodes the speed
+  of the ladder games AFAIK</p>
+
+<li><b><a name=sc111b>Not able to play ladder on "Fastest" speed? Can't find the 1.11b hack?</a></b><br>
+<p>No problem, fix it server side.</p>
+
+<p>It's not a ladder game, but you can play One on One games and the results
+ count towards the ladder.</p>
+
+<p>PitchWhite posted this patch on Jun 22 2004. It has been successfully applied
+ again PvPGN 1.6.3</p>
+
+<p>Open /src/bnetd/game.c in a text editor, find:
+
+<q><pre>
+       if (realcount>=1 && !game->bad)
+       {
+          if (game_get_type(game)==game_type_ladder ||
+              game_get_type(game)==game_type_ironman)
+              {
+               t_ladder_id id;
+   
+          if (game_get_type(game)==game_type_ladder)
+              id = ladder_id_normal;
+          else
+              id = ladder_id_ironman;
+</pre></q>
+   Replace with
+
+<q><pre>
+       if (realcount>=1 && !game->bad)
+       {
+          if (game_get_type(game)==game_type_ladder ||
+              game_get_type(game)==game_type_ironman ||
+              game_get_type(game)==game_type_oneonone)
+             {
+              t_ladder_id id;
+   
+          if (game_get_type(game)==game_type_ladder ||
+              game_get_type(game)==game_type_oneonone)
+               id = ladder_id_normal;
+          else
+               id = ladder_id_ironman;
+</pre></q></p>
+<p>Basically, One on One Gametypes now count as ladder. Do not worry about
+ computers, though, either. The server is programmed to give an error for
+ a game if there is no loser, which there wouldn't be in a 1v1 PvC game.
+ So no ladder points are recieved, nor is the game counted.</p>
+
+   Enjoy!
+
+<li><b><a name=nogames>Cannot find any games?</a></b><br>
+
+<p>This is a reoccurring theme in the forums at http://forums.pvpgn.org
+ You need to fix this error yourself with some careful analysis and updating.
+ Also refer to question 3 above.</p>
+
+<p>First, ask some questions:<br>
+Do you know specifically what version of the software you are using?<br>
+Do you know specifically what version of the software your fellow game
+ players are using?</p>
+
+<p>My StarCraft experiences with PvPGN show that if the "GAME VERSION TAG"
+ is not identical for all players then you can't see one anothers games.
+ (I'm sure it's versiontag).</p>
+
+<p>Depending on how the server is setup, it may or may not check versiontags.
+ Even if it is setup, but the admin running the PvPGN server has not
+ maintained the versioncheck.txt file then it is possible for you to connect
+ to the server and get a version tag that doesn't match everyone elses.</p>
+
+<p>OK, so you can't play on battlenet because of lag. I recommend you connect
+ to Battle.net (TM) to at least verify that you are using the most up-to-date
+ version of the client software.</p>
+
+<p>If problems persist your PvPGN admin needs to update his versioncheck.txt file.</p>
+
+<p>examples... there are 4 x examples below, the last line is the versiontag
+ that is used inside the server. So you can connect and play with different
+ versions, but you must use matching software version to play games.</p>
+
+<p>It is posisble to cheat the system (under certain circumstances) and to
+ do that you must know the name of a game that has been created and key it
+ on your secrren (true for starcraft at least). Though it may not work in
+ all circumstances or for WarCraft.</p>
+<q><pre>
+   # Warcraft III - TFT (Expansion) 1.15a
+   [text deleted]
+   W3XP_115A
+
+   # Warcraft III - ROC 1.15a
+   [text deleted]
+   WAR3_115A
+
+   # Warcraft III - TFT (Expansion) 1.14b
+   [text deleted]
+   W3XP_114B
+
+   # Warcraft III - TFT (Expansion) 1.14a
+   [text deleted]
+   W3XP_114A
+</pre></q>
+<li><b><a name=mysql>MySQL Cross Platform Compatabilty, Mac OS X to Windows DB's?</a></b><br>
+Text and reply extracted from forum post.<br>
+<q>
+<p><i>POST - Gambit642</i><br>
+My Mac (G3 900mhz; 40GB HD 7200; 1GB PC100 Memory) kills my PC (Intel 3.2Ghz Extreme Ed. 2MB Cache; 40GB 7200GB; 1GB DDR PC4200) in PvPGN performance and server-end response time. There are also security conserns when the server goes public, so I want to make it Mac.</p>
+
+<p>So I want to host as many services as I can on the Mac. Can the DB's directory
+   in MySQL for OS X be copied over to the Windows MySQL directory and work?
+   What about the other way? Can PvPGN be hosted on a Mac and connect to MySQL on
+   a WinXP box?</p>
+
+<p><i>REPLY - U-238</i><br>
+   My recommendation would to be to have PvPGN and MySQL both running on the Mac.
+
+   Download MySQL for Mac <a href="http://dev.mysql.com/get/Downloads/MySQL-4.0/mysql-standard-4.0.20-apple-darwin7.3.0-powerpc.dmg/from/pick">here</a>.<br>
+
+   There is an excellent Mac-MySQL How-to <a href="http://www.macdevcenter.com/pub/a/mac/2002/03/08/apache_mac_5.html">here</a>.<br>
+
+   And you can download PvPGN /w MySQL support for Mac <a href="http://prdownloads.sourceforge.net/pvpgn/pvpgn-1.6.3-1mysql.macos.ppc32.dmg?download">here</a>.<br>
+
+   Good luck, and finally there will be more than 2 Mac servers on the tracker</p></q>
+<li><b><a name=war3>How do I connect to my server with WarCraft III?</a></b><br>
+
+<p>You need a "loader and gateway editor".</p>
+
+<p><a href="http://pvpgn-files.ath.cx/Warcraft III Roc & FT PvPGN Loader by Acid!.zip"http://pvpgn-files.ath.cx/Warcraft III Roc & FT PvPGN Loader by Acid!.zip</a>
+ and a Battle.net Gateway editor
+ <a href="http://pvpgn-files.ath.cx/BNGatewayEditor.exe">http://pvpgn-files.ath.cx/BNGatewayEditor.exe</a>
+   --> look here for other things too... <a href="http://pvpgn-files.ath.cx">http://pvpgn-files.ath.cx</a>.
+<ol>
+<li>Update to the latest version of Warcraft III. The latest update patch can
+ be obtained from Blizzards website.
+
+<li>Run the Battle.net gateway editor, make sure you select the WarCraft tab at
+ at the bottom of the window, add the server you wish to connect to. Make it
+ the default server if you wish.
+     
+<li>Download and install the WarCraft III loader simply copy the 2 files (exe and dll)
+ to your Program Files folder, and run the exe.
+     
+[these instructions may be a bit short. ifyou have a better set, I'd be happy to update]
+</ol></p>
+<li><b><a name=macos9>Loosing Battle.net (TM) preferences for Mac OS 9?</a></b><br>
+<q>
+<p>> It seems that the new StarCraft v1.11b checks if the file "Battle.net Preferences"<br>
+> was edited by someone else. Everytime I startup StarCraft, it resets my newly added Gateways.</p>
+   
+<p>Is this you? Well some analysis by "Cassiel" came up with this answer...</p>
+   
+<p>I tested this on a German Mac OS X 10.3.4 with an US-Version of Starcraft: BroodWar and applied Patch 1.11b.</p>
+
+<p>It seems that StarCraft only resets this file if the length of the resource where the Gateways are store is bigger than 125. All entries below this length are working perfectly. It also happens if you try to add a new gateway.</p>
+
+<p>I locked the resource entry through Resorcerer and it worked, but after a new restart of Stacraft the program also writes the gateways to the file "Starcraft preferences", now I have two gateway resource-entries, one in "Battle.net preferences" and the other one in "Starcraft preferences". If these gateways differs, Starcraft is loads up the default hard-coded settings somewhere in the program. It also uses the default gateways if you change the permission on this file to "read only". Strange thing!</p>
+   
+<p>> The solution?</p>
+   
+<p>Why not delete the gateways you do not intend to use and add in the gateway you want to use. This will keep you entries bellow 125 (bytes?)</p>
+</q>
+<li><b><a name=helpdev>How do I Help out on the PvPGN development?</a></b><br>
+
+<p>This section is more for my random collection of notes at this point.
+ We'll see how it evolves.</p>
+   
+<p>dizzy: README.DEV document if you go on the pvpgn development road</p>
+   
+<p>The "latest" source code is available at:<br>
+ dizzy: If you do development you need to do it on current CVS (ie 1.7) not on 1.6
+ releases. for that you need to fetch the latest CVS
+ from sf.net: :pserver:anonymous@cvs.sf.net:/cvsroot/pvpgn</p>
+   
+<p>If you're new to this, search http://sourceforge.net for stuff about "CVS"
+ and if you're on windows, look for a program called "wincvs". It's not the only
+ CVS program for windows, I've provided the name here as a pointer for you.
+ Sourceforge has a good write up about CVS and there are free PDF books available
+ on the subject too.</p>
+   
+<p>dizzy: If you want to contribute code back to the forums, please give us unified
+ diffs against latest CVS not whole files or part of files (its easier to
+ read them, check them, commit them). To get such a diff do something like this:
+ cvs diff -u > /path/to/patchfile</p>
+
+<p>If you are in the root source directory of a checked out CVS source tree
+ it should output a unified diff into patchfile file.</p>
+
+<p>And your output looks like the file below c/- wincvs using the
+ Query/Diff selection menu option... (this shows code that I have added
+ and is not in the current Sourceforge version)</p>
+<!--
+<pre>
+#== START =========================================================    
+cvs diff -u handle_bnet.c (in directory E:\CVS\pvpgn\src\bnetd\)
+Index: handle_bnet.c
+===================================================================
+RCS file: /cvsroot/pvpgn/pvpgn/src/bnetd/handle_bnet.c,v
+retrieving revision 1.200
+diff -u -r1.200 handle_bnet.c
+--- handle_bnet.c 19 Jul 2004 13:44:53 -0000 1.200
++++ handle_bnet.c 20 Jul 2004 08:06:44 -0000
+@@ -4357,11 +4357,18 @@
+static int _client_startgame4(t_connection * c, t_packet const * const packet)
+{
+   t_packet * rpacket;
++   char const * name; // David Wilson
+   
+   if (packet_get_size(packet)&lt;sizeof(t_client_startgame4)) {
+      eventlog(eventlog_level_error,__FUNCTION__,"[%d] got bad STARTGAME4 packet (expected %u bytes, got %u)",conn_get_socket(c),sizeof(t_client_startgame4),packet_get_size(packet));
+      return -1;
+   }
++
++   // David Wilson - Edit 5 July 2004 - need to see what packets are being sent
++   //                                   for player to player communication
++   eventlog(eventlog_level_debug,__FUNCTION__,"Start of Procedure: Data from ->%s<-, packet ->",
++                  addr_num_to_addr_str(conn_get_addr(c),conn_get_port(c)));
++   eventlog_hexdump_data(packet,packet_get_size(packet));
+   
+   // Quick hack to make W3 part channels when creating a game
+   if (conn_get_channel(c))
+
+***** CVS exited normally with code 1 *****
+#== END =========================================================    
+</pre> -->
+   
+<li><b><a name=ownbanner>How do I setup my own banner adverts?</a></b><br>
+<center><h3>
+WARNING - THIS SECTION OF THE DOCUMENTATION IS STILL UNDER DEVELOPMENT<br>
+WARNING - THIS SECTION OF THE DOCUMENTATION IS STILL UNDER DEVELOPMENT<br>
+FEEDBACK APPRECIATED<br>
+FEEDBACK APPRECIATED<br>
+</h3></center>
+
+<p>Banners are the long, narrow rectangular graphics displayed at the top of the
+client screen. They may be animated or static pictures. The real Battle.net (TM)
+uses the for commercial advertisements, but you can use them for server logos,
+team logos, etc.</p>
+
+<p>To create your own advertisements you'll need to do some preparation and
+quite possibly much experimentation and that's just to create the graphics.
+I urge you to test the final results on all flavours of client software and
+hardware that might connect to your server. What displays on one configuration
+may not display on another.</p>
+
+<p><b>Graphic Formats:</b> The formats that are supported are PCX/SMK for older clients (those 
+until War3) and MNG for W3/W3XP.  These are the only known formats that are supported by the Blizzard clients.  For animated 
+banners, you must use the SMK (Smacker) format or MNG.  The actual size of the
+ images must be 468x60 pixels in 256 indexed color mode.  Additionally,
+ only the 64 colors from index 32 to 96 seem to be avaliable for
+ modification.  The other colors should not be used at all because they
+ are used by the GUI and are not consistant between the various clients.
+ Encoding sound is also possible if you are using the SMK format.</p>
+
+<p><u>Preparation:</u><ol>
+<li>Graphical editor, "Paint Shop Pro", "Photoshop", almost anything. I have used Paint Shop Pro (http://www.jasc.com/index.html) for editing
+ PCX files.  It has excellent support for manipulating color pallets
+ (save, load, etc).<br>
+
+<p>Your eventual output files will be "*.pcx" or "*.mng" or "*.smk" even though
+ the graphical editor will not support "*.mng" or ".smk".</p>
+ 
+<p>"*.mng" only works for Warcraft III
+              - so don't use it for StarCraft!</p>
+<p>"*.smk" is probably the best format as it will work for all clients.</p>
+
+<p>Jasc Paint Shop Pro 8 also includes an Animation Editor. You access it from
+ the File / Jasac Software Products menu. Select Jasac Anamination Shop.
+ With this program you can create mng files from just about any source.</p>
+     
+<p>Restrict the colours in your ads. 8 bit colour. Through Photoshop you will
+ use the "Index Colour Mode" to reduce the colours.</p>
+
+<p>Working with the Palette!<br>
+      Using Jsac Animation Shop, open one of the supplied graphic files
+        --> /files/ad000001.mng and save it as /files/ad000001.gif
+      Using Jsac Paint Shop Pro, open the newly saved file --> /files/ad000001.gif
+      Now save the palette. Image / Palette / Save Palette. Enter a name for this
+      palette, I used "PvPGN Banner Ads Palette".<p>
+     
+<p>Load up your image, psd file or what ever.
+ Apply the PvPGN Banner Ads Pallete to this image by going to
+ Image / Palette / Load Palette. Now you're presented with a dialog box
+ with some questions on how to translate the image. Use the default settings.</p>
+     
+<p>Save your new image as "*.psd" or what ever format you want. Remember that
+ certain games will only accept certain format graphics. You may have to move
+ onto the the next step to translate from one graphics format to another.</p>
+     
+<p><u>If you have any real feedback on this, please let me know
+I'll update this how-to so we can share with everyone</u></p>
+   
+<li>A series of images.<br>
+<p>I'm still experimenting. Save a series of images as "*.gif" or "*.psd".
+      Depending on the conversion tools that follow, the saved format for
+      individual graphic files may not matter.<br>
+        - so you have ad005001.gif, ad005002.gif, ad005003.gif<br>
+        - each gif could have a slight change, say the wording?</p>
+   
+<li>Now you need to convert the images to "*mng" or "*smk".<br>
+<p>- There's more than one way to do this....<ol>
+
+<li>For "*.smk" output<br>
+         <p>Convert them using SmackerTools. SmackerTools comes from http://www.radgametools.com
+         It's a free download and only available for MS-Windows.
+         Please let me know if tools exist on other platforms and I'll update
+         this how-to.</p>
+         <p>When converting multiple ".gif" files into one smacker file, you
+         can use the list feature. Create about 200 frames for each graphic.
+         Probably best to experiment and use the smacker tool to inspect real
+         adverts.
+         SmackerTools will accept multiple graphic formats as input. "*.gif" is
+         used here as an example.</p>
+             
+<li>For "*.mng" output<br>
+         <p>U-238 says "For .mng, just make a .png and rename the file extention"
+         I understand that "mng" is "multiple png".</p>
+         <p>You can also use Jsac Animation Shop included with Jsac Paint Shop Pro
+         to create your animated sequence from the series of individual pictures.</p>
+
+         reference <a href="http://www.libpng.org/pub/mng/mngaped.html">http://www.libpng.org/pub/mng/mngaped.html</a>
+
+<li>For ".pcx" output<br>
+<p>Save it with your graphic program. Jsac Paint Shop Pro, or Photoshop.</p>
+         
+<p>Under Linux, you may create the PCX files with The Gimp. To view SMK
+ files, you may use WINE to run the SMACKPLW.EXE program from the RAD
+ tools. I know it works with version 20000614 with no Windows registry
+ or DLLs. I have not tried to use the authoring tools under WINE.
+ If you know of tools that can handle these formats under Linux or MacOS
+ let us know and we will add them to the list here.</p>
+</ol></p>
+     
+<li>The server file you're going to edit as add.lst or ad.conf depending on
+ what version of PvPGN software you're using.
+       
+<li>READ THE HELP text at the beginning of the ad.conf file!
+</ol>
+
+<u>Recommendation:</u>
+<p>PvPGN uses .smk files, which are better than .pcx,
+ they work on all clients, they dont have palette limitations,
+ and they compress better.</p>
+ 
+<u>Step through example:</u><ol>
+
+<li>create the graphic using your favourite graphic tool. Ensure that the output
+ is saved in an appropriate format as discussed above, and adhere to the size.
+<li>Convert the graphic to the desired file format.
+<li>Place your graphic file in the "files" directory on your server, follow the
+ file naming conventions.
+<li>Edit the ad.conf file making sure your follow the format. The text below is
+ an example only!
+<pre>
+"ad001001.smk"  init    30 "http://www.yourwebsite.org"      0x000000  "SEXP"
+"ad001001.smk"  start   30 "http://www.yourwebsite.org"      0x001001  "SEXP"
+"ad001001.smk"  norm    30 "http://www.yourwebsite.org"      0x000000  "SEXP"
+</pre>
+<li>Note the last column. This column will restrict display of this new
+ advertisement to the specific client gametag. So in this case Starcraft:Broodwar.
+ Text of "NULL" is shown to all clients _except_ those with a specific gametag.<br>
+     
+Therefore you could have:<br><ul>
+<li>W3XP - Warcraft III - TFT (Expansion)
+<li>WAR3 - Warcraft III - ROC
+<li>D2XP - Diablo II - LoD (Expansion)
+<li>D2DV - Diablo II
+<li>SEXP - Starcraft - Broodwar (Expansion)
+<li>STAR - Starcraft</ul>
+</ol>
+
+<u>References:</u><br>
+<a href="http://cvs.sourceforge.net/viewcvs.py/*checkout*/bnetd/bnetd/docs/README.adbanner?rev=1.1.1.1">http://cvs.sourceforge.net/viewcvs.py/*checkout*/bnetd/bnetd/docs/README.adbanner?rev=1.1.1.1</a><br>
+
+<p>And in theory you can save banners from Battle.net (TM) by using the bnftp command.
+ bnftp is supplied (included) with the latest releases (1.6.4 and higher,
+ possibly earlier) of PvPGN.
+ You will need to know the exact filename.</p>
+
+<p>&nbsp;</p>
+<p><strong>Legal</strong></p>
+<blockquote>
+  <p>Battle.net and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment in the U.S. and/or other countries. Usage of the PvPGN software is free under the GNU public license. While every attempt has been made to ensure that the software functions as intended and that the documentation provided is accurate, the PvPGN community of developers and contributors cannot be held responsible for any issues arrising from having or running the software. </p>
+</blockquote>
+</body>
+</html>

@@ -1,0 +1,17 @@
+What is PvPGN?
+    Is software that emulates the Blizzard battle.net server. 
+    It gives you the power to run your own server, manage your own users, 
+    run your own tournaments etc. 
+    
+    The PvPGN ( or Player versus Player Gaming Network ) is a bnetd based gaming 
+    network server emulation project. It currently supports all Battle.Net clients,
+    such as StarCraft + expansion, Diablo II, and Warcraft III + expansion.
+    
+    You can play games that are restricted to your local LAN or put your PvPGN 
+    server on the Internet. It puts you as a "System Administrator" in control.
+    Use a PvPGN server to host your own LAN parties or put the server online
+    and on the internet for everyone. You can run Tournaments, have your own
+    local competition ladders. The power is in your hands.
+    
+    PvPGN is a SourceForge project and can be accessed at
+    http://sourceforge.net/projects/pvpgn

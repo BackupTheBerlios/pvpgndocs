@@ -1,0 +1,151 @@
+
+Section 4 - Playing on PvPGN Servers
+
+ * denotes completed
+ - denotes still being worked on
+ ? need to agree if we should do more
+ 
+ *  Introduction
+ -  How to set up Warcraft III to play on PvPGN servers
+ -  How to set up Starcraft/Diablo/Diablo II to play on PvPGN
+ -  How to play on PvPGN servers with a Mac
+ *  Where can I find a server to play on?
+ ?  Playing on a PvPGN server from behind a router
+ *  How to create a windows .reg file for user access to my server
+
+Introduction
+    It's great to have server to play on that is your own or used by a group
+    of friends, you can have your own local competitions, tournaments etc. Having
+    a server is one thing, getting people to connect to it is another.
+    
+    Out of the box, games like WarCraft, StarCraft etc have the Blizzard servers
+    listed that users can connect to and there is no interface provided that lets
+    users edit this information. Fortunately the internet community has gathered
+    together and produced some small tools that let you edit this information and
+    allow you to list more servers than just the Blizzard ones.
+    
+    These default settings must be edited before a user can connect to your server.
+
+
+How to set up Warcraft III to play on PvPGN servers
+    You need a "loader and gateway editor".
+    
+    http://pvpgn-files.ath.cx/Warcraft III Roc & FT PvPGN Loader by Acid!.zip
+    and a Battle.net Gateway editor
+    http://pvpgn-files.ath.cx/BNGatewayEditor.exe
+    --> look here for other things too... http://pvpgn-files.ath.cx
+
+    1. Update to the latest version of Warcraft III. The latest update patch can 
+       be obtained from Blizzards website. 
+
+    2. Run the Battle.net gateway editor, make sure you select the WarCraft tab at
+       at the bottom of the window, add the server you wish to connect to. Make it
+       the default server if you wish.
+       
+    3. Download and install the WarCraft III loader simply copy the 2 files (exe and dll)
+       to your Program Files folder, and run the exe.
+       
+    <these instructions may be a bit short. if you have a better set, I'd be happy to update>
+
+    
+How to set up Starcraft/Diablo/Diablo II to play on PvPGN
+   - bnetconfig.exe (win32)
+   - bnetse.dmg (Mac OS 10.3 image file)
+     http://pvpgn.cyfx.net/files/MacBNetGatewayEditor-v0.3.dmg
+     Note: I think version 0.2 worked under 10.2, but required some fiddling with resedit.
+
+   Also, check out this site for additional PvPGN materials. http://pvpgn.cyfx.net/
+   These programs allow you to edit the battle.net preferences files to provide additional servers
+   i.e. your PvPGN server.
+   
+   Special notes for MAC users! - I needed these steps for Mac OS X 10.2. 
+   May not be required for new software.
+   StarCraft version was 1.10 at the time I believe.
+   
+   a. Run the Battle.net Server Editor program
+   b. Add in your server, name, ipaddress, zone (actually timezone referenced to GMT)
+   c. Save changes....  The file you have just updated is "<user>/Library/Preferences/Starcraft prefs"
+   d. Backup this file
+   e. Backup "battle.net Preferences" in the same folder
+   f. Find ResEdit, run it
+   g. Open both files
+   h. In the Starcraft prefs file, copy the following resource 
+      HKEY_CURRENT_USER/software/battle.net/configuration/battle.net gateways
+   i. Paste this resource into the Battle.net preferences file (replacing the one currently there!!!)
+   j Run StarCraft, connect to battle.net server
+
+How to play on PvPGN servers with a Mac
+  <Mark, I think you've got some doc for this!>
+
+    Loosing Battle.net preferences for Mac OS 9?
+
+    > It seems that the new StarCraft v1.11b checks if the file "Battle.net Preferences" 
+    > was edited by someone else. Everytime I startup StarCraft, it resets my newly added Gateways.    
+    
+    Is this you? Well some analysis by "Cassiel" came up with this answer...
+    
+    I tested this on a German Mac OS X 10.3.4 with an US-Version of Starcraft: BroodWar 
+    and applied Patch 1.11b.
+
+    It seems that StarCraft only resets this file if the length of the resource where the 
+    Gateways are store is bigger than 125. All entries below this length are working 
+    perfectly. It also happens if you try to add a new gateway.
+
+    I locked the resource entry through Resorcerer and it worked, but after a new restart 
+    of Stacraft the program also writes the gateways to the file "Starcraft preferences", 
+    now I have two gateway resource-entries, one in "Battle.net preferences" and the other 
+    one in "Starcraft preferences". If these gateways differs, Starcraft is loads up the 
+    default hard-coded settings somewhere in the program. It also uses the default gateways 
+    if you change the permission on this file to "read only". Strange thing!
+    
+    > The solution?
+    
+    Why not delete the gateways you do not intend to use and add in the gateway you want 
+    to use. This will keep you entries <125 (bytes?)
+
+Where can I find a server to play on?
+
+   A dynamic list of live servers is maintained on the internet. You can get there
+   by visiting http://www.pvpgn.org and clicking on the link to "Live Servers". This
+   link is to http://pvpgn.mivabe.nl and contains over 800 servers. Information such as
+   IP address, URL, Host name, current number of online users, current number of online
+   games is also listed.
+
+   http://pvpgn.mivabe.nl
+   
+      
+Playing on a PvPGN server from behind a router 
+
+   How can I have more than one SC/BW client behind a router?
+   The detail for this question has been taken directly from the FAQ section at http://forums.pvpgn.org
+   Answer c/- aaron
+   
+   When you wanna play SC/BW games with more than one user behind the same router.. it won't work....
+   here is the solution... 
+   for each gaming PC behind the router do this:
+
+   a. use regedit to edit/create:
+      HKLM\Software\Battle.net\Configuration REG_DWORD "Game Data Port"
+      (choose a unique so far unused port for each client)
+   b. Then on your router forward each of those ports to the correct client computer... 
+      (UDP, not sure if TCP needed)
+
+      
+How to create a windows .reg file for user access to my server
+
+    You've got an PvPGN server running on LAN and want to give your "buddies"
+    a .reg file because cause it's this way easier for them to get onto your 
+    server.
+    
+    Register your server on another machine with one of the gateway Gateway 
+    Editors and export following keys to the reg-file:
+
+    [HKEY_CURRENT_USER\Software\Battle.net\Configuration]
+    "Server List"
+    "Diablo II Battle.net gateways" // for Diablo II
+    "Battle.net gateways" // for Starcraft
+    [HKEY_LOCAL_MACHINE\SOFTWARE\Battle.net\Configuration]
+    "Server List"
+    [HKEY_CURRENT_USER\Software\Blizzard Entertainment\Warcraft III]
+    "Battle.net gateways" // for War III
+

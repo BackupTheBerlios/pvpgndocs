@@ -1,0 +1,86 @@
+<center>
+    <h2><a name="top">Customising the Message of the Day and News</a></h2>
+    <p>By dgwilson65 and U-238</p>
+</center>
+<p><b><a name="contents">Table of contents</a></b></p>
+  <blockquote>
+    <div style="background-color: #DDDDDD; color: #000000; padding: 4px;">
+      <ul>
+        <li><a href="#motd">Customising the Message of the Day (MOTD)</a></li>
+        <li><a href="#war3">But what about the MOTD that is shown in Warcraft 3???</a></li>
+	<li><a href="#news">Customising Battle.net (TM) news</a></li>
+      </ul>
+    </div>
+  </blockquote>
+<p><b><a name="motd">Customising the Message of the Day (MOTD)</a></b></p>
+  <blockquote>
+	<p>conf/bnmotd.txt contains the greeting that is sent to users when they connect<br>
+	to your PvPGN server. You can customise that greeting by editing the file.<br>
+	<br>
+	The PvPGN distribution package comes with the following text in the<br>
+	conf/bnmotd.txt file.<br>
+	<br>
+	<pre>%IHello %l, welcome to a PvPGN Server!
+%IRunning version %v on %h.
+%IThis server is hosted by %H
+%I
+%IThere are %a user accounts on this server.
+%IThere are currently %U users in %G games of %N,
+%Iand %u users playing %g games and chatting in %c channels.
+%IHaving trouble with a command?  Type   /help   to
+%Ilearn more about it.
+%I
+%I%m</pre>
+	<br>
+	You can customise the message that is sent to users. The only rule is<br>
+	that all lines must start with %I. After that use what ever text you<br>
+	like. You can also use the following parameters to further customise<br>
+	your message.<br>
+	<br>
+	The parameters you can use here are:<br>
+	<br>
+	%a = number of registered accounts on the server<br>
+	%c = number of currently existant channels<br>
+	%g = total number of currently running games<br>
+	%G = games of users with same clienttag.<br>
+	%h = hostname of the server<br>
+	%H = contact name (as set in bnetd.conf)<br>
+	%i = userid of the user<br>
+	%l = username<br>
+	%N = name of the game the user has connected with.<br>
+	%m = check user's mail when they login<br>
+	%r = IP of the user<br>
+	%t = clienttag of the user<br>
+	%u = number of users currently logged in<br>
+	%U = users logged in with the same clienttag<br>
+	%v = server version</p>
+  </blockquote>
+<p><b><a name="war3">But what about the MOTD that is shown in Warcraft 3???</a></b></p>
+  <blockquote>
+	<p>Unfortunatly this is hardcoded, but anyone with some basic programming<br>
+	skills can change this... just open src/bnetd/handle_bnet.c and at line<br>
+	2791 you will find the hardcoded MOTD <img src="http://pvpgndocs.sourceforge.net/smile.gif"></p>
+  </blockquote>
+<p><b><a name="news">Customising Battle.net (TM) news</a></b></p>
+<blockquote>
+	<p>This news is displayed when a Diablo 2 or Warcraft 3 user logs in, or<br>
+	when a user types the /news command in a chat channel.<br>
+	<br>
+	The news is stored in the file news.txt in your conf folder.  The format is:<br>
+	<br>
+	<pre>{MM/DD/YYYY}
+News goes here</pre>
+	<br>
+	You need to replace MM/DD/YYYY with the date that this news item was posted.<br>
+	You can have multiple news items simply by adding more entries, for example:<br>
+	<br>
+	<pre>{08/16/2004}
+This piece of documentation was published
+
+{08/05/2004}
+U-238 and dgwilson65 started working on the PvPGN documentation</pre></p>
+</blockquote>
+<p><strong>Legal</strong></p>
+<blockquote>
+  <p>Battle.net and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment in the U.S. and/or other countries. Usage of the PvPGN software is free under the GNU public license. While every attempt has been made to ensure that the software functions as intended and that the documentation provided is accurate, the PvPGN community of developers and contributors cannot be held responsible for any issues arrising from having or running the software. </p>
+</blockquote>

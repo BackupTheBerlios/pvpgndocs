@@ -1,0 +1,82 @@
+U-238 -- 9 Aug 2004
+Added changelog
+
+dgwilson65 -  9 Aug 2004
+- updated whatispvpgn.txt
+- deleted pdf's from CVS 
+- re-added pdf's marking them as binary files in the process.
+- might have been wrong about the "not binary" thing. pdf's were opening in default text editor. :-)
+
+- have split read.me up. Now have 8 separate section files. read.me has doc that has no home yet.
+
+dgwilson65 - 10 Aug 2004
+- updated section_06.txt
+- U-238 can you update any of the Diablo stuff, and anything about the ports used that I've got wrong or missed?=======
+- have split read.me up. Now have 8 separate section files. read.me has doc that has no home yet.
+
+U-238 -- 10 Aug 2004
+- Some small changes to section_01.txt
+
+dgwilson65 - 10 Aug 2004
+- updated section_06.txt
+- U-238 can you update any of the Diablo stuff, and anything about the ports used that I've got wrong or missed?
+
+dgwilson65 - 12 Aug 2004
+- a frustrating night with banner ads. I did get them to work from a new image, but
+  not with my background photo. I don't know if it is as simple as the palette?
+  I have added to the banner ad doc, but that's all tonight. I need some sleep.
+
+dgwilson65 - 14 Aug 2004
+- Still going hard on section 3. I'm running out of expertise. Can you do some Mark? 
+- I've seen a separate discussion somewhere about the "storage mode" and I'm still wondering
+  if it should be separated from the actual install docs as it's common.
+- Updated section 6, now as port number information completed with info c/- an FAQ
+
+dgwilson65 - 15 Aug 2004
+- Updates Section 3 - details about many of the conf files, still being worked on.
+- Updated section 4. Mark, it needs to be reviewed and updated by you then it can be HTML'd
+- Updated section 6 with details of diagnosing Router/Firewall issues. 
+- Updated Section 3 - banner ads. Now working! Man I'm glad that's done.
+                      I have also added 2 files for inclusion in html on the banner ad subject
+                      use 1 or both. They show the smackertools conversion window with the right
+                      fields filled in.
+
+U-238 - 15 Aug 2004
+- Refined ad banner howto, will HTMLise and add to sourceforge project.
+
+U-238 - 15 Aug 2004
+- OK, HTMLised the ad banner howto, now in file adbanner.html
+  Also available at: http://sourceforge.net/docman/display_doc.php?docid=24232&group_id=53514
+
+U-238 - 16 Aug 2004
+- More HTMLising!!!  Moved some stuff from section 3 to motdnews.htm and 
+submitted to sf.net
+
+dgwilson65 - 18 August 2004
+- Updated adbanner.html - in CVS and on pvpgn documentation page. Important changes for WarCraft.
+
+dgwilson65 - 19 August 2004
+- HTML'ed section 3 - loaded to CVS ready for publishing
+
+dgwilson65 - 21 August 2004
+- 2 more document HTML'd section 4 and section 6 (not online yet. COuld do with some more content first.
+
+dgwilson65 - 22 August 2004
+- Updated adbanner.html with latest information for diablo, looping frames with smacertools and adding sound
+- Put the NAT/Firewall and Accessing PvPGN doc online (HTML) to PvPGN
+- HTML'd the existing diablo doc and put on pvpgn docuemtation section as well
+
+dgwilson65 - 9 September 2004
+- Added Legal notice. Altered references to Battle.net and in some cases changed to PvPGN
+
+dgwilson65 - 12 September 2004
+- created PvPGN install instructions. Used existing Mac/Linux, created Windows. Needs to be reviewed before release.
+
+dgwilson65 - 15 September 2004
+- updated introduction.html, found some comments from dizzy that were great!
+- Modified installing.html and put up on pvpgn for everyone.- Contains warning about document being worked on.
+
+dgwilson65 - 4 October 2004
+- Added Mac gameport edit for starcraft
+- Added MacBnetGatewayEditor doc with Pictures
+- Updated doc on RUnning a PvPGN server - specifically for recent changes to bnetd.conf file
