@@ -1,0 +1,169 @@
+<center>
+    <h2><a name="top">Introduction to PvPGN</a></h2>
+</center>
+<p><b><a name="contents">Table of contents</a></b></p> 
+  <blockquote>
+    <div style="background-color: #DDDDDD; color: #000000; padding: 4px;">
+      <ul>
+        <li><a href="#whatispvpgn">What is PvPGN?</a></li>
+        <li><a href="#about">About this guide</a></li>
+		<li><a href="#sysreq">System requirements</a></li>
+		<li><a href="#download">Downloading PvPGN</a></li>
+		<li><a href="#guide">Guidelines when posting for support</a></li>
+		<li><a href="#links">Places of interest - PvPGN related</a></li>
+		<li><a href="#legal">Legal</a></li>
+      </ul>
+    </div>
+  </blockquote>
+
+<p><b><a name="whatispvpgn">What is PvPGN?</a></b></p>
+<blockquote>
+  <p>PvPGN is software that emulates the Blizzard Battle.net (TM) server. It is a modification 
+  of the bnetd server which aims to provide support for all Blizzard clients. 
+  It gives you the power to run your own server, manage your own users, 
+  run your own tournaments etc. <br>
+  <br>
+  The PvPGN ( or Player versus Player Gaming Network ) is a bnetd based gaming 
+  network server emulation project. It currently supports all Battle.net (TM) clients, 
+  such as StarCraft, Diablo II, and Warcraft III. The list of supported clients 
+  and their minimum verion required is:<br>
+    - Diablo 1 v1.09<br>
+    - Starcraft v1.08<br>
+    - BroodWar v1.08<br>
+    - Warcraft II Battle.net (TM) Edition v2.05<br>
+    - Diablo 2 v1.10<br>
+    - Diablo 2 LOD v1.10<br>
+    - Warcraft III Reign Of Chaos v1.13*<br>
+  - Warcraft III Frozen Throne v1.13*</p>
+  <p>* PvPGN requires the loader for WarCraft III and it must be used without any CD Cracks or Hacks. There is no loader available for WarCraft on Macintosh.</p>
+  <p> A PvPGN Server can be used:</p>
+  <ul>
+    <li> when wanting to host a local tournament with local users and statistics (lots of internet cafe's do that)</li>
+    <li> when wanting to maintain a local community, Battle.net is too big for most of the people; having a local friends community is something better in that case</li>
+    <li> for people who want to play LAN but with battle.net-like statistics</li>
+    <li> for people who want more features than Battle.net (just look at PvPGN's command set to see how is PvPGN better than Battle.Net)</li>
+  </ul>
+  <p> It puts you as a &quot;System Administrator&quot; in control.
+          Use a PvPGN server to host your own LAN parties or put the server online 
+          and on the internet for everyone. You can run Tournaments, have your own 
+          local competition ladders. The power is in your hands.<br><br>
+   The official PvPGN website is at <a href="http://pvpgn.berlios.de/" target="_blank">http://pvpgn.berlios.de</a></p>
+</blockquote>
+<p><b><a name="about">About this guide</a></b></p>
+<blockquote>
+  <p>
+    This guide has been created as part of a documentation project for PvPGN. Our intention 
+    is to bring together the current knowledge on setting up and running a PvPGN 
+    server and to provide details on how the clients can connect.<br>
+    <br>
+    This documentation project is not a commercial venture, nor has it been done 
+    for financial gain (though admitedly that would be nice). It has been put 
+    together by volunteers who are just trying to &quot;do their bit&quot;.<br>
+    <br>
+    Q. Can you help?<br>
+    A. Yes - read this guide<br>
+    <br>
+    If you have encountering an administration issue or your clients are having 
+    operational issues then see if that scenario has been covered in this guide. 
+    If after doing this you still doing have a working solution, then post a 
+    message to the pvpgn forums at http://forums.pvpgn.org<br>
+    <br>
+    If a resolution for your issue has been found, we would appreciate your help 
+    by documenting the issue and the resolution so that this guide can be updated. 
+    Usually the message forum text can be used with some editing, we'd appreciate 
+    you doing this. Don't worry, we'll fix up any bad english or speeling erros.<br>
+    <br>
+    Our intention has been to write this guide relative to PvPGN 1.7, if you have 
+    an earlier release then your question may be answered here. We of course would 
+    prefer that you updated your copy of the software to the latest release.<br>
+    <br>
+    Finally a big thank you to the PvPGN developers and you our supporters.</p>
+</blockquote>
+<p><b><a name="sysreq">System requirements</a></b></p>
+<blockquote>
+<p>The latest list of PvPGN supported platforms can be found in the docs 
+  directory of a PvPGN release docs/PORTS. As of 1.7 the following 
+  platforms are supported:<br><br> <table>
+<tr><td>    <b>Architecture</b> </td><td> <b>Operating System</b> </td><td> <b>Status</b>  </td><td> <b>Comments</b> </td></tr>
+<tr><td>    x86          </td><td> Linux 2.4.x      </td><td> OK      </td><td> main development platform</td></tr>
+<tr><td>    x86          </td><td> Linux 2.6.x      </td><td> OK      </td><td> tested</td></tr>
+<tr><td>    x86          </td><td> WIN32            </td><td> OK      </td><td> tested</td></tr>
+<tr><td>    x86          </td><td> FreeBSD 4.x      </td><td> OK      </td><td> tested</td></tr>
+<tr><td>    x86          </td><td> FreeBSD 5.x      </td><td> OK      </td><td> tested but use 5.2.1 at least</td></tr>
+<tr><td>    x86          </td><td> BeOS R4 /w BONE  </td><td> OK      </td><td> tested</td></tr>
+<tr><td>    x86          </td><td> OpenBSD 3.x      </td><td> OK      </td><td> tested</td></tr>
+<tr><td>    x86_64/AMD64 </td><td> Linux 2.6.x      </td><td> OK      </td><td> tested (pvpgn >= 1.6.3 required)</td></tr>
+<tr><td>    sparc64      </td><td> SunOS 5.9        </td><td> OK      </td><td> tested</td></tr>
+<tr><td>    PowerPC G3   </td><td> Mac OS X 10.2.x  </td><td> OK      </td><td> tested</td></tr>
+<tr><td>    PowerPC G3   </td><td> Mac OS X 10.3.x  </td><td> OK      </td><td> tested</td></tr>
+<tr><td>    PowerPC G4   </td><td> Mac OS X 10.2.x  </td><td> OK      </td><td> tested</td></tr>
+<tr><td>    PowerPC G4   </td><td> Mac OS X 10.3.x  </td><td> OK      </td><td> tested</td></tr>
+</table>
+<br>
+Clearly x86 is the most tested version. The platforms/operating systems not 
+  listed have not been tested or they did not come to the developers attention 
+  however, any POSIX system should work.</p>
+  <p> If you have an operating PvPGN server on a platform/OS not listed above then 
+  please report it to the developers via the forums at <a href="http://forums.pvpgn.org">http://forums.pvpgn.org</a>
+</p>
+</blockquote>
+<p><b><a name="download">Downloading PvPGN</a></b></p>
+<blockquote>
+<p>  The official download site for PvPGN is: 
+  <a href="http://pvpgn.berlios.de">http://pvpgn.berlios.de/</a></p>
+<p> Packages are available for Windows, Mac OS X and a few flavours of Linux. If there is no package available for your operating system, you can download the source and compile it yourself. See the install guide for more
+  information on this.<br>
+  <br>
+  Alternative download sites for PvPGN:<br>
+  <a href="http://www.pvpgn.de/" target="_blank">http://www.pvpgn.de/</a><br>
+  <a href="http://pvpgn-files.ath.cx/" target="_blank">http://pvpgn-files.ath.cx/</a><br><br>
+  Please note that both these sites are unofficial and may not have the latest releases.</p>
+<p>Reporting Problems and or Bugs<br>
+  Sometimes things just don't make sense and are just too hard to nut out. 
+  Perhaps someone else has had the same problems and reported it? One great source 
+  of information and people to help is available at <a href="http://forums.pvpgn.org/" target="_blank">http://forums.pvpgn.org</a> 
+  here you can post questions where there's a good chance your questions will 
+  be answered and you'll be on your way again.<br>
+  <br>
+  HOWEVER - there are some guidelines to using the forums. Most notably is the 
+&quot;don't post questions that have been answered before&quot; and so 
+  you are encouraged to use the search feature of the forums.<br>
+  <br>
+  If you've read this documentation, and searched the forums, and you still 
+  are unable to get resolution for your problem then it's time to post a message 
+  to the forums. Try &quot;Open Tech Support&quot; first.</p>
+</blockquote>
+<p><b><a name="guide">Guidelines when posting for support</a></b></p>
+<blockquote>
+  <p>
+    It is a good idea to provide revalant information for your question like 
+  the following:<br>
+  <br>
+  1. Where is the PvPGN server, internal LAN?<br>
+  2. How many players on internal LAN?<br>
+  3. How many players on external LAN?<br>
+  4. Details from the revalent configuration file (not the whole file)<br>
+  5. Short extracts from the bnetd.log file<br>
+  6. Software versions that are being used, both server and clients</p>
+</blockquote>
+<p><b><a name="links">Places of interest - PvPGN related</a></b></p>
+<blockquote>
+  <p>The PvPGN website:<br>
+    <a href="http://pvpgn.berlios.de/">http://pvpgn.berlios.de</a><br>
+  <br>
+  PvPGN forums:<br>
+  <a href="http://forums.pvpgn.org/">http://forums.pvpgn.org</a></p>
+<p> The official PvPGN documentation:<br>
+  <a href="http://pvpgndocs.berlios.de/">http://pvpgndocs.berlios.de</a> (under construction) </p>
+<p> PHP Utilities for PvPGN:<br>
+  <a href="http://pvpgn-phputils.sourceforge.net/">http://pvpgn-phputils.sourceforge.net</a></p>
+<p> IRC channel:<br>
+  #pvpgn on irc.pvpgn.org</p>
+<p> Alternative (unofficial) download sites:<br>
+  <a href="http://www.pvpgn.de/">http://www.pvpgn.de</a><br>
+  <a href="http://pvpgn-files.ath.cx/">http://pvpgn-files.ath.cx</a></p>
+</blockquote>
+<p><b><a name="legal">Legal</a></b></p>
+<blockquote>
+  <p>Battle.net and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment in the U.S. and/or other countries. Usage of the PvPGN software is free under the GNU public license. While every attempt has been made to ensure that the software functions as intended and that the documentation provided is accurate, the PvPGN community of developers and contributors cannot be held responsible for any issues arrising from having or running the software. </p>
+</blockquote>
